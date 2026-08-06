@@ -32,7 +32,11 @@ export async function GET() {
       user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() ||
       profile?.plan_type === "admin";
 
-    const planType = isAdmin ? "admin" : profile?.plan_type === "pro" ? "pro" : "free";
+    const isPro =
+      profile?.plan_type === "pro" ||
+      (profile?.monthly_limit && profile.monthly_limit > 3);
+
+    const planType = isAdmin ? "admin" : isPro ? "pro" : "free";
 
     return NextResponse.json({
       display_name: displayName,
