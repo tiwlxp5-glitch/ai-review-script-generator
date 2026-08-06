@@ -32,12 +32,14 @@ export async function GET() {
       user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() ||
       profile?.plan_type === "admin";
 
-    const isPlus =
-      profile?.plan_type === "plus" ||
-      profile?.plan_type === "pro" ||
-      (profile?.monthly_limit && profile.monthly_limit > 3);
+    const userPlan = profile?.plan_type || "free";
+    const isPro = userPlan === "pro" || (profile?.monthly_limit && profile.monthly_limit > 100);
+    const isPlus = userPlan === "plus" || (profile?.monthly_limit && profile.monthly_limit > 3 && profile.monthly_limit <= 100);
 
-    const planType = isAdmin ? "admin" : isPlus ? "plus" : "free";
+    let planType: "admin" | "pro" | "plus" | "free" = "free";
+    if (isAdmin) planType = "admin";
+    else if (isPro) planType = "pro";
+    else if (isPlus) planType = "plus";
 
     return NextResponse.json({
       display_name: displayName,
