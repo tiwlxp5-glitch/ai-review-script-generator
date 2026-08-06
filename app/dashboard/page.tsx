@@ -1,27 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import {
   Pencil,
-  Zap,
   Sparkles,
+  Zap,
+  RotateCcw,
   Copy,
   Check,
-  RotateCcw,
-  AlertCircle,
-  Loader2,
-  FileText,
   Crown,
   BarChart2,
+  FileText,
+  AlertCircle,
   Video,
-  Lock,
-  MessageSquare,
-  Hash,
-  MessageCircle,
   Clapperboard,
-  Flame,
-  ShieldCheck,
+  Hash,
+  Loader2,
+  Lock,
 } from "lucide-react";
 import UpgradeProModal from "@/components/UpgradeProModal";
 import TeleprompterModal from "@/components/TeleprompterModal";
@@ -41,12 +36,88 @@ interface ShotItem {
   text_on_screen: string;
 }
 
-const TONE_OPTIONS = [
-  { id: "general", label: "💬 เป็นกันเอง", desc: "เพื่อนเล่าให้เพื่อนฟัง พูดเป็นธรรมชาติ" },
-  { id: "drama", label: "💥 ดราม่า/ปัญหาแทงใจ", desc: "เปิดด้วยเรื่องราว/ชวนตกใจ หยุดคนดูใน 3 วินาที" },
-  { id: "asmr", label: "📦 ASMR / Unboxing", desc: "เน้นโชว์เสียงแกะกล่องและความฟินของสินค้า" },
-  { id: "expert", label: "🎓 ผู้เชี่ยวชาญ / รู้ลึก", desc: "น่าเชื่อถือ ให้ความรู้เชิงลึกก่อนปักตะกร้า" },
-  { id: "funny", label: "🤣 สายฮา / มุกตลก", desc: "สนุกสนาน เป็นกันเอง ชวนหัวเราะและเอ็นดู" },
+interface ToneOption {
+  id: string;
+  label: string;
+  desc: string;
+  detail: string;
+  minPlan: "free" | "plus" | "pro";
+}
+
+const TONE_OPTIONS: ToneOption[] = [
+  // 2 Free Tones
+  {
+    id: "general",
+    label: "💬 เป็นกันเอง",
+    desc: "เพื่อนเล่าให้เพื่อนฟัง พูดเป็นธรรมชาติ",
+    detail: "ภาษาพูดเรียบง่าย ชวนคุยเหมือนนั่งเล่าให้เพื่อนสนิทฟัง ไม่ประดิดประดอย",
+    minPlan: "free",
+  },
+  {
+    id: "drama",
+    label: "💥 ดราม่า / ปัญหาแทงใจ",
+    desc: "ชวนตกใจ หยุดคนดูใน 3 วินาทีแรก",
+    detail: "เปิดเรื่องด้วยความขัดแย้ง ปัญหาใหญ่แทงใจดำ หรือคำถามชวนสะดุ้งเพื่อดึงดูดสายตา",
+    minPlan: "free",
+  },
+  // 3 Plus Tones (Total 5 for Plus)
+  {
+    id: "asmr",
+    label: "📦 ASMR / Unboxing ฟินๆ",
+    desc: "เน้นโชว์เสียงสัมผัส และความน่าใช้",
+    detail: "เน้นการแกะกล่อง โชว์เนื้อสัมผัส เสียงสัมผัส และอารมณ์ฟินตอนได้ลองใช้สินค้า",
+    minPlan: "plus",
+  },
+  {
+    id: "expert",
+    label: "🎓 ผู้เชี่ยวชาญ / รู้ลึก",
+    desc: "น่าเชื่อถือ ให้ความรู้ก่อนปักตะกร้า",
+    detail: "สวมบทผู้เชี่ยวชาญ อธิบายกลไกการทำงานหรือเหตุผลเชิงลึก ให้คนดูเชื่อถือแล้วตบท้ายด้วยสินค้า",
+    minPlan: "plus",
+  },
+  {
+    id: "funny",
+    label: "🤣 สายฮา / มุกตลก",
+    desc: "ตลก สนุกสนาน ปล่อยมุกเป็นกันเอง",
+    detail: "เน้นความตลกขบขัน มุกเสี่ยวล้อเลียนตัวเอง ให้คนดูอารมณ์ดีเพลิดเพลินโดยไม่รู้สึกโดนยัดเยียดขาย",
+    minPlan: "plus",
+  },
+  // 5 Pro Tones (Total 10 for Pro)
+  {
+    id: "hardsale",
+    label: "⚡ Hard Sale / นาทีทอง",
+    desc: "กระตุ้นยอดด่วน แจกโปรลดแหลก",
+    detail: "การขายแบบเปิดเผยดุดัน เน้นแจกโค้ดโปรโมชันพิเศษ จำนวนจำกัด กระตุ้นให้รีบกดตะกร้าทันที",
+    minPlan: "pro",
+  },
+  {
+    id: "softsale",
+    label: "🌟 ป้ายยาแบบแอบเนียน",
+    desc: "โชว์ไลฟ์สไตล์ สอดแทรกสินค้าเนียนๆ",
+    detail: "ถ่ายทอดวิถีชีวิตประจำวัน แล้วสอดแทรกสินค้าเข้ามาในบทพูดแบบเป็นธรรมชาติเหมือนไม่ได้ขาย",
+    minPlan: "pro",
+  },
+  {
+    id: "warning",
+    label: "🛑 เตือนภัย / อย่าหาทำ",
+    desc: "เปิดด้วยคำเตือน ชี้ข้อผิดพลาด",
+    detail: "เปิดหัวเรื่องเตือนภัย เช่น 'หยุดทำสิ่งนี้ถ้าไม่อยาก...' เพื่อกระตุกคนดู แล้วชี้ทางแก้ด้วยสินค้า",
+    minPlan: "pro",
+  },
+  {
+    id: "beforeafter",
+    label: "🧪 เปรียบเทียบก่อน-หลัง",
+    desc: "ชี้ความต่าง ก่อนใช้ vs หลังใช้ชัดเจน",
+    detail: "เปรียบเทียบผลลัพธ์ระหว่างก่อนใช้และหลังใช้สินค้าแบบตรงไปตรงมา สร้างความฮือฮาอยากทดลอง",
+    minPlan: "pro",
+  },
+  {
+    id: "emotional",
+    label: "❤️ ซาบซึ้ง / ประทับใจ",
+    desc: "เล่าความรู้สึกอบอุ่น เปลี่ยนแปลงชีวิต",
+    detail: "เล่าเรื่องราวความรู้สึกประทับใจ การเปลี่ยนแปลงของชีวิต หรือความอบอุ่นหลังได้ใช้สินค้า",
+    minPlan: "pro",
+  },
 ];
 
 export default function DashboardPage() {
@@ -302,7 +373,7 @@ export default function DashboardPage() {
                 </span>
                 <button
                   onClick={() => openUpgradeModal("pro")}
-                  className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow transition flex items-center space-x-1"
+                  className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow transition flex items-center space-x-1 cursor-pointer"
                 >
                   <Crown className="w-3.5 h-3.5" />
                   <span>ดูรายละเอียดแพ็กเกจ</span>
@@ -329,31 +400,84 @@ export default function DashboardPage() {
             />
           </div>
 
-          {/* Field 2: Tone of Voice Selection (Multi-Style) */}
-          <div className="space-y-2.5">
-            <label className="block text-sm font-semibold text-purple-300 flex items-center justify-between">
-              <span>🎭 เลือกโทนการเล่าเรื่อง (Tone of Voice)</span>
-              <span className="text-xs font-normal text-amber-400 flex items-center space-x-1">
-                <Sparkles className="w-3 h-3" />
-                <span>5 โทนการเล่า</span>
+          {/* Field 2: Tone of Voice Selection (Multi-Tiered 10 Tones) */}
+          <div className="space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <label className="block text-sm font-semibold text-purple-300">
+                🎭 เลือกโทนการเล่าเรื่อง (Tone of Voice)
+              </label>
+              <span className="text-xs font-semibold text-amber-400 flex items-center space-x-1">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>
+                  {isProOrAdmin
+                    ? "ปลดล็อกครบ 10 โทนระดับ Pro"
+                    : isPlusUser
+                    ? "ปลดล็อกแล้ว 5 โทน (อัปเกรด Pro รับ 10 โทน)"
+                    : "ฟรี 2 โทน (อัปเกรดเพื่อรับครบ 10 โทน)"}
+                </span>
               </span>
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
-              {TONE_OPTIONS.map((tone) => (
-                <button
-                  key={tone.id}
-                  type="button"
-                  onClick={() => setToneStyle(tone.id)}
-                  className={`p-3 rounded-2xl border text-left transition-all ${
-                    toneStyle === tone.id
-                      ? "bg-purple-600/20 border-purple-500 text-purple-200 ring-2 ring-purple-500/30"
-                      : "bg-slate-900/70 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200"
-                  }`}
-                >
-                  <p className="text-xs font-bold text-slate-200">{tone.label}</p>
-                  <p className="text-[11px] text-slate-400 pt-0.5 truncate">{tone.desc}</p>
-                </button>
-              ))}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {TONE_OPTIONS.map((tone) => {
+                const isAllowed =
+                  tone.minPlan === "free" ||
+                  (tone.minPlan === "plus" && isPlusUser) ||
+                  (tone.minPlan === "pro" && isProOrAdmin);
+
+                const isSelected = toneStyle === tone.id && isAllowed;
+
+                return (
+                  <button
+                    key={tone.id}
+                    type="button"
+                    onClick={() => {
+                      if (tone.minPlan === "plus" && !isPlusUser) {
+                        openUpgradeModal("plus");
+                        return;
+                      }
+                      if (tone.minPlan === "pro" && !isProOrAdmin) {
+                        openUpgradeModal("pro");
+                        return;
+                      }
+                      setToneStyle(tone.id);
+                    }}
+                    className={`p-3.5 rounded-2xl border text-left transition-all relative overflow-hidden group cursor-pointer ${
+                      isSelected
+                        ? "bg-purple-600/25 border-purple-500 text-purple-200 ring-2 ring-purple-500/40 shadow-lg shadow-purple-500/10"
+                        : isAllowed
+                        ? "bg-slate-900/80 border-slate-800 text-slate-300 hover:border-purple-500/50 hover:bg-slate-900"
+                        : "bg-slate-950/60 border-slate-800/80 text-slate-500 opacity-75 hover:border-amber-500/40"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-xs sm:text-sm font-bold text-slate-100 flex items-center space-x-1.5">
+                        <span>{tone.label}</span>
+                      </p>
+
+                      {!isAllowed && (
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold flex items-center space-x-1 shrink-0 ${
+                            tone.minPlan === "pro"
+                              ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                              : "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40"
+                          }`}
+                        >
+                          <Lock className="w-2.5 h-2.5" />
+                          <span>{tone.minPlan.toUpperCase()}</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="text-xs font-semibold text-purple-300/90 pt-1">
+                      {tone.desc}
+                    </p>
+                    <p className="text-[11px] text-slate-400 pt-1 leading-normal border-t border-slate-800/50 mt-2">
+                      💡 <span className="italic">{tone.detail}</span>
+                    </p>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -498,11 +622,11 @@ export default function DashboardPage() {
                 onClick={() => setActiveTab("caption")}
                 className={`px-4 py-2 rounded-xl flex items-center space-x-1.5 transition cursor-pointer ${
                   activeTab === "caption"
-                    ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                    ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
-                <Hash className="w-4 h-4" />
+                <Hash className="w-4 h-4 text-amber-400" />
                 <span>แคปชัน & แฮชแท็ก</span>
                 {!isProOrAdmin && (
                   <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px]">

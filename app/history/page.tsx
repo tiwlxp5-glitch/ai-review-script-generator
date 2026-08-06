@@ -406,11 +406,11 @@ export default function HistoryPage() {
                       onClick={() => setActiveTab(item.id, "caption")}
                       className={`px-3 py-1.5 rounded-lg flex items-center space-x-1 transition whitespace-nowrap cursor-pointer ${
                         currentTab === "caption"
-                          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold"
+                          ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold"
                           : "text-slate-400 hover:text-slate-200"
                       }`}
                     >
-                      <Hash className="w-3.5 h-3.5" />
+                      <Hash className="w-3.5 h-3.5 text-amber-400" />
                       <span>แคปชัน</span>
                       {!isProOrAdmin && (
                         <span className="px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px]">
