@@ -9,25 +9,31 @@ import {
   Copy,
   ExternalLink,
   Crown,
-  ShieldCheck,
   MessageCircle,
+  Video,
+  FileText,
+  Eye,
+  Star,
 } from "lucide-react";
 
 interface UpgradeProModalProps {
   isOpen: boolean;
   onClose: () => void;
+  defaultPlan?: "plus" | "pro";
 }
 
 export default function UpgradeProModal({
   isOpen,
   onClose,
+  defaultPlan = "pro",
 }: UpgradeProModalProps) {
   const [copiedLineId, setCopiedLineId] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<"plus" | "pro">(defaultPlan);
 
   if (!isOpen) return null;
 
   const lineId = "tiwlip99";
-  const lineUrl = "https://line.me/R/ti/p/~tiwlip99";
+  const lineUrl = `https://line.me/R/ti/p/~tiwlip99`;
 
   const handleCopyLineId = async () => {
     try {
@@ -40,68 +46,164 @@ export default function UpgradeProModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg glass-card rounded-3xl p-6 sm:p-8 border border-purple-500/30 shadow-2xl bg-slate-950/95 space-y-6 text-slate-100 overflow-hidden">
-        {/* Ambient Glow */}
-        <div className="absolute -top-10 -right-10 w-48 h-48 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-pink-500/15 rounded-full blur-3xl pointer-events-none" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
+      <div className="relative w-full max-w-2xl glass-card rounded-3xl p-5 sm:p-7 border border-purple-500/30 shadow-2xl bg-slate-950/95 space-y-6 text-slate-100 my-auto">
+        {/* Ambient Glows */}
+        <div className="absolute -top-12 -right-12 w-56 h-56 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-12 -left-12 w-56 h-56 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white bg-slate-900/80 border border-slate-800 transition"
+          className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-white bg-slate-900/80 border border-slate-800 transition z-10"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Modal Header */}
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 shadow-xl shadow-purple-500/25 ring-4 ring-purple-500/20 text-white">
-            <Crown className="w-8 h-8 fill-white/20" />
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500/10 via-purple-500/10 to-pink-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold tracking-wide">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <span>ยกระดับบัญชีผู้ใช้งาน</span>
           </div>
-          <div className="space-y-1">
-            <span className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-semibold">
-              <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-              <span>อัปเกรดบัญชีสมาชิก Pro</span>
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight pt-1">
-              สร้างสคริปต์จุใจ <span className="gradient-text">200 ครั้ง/เดือน</span>
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-300">
-              เพียง <strong className="text-emerald-400 text-lg font-extrabold">99 บาท</strong> / เดือน (ตกครั้งละ 0.50 บาท)
-            </p>
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            เลือกแพ็กเกจที่เหมาะกับคุณ
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
+            สร้างสคริปต์รีวิวสินค้า TikTok & Reels อย่างมืออาชีพประหยัดเวลาทำคลิปไปเกิน 80%
+          </p>
+        </div>
+
+        {/* Pricing Cards Grid (Plus vs Pro) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* 1. Plus Plan Card */}
+          <div
+            onClick={() => setSelectedPlan("plus")}
+            className={`relative rounded-2xl p-5 border transition-all cursor-pointer space-y-4 flex flex-col justify-between ${
+              selectedPlan === "plus"
+                ? "bg-slate-900/95 border-indigo-500 ring-2 ring-indigo-500/30 shadow-lg shadow-indigo-500/10"
+                : "bg-slate-900/60 border-slate-800/80 hover:border-slate-700 opacity-90 hover:opacity-100"
+            }`}
+          >
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-bold flex items-center space-x-1">
+                  <Zap className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>Plus Plan</span>
+                </span>
+                {selectedPlan === "plus" && (
+                  <span className="w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold">
+                    ✓
+                  </span>
+                )}
+              </div>
+
+              <div>
+                <div className="flex items-baseline space-x-1">
+                  <span className="text-3xl font-black text-white">99</span>
+                  <span className="text-xs font-semibold text-slate-400">บาท / เดือน</span>
+                </div>
+                <p className="text-[11px] text-slate-400 pt-0.5">ตกครั้งละประมาณ 0.99 บาท</p>
+              </div>
+
+              <ul className="space-y-2 text-xs text-slate-300">
+                <li className="flex items-center space-x-2">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>สร้างสคริปต์ <strong>100 ครั้ง / เดือน</strong></span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>เลือก Tone of Voice <strong>5 สไตล์</strong></span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>ประมวลผลด้วย AI Gemini 3.6</span>
+                </li>
+                <li className="flex items-center space-x-2 text-slate-500">
+                  <X className="w-4 h-4 text-slate-600 shrink-0" />
+                  <span className="line-through">ตารางกำกับภาพ Visual B-Roll</span>
+                </li>
+                <li className="flex items-center space-x-2 text-slate-500">
+                  <X className="w-4 h-4 text-slate-600 shrink-0" />
+                  <span className="line-through">โหมดอ่านบท Teleprompter</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* 2. Pro Plan Card (Recommended) */}
+          <div
+            onClick={() => setSelectedPlan("pro")}
+            className={`relative rounded-2xl p-5 border transition-all cursor-pointer space-y-4 flex flex-col justify-between ${
+              selectedPlan === "pro"
+                ? "bg-slate-900/95 border-amber-500 ring-2 ring-amber-500/40 shadow-xl shadow-amber-500/15"
+                : "bg-slate-900/60 border-slate-800/80 hover:border-amber-500/40 opacity-90 hover:opacity-100"
+            }`}
+          >
+            {/* Top Ribbon Badge */}
+            <div className="absolute -top-3 right-4 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-md">
+              🔥 คุ้มค่าที่สุด
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center space-x-1">
+                  <Crown className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                  <span>Pro Plan (แนะนำ)</span>
+                </span>
+                {selectedPlan === "pro" && (
+                  <span className="w-5 h-5 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center text-xs font-bold">
+                    ✓
+                  </span>
+                )}
+              </div>
+
+              <div>
+                <div className="flex items-baseline space-x-1.5">
+                  <span className="text-3xl font-black text-amber-400">199</span>
+                  <span className="text-xs font-semibold text-slate-400">บาท / เดือน</span>
+                  <span className="text-[10px] text-slate-500 line-through">ปกติ 299.-</span>
+                </div>
+                <p className="text-[11px] text-amber-300/90 font-medium pt-0.5">
+                  ตกครั้งละเพียง 0.99 บาท + ฟีเจอร์ระดับพรีเมียมครบเซ็ต
+                </p>
+              </div>
+
+              <ul className="space-y-2 text-xs text-slate-200">
+                <li className="flex items-center space-x-2">
+                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>สร้างสคริปต์จุใจ <strong>200 ครั้ง / เดือน</strong></span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span><strong>สคริปต์ตาราง Shot-by-Shot Visual B-Roll</strong></span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span><strong>ใช้งานโหมดเครื่องอ่านบท Teleprompter</strong></span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span><strong>ฟรี! แคปชัน TikTok & แฮชแท็ก + ปักตะกร้า</strong></span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>เลือก Tone of Voice <strong>5 สไตล์</strong></span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        {/* Pro Benefits Checklist */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-800/90 space-y-3 text-xs sm:text-sm">
-          <div className="flex items-center space-x-3 text-slate-200">
-            <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/40">
-              <Check className="w-3.5 h-3.5" />
-            </div>
-            <span>สร้างสคริปต์รีวิวสินค้า TikTok & Reels <strong>200 ครั้ง/เดือน</strong></span>
-          </div>
-
-          <div className="flex items-center space-x-3 text-slate-200">
-            <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/40">
-              <Check className="w-3.5 h-3.5" />
-            </div>
-            <span>ประมวลผลด้วย AI <strong>Gemini 3.6 Flash</strong> ตัวใหม่ล่าสุด</span>
-          </div>
-
-          <div className="flex items-center space-x-3 text-slate-200">
-            <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/40">
-              <Check className="w-3.5 h-3.5" />
-            </div>
-            <span>บันทึกประวัติย้อนหลังได้ตลอดเวลา ไม่สูญหาย</span>
-          </div>
-        </div>
-
-        {/* LINE Contact & Payment Step */}
-        <div className="space-y-3 pt-1">
-          <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-2">
+        {/* LINE Payment Box & Direct Contact Action */}
+        <div className="space-y-3 pt-2">
+          <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 text-center space-y-2">
             <p className="text-xs text-slate-300">
-              ทักแชทแจ้งชำระเงิน 99 บาทกับแอดมิน เพื่อปรับบัญชีเป็น Pro ทันที:
+              ทักแชทแจ้งชำระเงิน{" "}
+              <strong className="text-amber-400 font-bold">
+                {selectedPlan === "pro" ? "199 บาท (Pro)" : "99 บาท (Plus)"}
+              </strong>{" "}
+              กับแอดมิน เพื่อปรับปรับบัญชีทันที:
             </p>
             <div className="flex items-center justify-center space-x-2">
               <span className="text-xs font-medium text-slate-400">Line ID:</span>
@@ -127,16 +229,21 @@ export default function UpgradeProModal({
             </div>
           </div>
 
-          {/* Primary Action Button: Redirect to LINE */}
           <a
             href={lineUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full py-4 px-6 rounded-2xl text-base font-bold text-slate-950 bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-500 hover:from-emerald-300 hover:to-green-300 shadow-xl shadow-emerald-500/30 flex items-center justify-center space-x-2 transition duration-200 active:scale-[0.99]"
+            className={`w-full py-4 px-6 rounded-2xl text-base font-bold transition duration-200 active:scale-[0.99] flex items-center justify-center space-x-2 shadow-xl ${
+              selectedPlan === "pro"
+                ? "text-slate-950 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 shadow-amber-500/30"
+                : "text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-indigo-500/30"
+            }`}
           >
-            <MessageCircle className="w-5 h-5 text-slate-950 fill-slate-950" />
-            <span>ติดต่อเพื่ออัปเกรด Pro</span>
-            <ExternalLink className="w-4 h-4 text-slate-950" />
+            <MessageCircle className="w-5 h-5 fill-current" />
+            <span>
+              ติดต่ออัปเกรด {selectedPlan === "pro" ? "Pro Plan (199.-)" : "Plus Plan (99.-)"}
+            </span>
+            <ExternalLink className="w-4 h-4" />
           </a>
         </div>
       </div>

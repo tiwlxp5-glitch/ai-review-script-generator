@@ -34,12 +34,17 @@ export async function GET() {
         });
       }
 
-      const isPro =
-        profile?.plan_type === "pro" ||
-        (profile?.monthly_limit && profile.monthly_limit > 3);
+      const userPlan = profile?.plan_type || "free";
+      const isPro = userPlan === "pro" || (profile?.monthly_limit && profile.monthly_limit > 100);
+      const isPlus = userPlan === "plus" || (profile?.monthly_limit && profile.monthly_limit > 3 && profile.monthly_limit <= 100);
 
-      const planType = isPro ? "pro" : "free";
-      const userLimit = profile?.monthly_limit ?? (isPro ? 200 : 3);
+      let planType: "admin" | "pro" | "plus" | "free" = "free";
+      if (isAdmin) planType = "admin";
+      else if (isPro) planType = "pro";
+      else if (isPlus) planType = "plus";
+
+      const defaultLimit = planType === "pro" ? 200 : planType === "plus" ? 100 : 3;
+      const userLimit = profile?.monthly_limit ?? defaultLimit;
 
       // Count scripts generated in current calendar month
       const startOfMonth = new Date();
@@ -61,7 +66,7 @@ export async function GET() {
 
       return NextResponse.json({
         user_type: planType,
-        is_admin: false,
+        is_admin: isAdmin,
         limit: userLimit,
         used: usedCount,
         remaining,

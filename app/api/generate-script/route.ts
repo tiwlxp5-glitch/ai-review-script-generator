@@ -6,6 +6,14 @@ export const dynamic = "force-dynamic";
 
 const ADMIN_EMAIL = "tiwlxp5@gmail.com";
 
+const TONE_PROMPTS: Record<string, string> = {
+  general: "สไตล์เพื่อนเล่าให้เพื่อนฟัง เป็นกันเอง ภาษาพูดปกติ ไม่ประดิดประดอย",
+  drama: "สไตล์เปิดด้วยดราม่า/ชวนตกใจ/ปัญหาที่แทงใจดำคนดู กระตุกอารมณ์ให้หยุดฟังตั้งแต่ 3 วินาทีแรก",
+  asmr: "สไตล์ ASMR / Unboxing / เน้นโชว์เสียงแกะกล่อง สัมผัส ความฟิน และความน่าใช้ของสินค้า",
+  expert: "สไตล์ผู้เชี่ยวชาญ / ให้ความรู้เชิงลึก น่าเชื่อถือ มีเหตุผลประกอบชัดเจน",
+  funny: "สไตล์สายฮา / ตลก / เป็นกันเอง มีมุกเสี่ยวหรือจังหวะตลกให้คนดูอารมณ์ดี",
+};
+
 export async function POST(request: Request) {
   try {
     const supabase = await createClient();
@@ -32,12 +40,17 @@ export async function POST(request: Request) {
       user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() ||
       profile?.plan_type === "admin";
 
-    const isPro =
-      profile?.plan_type === "pro" ||
-      (profile?.monthly_limit && profile.monthly_limit > 3);
+    const userPlan = profile?.plan_type || "free";
+    const isPro = userPlan === "pro" || (profile?.monthly_limit && profile.monthly_limit > 100);
+    const isPlus = userPlan === "plus" || (profile?.monthly_limit && profile.monthly_limit > 3 && profile.monthly_limit <= 100);
 
-    const planType = isAdmin ? "admin" : isPro ? "pro" : "free";
-    const userLimit = profile?.monthly_limit ?? (isPro ? 200 : 3);
+    let planType: "admin" | "pro" | "plus" | "free" = "free";
+    if (isAdmin) planType = "admin";
+    else if (isPro) planType = "pro";
+    else if (isPlus) planType = "plus";
+
+    const defaultLimit = planType === "pro" ? 200 : planType === "plus" ? 100 : 3;
+    const userLimit = profile?.monthly_limit ?? defaultLimit;
     let usedCount = 0;
 
     if (!isAdmin) {
@@ -68,7 +81,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { product_name, target_audience, product_link_or_extra } = body;
+    const { product_name, target_audience, product_link_or_extra, tone_style = "general" } = body;
 
     if (!product_name || !product_name.trim()) {
       return NextResponse.json(
@@ -79,22 +92,23 @@ export async function POST(request: Request) {
 
     const audience = target_audience?.trim() || "ทั่วไป / คนที่สนใจสินค้าชนิดนี้";
     const extraInfo = product_link_or_extra?.trim()
-      ? `\nลิงก์สินค้า / รายละเอียดเพิ่มเติม: ${product_link_or_extra.trim()}`
+      ? `\nรายละเอียดเพิ่มเติม/จุดเด่น: ${product_link_or_extra.trim()}`
       : "";
+    const selectedToneDescription = TONE_PROMPTS[tone_style] || TONE_PROMPTS.general;
 
-    const prompt = `คุณคือคนที่กำลังจะรีวิวสินค้าให้เพื่อนฟัง ไม่ใช่ AI และไม่ใช่นักการตลาด
+    const prompt = `คุณคือครีเอทีฟผู้เชี่ยวชาญการเขียนสคริปต์ขายของคลิปสั้น TikTok Shop, Reels และ YouTube Shorts
 สินค้า: ${product_name}
 กลุ่มเป้าหมาย: ${audience}${extraInfo}
+โทนการเล่าเรื่อง: ${selectedToneDescription}
 
-กฎการเขียนสคริปต์ (ต้องทำตามทุกข้อ):
-- เขียนเหมือนภาษาพูดจริง มีจังหวะหยุด คำอุทาน และคำเชื่อมตามธรรมชาติ
-- ประโยคไม่ต้องสมบูรณ์ทุกประโยค มีสั้นยาวปะปน
-- ห้ามใช้สำนวนหรือคำที่ทำให้รู้ว่าเป็น AI หรือโฆษณา (เช่น "สินค้าคุณภาพเยี่ยม", "ต้องมีติดบ้าน")
-- อย่าพยายามอวยทุกอย่าง ให้เล่าเหมือนความคิดเห็นจริง มีจุดที่เฉยๆ หรือติดบ้างถ้าเข้ากับธรรมชาติของการรีวิว
-- เปิดด้วย Hook ที่ชวนหยุดดู แล้วค่อยเล่าความรู้สึก ชัดเจน และปิดท้ายด้วยการชวนแบบไม่ยัดเยียด
-- ก่อนส่งคำตอบ ให้อ่านทวนในใจและแกล้งฟังเหมือนคนจริงพูดมากที่สุด
+กรุณาเขียนสคริปต์และจัดทำข้อมูลประกอบคอนเทนต์ให้ครบถ้วนในรูปแบบ JSON ดังนี้:
+1. "script": บทพูดรีวิวสำหรับพากย์เสียงหรือพูดหน้ากล้อง ภาษาพูดแท้ๆ สั้นยาวสลับกัน มี Hook หยุดดู ปิดด้วยการชวนซื้อแบบไม่ยัดเยียด
+2. "shot_list": ตารางลำดับการถ่ายทำ (Array ของ Object) แต่ละอันมี { "time": "วินาทีที่ (เช่น 0-3s)", "visual": "ภาพมุมกล้อง/ท่าทางที่ต้องถ่าย (B-Roll)", "audio": "บทพูดในฉากนั้น", "text_on_screen": "ตัวหนังสือขึ้นกลางจอ" }
+3. "caption": แคปชันน่าสนใจสำหรับพิมพ์ลง TikTok/IG
+4. "hashtags": แฮชแท็กติดเทรนด์ 5-8 อันที่เกี่ยวข้อง
+5. "pinned_comment": ประโยคพิมพ์ปักตะกร้าชวนซื้อในช่องคอมเมนต์
 
-ตอบกลับเป็นสคริปต์ที่พร้อมใช้พูดได้เลย ไม่ต้องมีคำอธิบายอื่นแทรก`;
+กฎสำคัญ: ตอบกลับเป็น JSON ภาษาไทยที่ถูกต้องสมบูรณ์เท่านั้น ห้ามมีคำอธิบายอื่นแทรกนอกเหนือจากโครงสร้าง JSON`;
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -112,24 +126,36 @@ export async function POST(request: Request) {
       "gemini-1.5-flash",
     ];
 
-    let script_content = "";
+    let rawOutput = "";
     let generationError: unknown = null;
 
     for (const modelName of modelsToTry) {
       try {
-        const model = genAI.getGenerativeModel({ model: modelName });
+        const model = genAI.getGenerativeModel({
+          model: modelName,
+          generationConfig: { responseMimeType: "application/json" },
+        });
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        script_content = response.text();
-        if (script_content) {
+        rawOutput = response.text();
+        if (rawOutput) {
           break;
         }
       } catch (err) {
-        generationError = err;
+        // Fallback without responseMimeType if model doesn't support json mode directly
+        try {
+          const model = genAI.getGenerativeModel({ model: modelName });
+          const result = await model.generateContent(prompt);
+          const response = await result.response;
+          rawOutput = response.text();
+          if (rawOutput) break;
+        } catch (e2) {
+          generationError = err;
+        }
       }
     }
 
-    if (!script_content) {
+    if (!rawOutput) {
       console.error("Gemini script generation error:", generationError);
       const errMsg =
         generationError instanceof Error
@@ -141,6 +167,28 @@ export async function POST(request: Request) {
       );
     }
 
+    // Clean JSON markdown if wrapped
+    let cleanJsonStr = rawOutput.trim();
+    if (cleanJsonStr.startsWith("```")) {
+      cleanJsonStr = cleanJsonStr.replace(/^```(json)?\n?/, "").replace(/\n?```$/, "").trim();
+    }
+
+    let parsedData: any = null;
+    try {
+      parsedData = JSON.parse(cleanJsonStr);
+    } catch (parseErr) {
+      console.warn("JSON parse fallback to text output:", parseErr);
+      parsedData = {
+        script: rawOutput,
+        shot_list: [],
+        caption: `รีวิว ${product_name} ดีจริงต้องลอง!`,
+        hashtags: "#รีวิวสินค้า #TikTokShop #ของดีบอกต่อ",
+        pinned_comment: "สนใจกดที่ตะกร้าเหลืองมุมซ้ายล่างได้เลยครับ!",
+      };
+    }
+
+    const scriptText = parsedData.script || rawOutput;
+
     // Save script to history DB
     const { data: record, error: dbError } = await supabase
       .from("script_history")
@@ -148,7 +196,7 @@ export async function POST(request: Request) {
         user_id: user.id,
         product_name,
         target_audience: audience,
-        script_content,
+        script_content: scriptText,
       })
       .select()
       .single();
@@ -159,7 +207,12 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      script: script_content,
+      script: scriptText,
+      shot_list: parsedData.shot_list || [],
+      caption: parsedData.caption || "",
+      hashtags: parsedData.hashtags || "",
+      pinned_comment: parsedData.pinned_comment || "",
+      tone_style,
       record,
       usage: {
         user_type: planType,

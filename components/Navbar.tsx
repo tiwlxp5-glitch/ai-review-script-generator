@@ -116,7 +116,7 @@ export default function Navbar() {
           <div className="flex items-center space-x-3">
             {user ? (
               <div className="flex items-center space-x-2 sm:space-x-3">
-                {/* Clickable Profile Badge with Premium Gold Crown PRO / ADMIN Indicator */}
+                {/* Clickable Profile Badge with Premium Gold Crown PLUS / ADMIN Indicator */}
                 <button
                   onClick={() => setIsEditNameModalOpen(true)}
                   title="คลิกเพื่อแก้ไขชื่อผู้ใช้งาน"
@@ -129,16 +129,21 @@ export default function Navbar() {
                     {displayName}
                   </span>
 
-                  {/* Premium Gold Plan Crown Badge */}
+                  {/* Premium Gold Plan Badge */}
                   {planType === "admin" ? (
                     <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/40 font-extrabold text-[10px]">
                       <Crown className="w-3 h-3 text-purple-400 fill-purple-400" />
                       <span>ADMIN</span>
                     </span>
                   ) : planType === "pro" ? (
-                    <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-lg bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-300 border border-amber-500/40 font-extrabold text-[10px] shadow-sm shadow-amber-500/10">
+                    <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-lg bg-gradient-to-r from-amber-500/25 via-yellow-500/25 to-amber-500/25 text-amber-300 border border-amber-500/50 font-extrabold text-[10px] shadow-md shadow-amber-500/20 animate-pulse">
                       <Crown className="w-3 h-3 text-amber-400 fill-amber-400" />
                       <span>PRO</span>
+                    </span>
+                  ) : planType === "plus" ? (
+                    <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-extrabold text-[10px]">
+                      <Sparkles className="w-3 h-3 text-indigo-400" />
+                      <span>PLUS</span>
                     </span>
                   ) : null}
 
