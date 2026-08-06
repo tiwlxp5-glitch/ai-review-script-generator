@@ -165,8 +165,8 @@ export default function DashboardPage() {
                 <span>บัญชีผู้ดูแลระบบ (ใช้งานได้ไม่จำกัด)</span>
               </span>
             ) : isProUser ? (
-              <span className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold shadow-sm">
-                <Star className="w-4 h-4 text-emerald-400 fill-emerald-400" />
+              <span className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/15 via-yellow-500/15 to-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-semibold shadow-md shadow-amber-500/10">
+                <Crown className="w-4 h-4 text-amber-400 fill-amber-400" />
                 <span>
                   สมาชิก Pro:{" "}
                   <strong className="text-white font-bold">
