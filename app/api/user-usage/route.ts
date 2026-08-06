@@ -34,8 +34,12 @@ export async function GET() {
         });
       }
 
-      const planType = profile?.plan_type === "pro" ? "pro" : "free";
-      const userLimit = profile?.monthly_limit ?? (planType === "pro" ? 200 : 3);
+      const isPro =
+        profile?.plan_type === "pro" ||
+        (profile?.monthly_limit && profile.monthly_limit > 3);
+
+      const planType = isPro ? "pro" : "free";
+      const userLimit = profile?.monthly_limit ?? (isPro ? 200 : 3);
 
       // Count scripts generated in current calendar month
       const startOfMonth = new Date();

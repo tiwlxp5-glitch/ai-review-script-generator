@@ -125,6 +125,10 @@ export default function DashboardPage() {
 
   const charCount = generatedScript ? generatedScript.length : 0;
 
+  const isProUser =
+    usage?.user_type === "pro" ||
+    (typeof usage?.limit === "number" && usage.limit > 3);
+
   return (
     <div className="space-y-10 max-w-3xl mx-auto py-4 px-2 sm:px-4">
       {/* Hero Header Section */}
@@ -160,7 +164,7 @@ export default function DashboardPage() {
                 <Crown className="w-4 h-4 text-amber-400" />
                 <span>บัญชีผู้ดูแลระบบ (ใช้งานได้ไม่จำกัด)</span>
               </span>
-            ) : usage.user_type === "pro" ? (
+            ) : isProUser ? (
               <span className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold shadow-sm">
                 <Star className="w-4 h-4 text-emerald-400 fill-emerald-400" />
                 <span>
@@ -183,7 +187,7 @@ export default function DashboardPage() {
                 </span>
                 <button
                   onClick={() => setIsProModalOpen(true)}
-                  className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-bold shadow-md shadow-amber-500/20 transition flex items-center space-x-1"
+                  className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-bold shadow-md shadow-amber-500/20 transition flex items-center space-x-1 cursor-pointer"
                 >
                   <Crown className="w-3.5 h-3.5 fill-slate-950" />
                   <span>อัปเกรดเป็น Pro (99 บาท)</span>
@@ -202,7 +206,7 @@ export default function DashboardPage() {
               <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
-            {error.includes("สิทธิ์การใช้งานในเดือนนี้ของคุณหมดแล้ว") && usage?.user_type !== "pro" && (
+            {error.includes("สิทธิ์การใช้งานในเดือนนี้ของคุณหมดแล้ว") && !isProUser && (
               <div className="pt-2 border-t border-rose-500/20 flex items-center justify-between">
                 <span className="text-xs text-slate-300">
                   อัปเกรดเป็น Pro เพื่อรับสิทธิ์ 200 สคริปต์/เดือน เพียง 99 บาท!

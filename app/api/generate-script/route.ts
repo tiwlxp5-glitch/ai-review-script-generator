@@ -32,8 +32,12 @@ export async function POST(request: Request) {
       user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() ||
       profile?.plan_type === "admin";
 
-    const planType = profile?.plan_type === "pro" ? "pro" : "free";
-    const userLimit = profile?.monthly_limit ?? (planType === "pro" ? 200 : 3);
+    const isPro =
+      profile?.plan_type === "pro" ||
+      (profile?.monthly_limit && profile.monthly_limit > 3);
+
+    const planType = isAdmin ? "admin" : isPro ? "pro" : "free";
+    const userLimit = profile?.monthly_limit ?? (isPro ? 200 : 3);
     let usedCount = 0;
 
     if (!isAdmin) {
@@ -158,7 +162,7 @@ export async function POST(request: Request) {
       script: script_content,
       record,
       usage: {
-        user_type: isAdmin ? "admin" : planType,
+        user_type: planType,
         used: usedCount + 1,
         limit: isAdmin ? -1 : userLimit,
         remaining: isAdmin ? "unlimited" : Math.max(0, userLimit - (usedCount + 1)),
