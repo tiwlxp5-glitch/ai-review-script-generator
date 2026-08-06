@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Sparkles,
   X,
@@ -10,25 +10,38 @@ import {
   ExternalLink,
   Crown,
   MessageCircle,
-  Video,
-  FileText,
-  Eye,
-  Star,
+  ShieldCheck,
 } from "lucide-react";
 
 interface UpgradeProModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultPlan?: "plus" | "pro";
+  currentPlan?: "free" | "plus" | "pro" | "admin" | "member" | "guest";
 }
 
 export default function UpgradeProModal({
   isOpen,
   onClose,
   defaultPlan = "pro",
+  currentPlan = "free",
 }: UpgradeProModalProps) {
   const [copiedLineId, setCopiedLineId] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<"plus" | "pro">(defaultPlan);
+  const isCurrentPlus = currentPlan === "plus";
+  const isCurrentProOrAdmin = currentPlan === "pro" || currentPlan === "admin";
+
+  // If user is already Plus, default selection MUST be "pro"
+  const [selectedPlan, setSelectedPlan] = useState<"plus" | "pro">(
+    isCurrentPlus ? "pro" : defaultPlan
+  );
+
+  useEffect(() => {
+    if (isCurrentPlus) {
+      setSelectedPlan("pro");
+    } else {
+      setSelectedPlan(defaultPlan);
+    }
+  }, [defaultPlan, isCurrentPlus, isOpen]);
 
   if (!isOpen) return null;
 
@@ -67,10 +80,12 @@ export default function UpgradeProModal({
             <span>ยกระดับบัญชีผู้ใช้งาน</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            เลือกแพ็กเกจที่เหมาะกับคุณ
+            {isCurrentPlus ? "อัปเกรดเป็น Pro Plan" : "เลือกแพ็กเกจที่เหมาะกับคุณ"}
           </h2>
           <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
-            สร้างสคริปต์รีวิวสินค้า TikTok & Reels อย่างมืออาชีพประหยัดเวลาทำคลิปไปเกิน 80%
+            {isCurrentPlus
+              ? "คุณเป็นสมาชิก Plus อยู่แล้ว อัปเกรดเป็น Pro เพื่อรับสิทธิ์ 200 ครั้ง/เดือน + ตาราง B-Roll และ Teleprompter!"
+              : "สร้างสคริปต์รีวิวสินค้า TikTok & Reels อย่างมืออาชีพประหยัดเวลาทำคลิปไปเกิน 80%"}
           </p>
         </div>
 
@@ -78,24 +93,42 @@ export default function UpgradeProModal({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* 1. Plus Plan Card */}
           <div
-            onClick={() => setSelectedPlan("plus")}
-            className={`relative rounded-2xl p-5 border transition-all cursor-pointer space-y-4 flex flex-col justify-between ${
-              selectedPlan === "plus"
-                ? "bg-slate-900/95 border-indigo-500 ring-2 ring-indigo-500/30 shadow-lg shadow-indigo-500/10"
-                : "bg-slate-900/60 border-slate-800/80 hover:border-slate-700 opacity-90 hover:opacity-100"
+            onClick={() => {
+              if (!isCurrentPlus) {
+                setSelectedPlan("plus");
+              }
+            }}
+            className={`relative rounded-2xl p-5 border transition-all space-y-4 flex flex-col justify-between ${
+              isCurrentPlus
+                ? "bg-slate-900/40 border-slate-800/80 cursor-not-allowed opacity-80"
+                : selectedPlan === "plus"
+                ? "bg-slate-900/95 border-indigo-500 ring-2 ring-indigo-500/30 shadow-lg shadow-indigo-500/10 cursor-pointer"
+                : "bg-slate-900/60 border-slate-800/80 hover:border-slate-700 opacity-90 hover:opacity-100 cursor-pointer"
             }`}
           >
+            {/* Active Current Plan Badge */}
+            {isCurrentPlus && (
+              <div className="absolute -top-3 left-4 px-3 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-[10px] flex items-center space-x-1 shadow-sm">
+                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                <span>แพ็กเกจปัจจุบันของคุณ</span>
+              </div>
+            )}
+
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-bold flex items-center space-x-1">
                   <Zap className="w-3.5 h-3.5 text-indigo-400" />
                   <span>Plus Plan</span>
                 </span>
-                {selectedPlan === "plus" && (
+                {isCurrentPlus ? (
+                  <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold border border-emerald-500/30">
+                    ใช้งานอยู่
+                  </span>
+                ) : selectedPlan === "plus" ? (
                   <span className="w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold">
                     ✓
                   </span>
-                )}
+                ) : null}
               </div>
 
               <div>
@@ -141,9 +174,16 @@ export default function UpgradeProModal({
             }`}
           >
             {/* Top Ribbon Badge */}
-            <div className="absolute -top-3 right-4 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-md">
-              🔥 คุ้มค่าที่สุด
-            </div>
+            {isCurrentProOrAdmin ? (
+              <div className="absolute -top-3 right-4 px-3 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-[10px] flex items-center space-x-1 shadow-sm">
+                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                <span>แพ็กเกจปัจจุบันของคุณ</span>
+              </div>
+            ) : (
+              <div className="absolute -top-3 right-4 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-md">
+                {isCurrentPlus ? "⚡ อัปเกรดบวกเพิ่ม 100.-" : "🔥 คุ้มค่าที่สุด"}
+              </div>
+            )}
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -151,11 +191,15 @@ export default function UpgradeProModal({
                   <Crown className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                   <span>Pro Plan (แนะนำ)</span>
                 </span>
-                {selectedPlan === "pro" && (
+                {isCurrentProOrAdmin ? (
+                  <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold border border-emerald-500/30">
+                    ใช้งานอยู่
+                  </span>
+                ) : selectedPlan === "pro" ? (
                   <span className="w-5 h-5 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center text-xs font-bold">
                     ✓
                   </span>
-                )}
+                ) : null}
               </div>
 
               <div>
@@ -165,7 +209,9 @@ export default function UpgradeProModal({
                   <span className="text-[10px] text-slate-500 line-through">ปกติ 299.-</span>
                 </div>
                 <p className="text-[11px] text-amber-300/90 font-medium pt-0.5">
-                  ตกครั้งละเพียง 0.99 บาท + ฟีเจอร์ระดับพรีเมียมครบเซ็ต
+                  {isCurrentPlus
+                    ? "เพิ่มเงินอีกเพียง 100 บาท เพื่อปลดล็อกโควตา 200 ครั้ง + ฟีเจอร์ Pro ทั้งหมด!"
+                    : "ตกครั้งละเพียง 0.99 บาท + ฟีเจอร์ระดับพรีเมียมครบเซ็ต"}
                 </p>
               </div>
 
@@ -241,7 +287,9 @@ export default function UpgradeProModal({
           >
             <MessageCircle className="w-5 h-5 fill-current" />
             <span>
-              ติดต่ออัปเกรด {selectedPlan === "pro" ? "Pro Plan (199.-)" : "Plus Plan (99.-)"}
+              {isCurrentPlus && selectedPlan === "pro"
+                ? "ติดต่ออัปเกรดจาก Plus เป็น Pro Plan (199.-)"
+                : `ติดต่ออัปเกรด ${selectedPlan === "pro" ? "Pro Plan (199.-)" : "Plus Plan (99.-)"}`}
             </span>
             <ExternalLink className="w-4 h-4" />
           </a>

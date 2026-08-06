@@ -702,6 +702,7 @@ export default function DashboardPage() {
         isOpen={isProModalOpen}
         onClose={() => setIsProModalOpen(false)}
         defaultPlan={modalDefaultPlan}
+        currentPlan={usage?.user_type}
       />
 
       {/* Teleprompter Modal */}
