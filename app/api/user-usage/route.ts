@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
+const ADMIN_EMAIL = "tiwlxp5@gmail.com";
+
 export async function GET() {
   try {
     const supabase = await createClient();
@@ -10,11 +12,17 @@ export async function GET() {
       data: { user },
     } = await supabase.auth.getUser();
 
-    const ADMIN_EMAIL = "tiwlxp5@gmail.com";
-    const MEMBER_LIMIT = 3;
-
     if (user) {
-      const isAdmin = user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+      // Fetch user profile plan details
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("plan_type, monthly_limit")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      const isAdmin =
+        user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() ||
+        profile?.plan_type === "admin";
 
       if (isAdmin) {
         return NextResponse.json({
@@ -25,6 +33,9 @@ export async function GET() {
           remaining: "unlimited",
         });
       }
+
+      const planType = profile?.plan_type === "pro" ? "pro" : "free";
+      const userLimit = profile?.monthly_limit ?? (planType === "pro" ? 200 : 3);
 
       // Count scripts generated in current calendar month
       const startOfMonth = new Date();
@@ -42,12 +53,12 @@ export async function GET() {
       }
 
       const usedCount = count || 0;
-      const remaining = Math.max(0, MEMBER_LIMIT - usedCount);
+      const remaining = Math.max(0, userLimit - usedCount);
 
       return NextResponse.json({
-        user_type: "member",
+        user_type: planType,
         is_admin: false,
-        limit: MEMBER_LIMIT,
+        limit: userLimit,
         used: usedCount,
         remaining,
       });

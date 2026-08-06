@@ -5,7 +5,6 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 const ADMIN_EMAIL = "tiwlxp5@gmail.com";
-const MEMBER_LIMIT = 3;
 
 export async function POST(request: Request) {
   try {
@@ -22,7 +21,19 @@ export async function POST(request: Request) {
       );
     }
 
-    const isAdmin = user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    // Fetch user profile plan details
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan_type, monthly_limit")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    const isAdmin =
+      user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() ||
+      profile?.plan_type === "admin";
+
+    const planType = profile?.plan_type === "pro" ? "pro" : "free";
+    const userLimit = profile?.monthly_limit ?? (planType === "pro" ? 200 : 3);
     let usedCount = 0;
 
     if (!isAdmin) {
@@ -39,12 +50,13 @@ export async function POST(request: Request) {
 
       usedCount = count || 0;
 
-      if (usedCount >= MEMBER_LIMIT) {
+      if (usedCount >= userLimit) {
         return NextResponse.json(
           {
-            error: `คุณใช้สิทธิ์สร้างสคริปต์ครบ ${MEMBER_LIMIT} ครั้งสำหรับเดือนนี้แล้ว สิทธิ์จะรีเซ็ตใหม่ในเดือนถัดไป`,
+            error: "สิทธิ์การใช้งานในเดือนนี้ของคุณหมดแล้ว",
             quotaExceeded: true,
-            user_type: "member",
+            user_type: planType,
+            limit: userLimit,
           },
           { status: 403 }
         );
@@ -146,10 +158,10 @@ export async function POST(request: Request) {
       script: script_content,
       record,
       usage: {
-        user_type: isAdmin ? "admin" : "member",
+        user_type: isAdmin ? "admin" : planType,
         used: usedCount + 1,
-        limit: isAdmin ? -1 : MEMBER_LIMIT,
-        remaining: isAdmin ? "unlimited" : Math.max(0, MEMBER_LIMIT - (usedCount + 1)),
+        limit: isAdmin ? -1 : userLimit,
+        remaining: isAdmin ? "unlimited" : Math.max(0, userLimit - (usedCount + 1)),
       },
     });
   } catch (error: any) {

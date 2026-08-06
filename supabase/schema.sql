@@ -3,8 +3,19 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     email TEXT,
     display_name TEXT,
+    plan_type TEXT DEFAULT 'free',
+    monthly_limit INTEGER DEFAULT 3,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Ensure columns exist if table was already created
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS plan_type TEXT DEFAULT 'free';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS monthly_limit INTEGER DEFAULT 3;
+
+-- Automatically set admin plan for tiwlxp5@gmail.com
+UPDATE public.profiles 
+SET plan_type = 'admin', monthly_limit = -1 
+WHERE email = 'tiwlxp5@gmail.com';
 
 -- 2. Create Script History Table
 CREATE TABLE IF NOT EXISTS public.script_history (
@@ -49,14 +60,26 @@ CREATE POLICY "Users can delete own script history"
 -- 6. Trigger to Automatically Create Profile on User Signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
+DECLARE
+  initial_plan TEXT := 'free';
+  initial_limit INTEGER := 3;
 BEGIN
-  INSERT INTO public.profiles (id, email, display_name)
+  IF NEW.email = 'tiwlxp5@gmail.com' THEN
+    initial_plan := 'admin';
+    initial_limit := -1;
+  END IF;
+
+  INSERT INTO public.profiles (id, email, display_name, plan_type, monthly_limit)
   VALUES (
     NEW.id, 
     NEW.email, 
-    COALESCE(NEW.raw_user_meta_data->>'display_name', SPLIT_PART(NEW.email, '@', 1))
+    COALESCE(NEW.raw_user_meta_data->>'display_name', SPLIT_PART(NEW.email, '@', 1)),
+    initial_plan,
+    initial_limit
   )
-  ON CONFLICT (id) DO NOTHING;
+  ON CONFLICT (id) DO UPDATE SET
+    plan_type = EXCLUDED.plan_type,
+    monthly_limit = EXCLUDED.monthly_limit;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

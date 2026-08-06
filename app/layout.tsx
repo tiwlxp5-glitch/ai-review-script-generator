@@ -35,7 +35,7 @@ export default function RootLayout({
         <footer className="relative z-10 border-t border-slate-800/60 bg-slate-950/80 py-6 text-center text-xs text-slate-500">
           <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p>© {new Date().getFullYear()} AI Review Script Generator. All rights reserved.</p>
-            <p className="text-slate-400">สร้างสรรค์ด้วย Next.js, Supabase & Google Gemini API</p>
+            <p className="text-slate-400">สร้างสรรค์โดย ทิวลิปเองจร้าาา</p>
           </div>
         </footer>
       </body>

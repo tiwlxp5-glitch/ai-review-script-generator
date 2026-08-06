@@ -15,13 +15,13 @@ import {
   Crown,
   UserPlus,
   BarChart2,
-  Link as LinkIcon,
-  Target,
-  ShoppingBag,
+  Star,
+  Award,
 } from "lucide-react";
+import UpgradeProModal from "@/components/UpgradeProModal";
 
 interface UsageData {
-  user_type: "admin" | "member" | "guest";
+  user_type: "admin" | "pro" | "free" | "member" | "guest";
   is_admin: boolean;
   limit: number;
   used: number;
@@ -37,6 +37,7 @@ export default function DashboardPage() {
   const [generatedScript, setGeneratedScript] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [usage, setUsage] = useState<UsageData | null>(null);
+  const [isProModalOpen, setIsProModalOpen] = useState(false);
 
   const fetchUsage = async () => {
     try {
@@ -151,25 +152,44 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Quota Usage Badge Indicator */}
+        {/* Quota Usage Badge & Upgrade Button */}
         {usage && (
-          <div className="inline-block pt-1">
+          <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
             {usage.user_type === "admin" ? (
               <span className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold shadow-sm">
                 <Crown className="w-4 h-4 text-amber-400" />
                 <span>บัญชีผู้ดูแลระบบ (ใช้งานได้ไม่จำกัด)</span>
               </span>
-            ) : usage.user_type === "member" ? (
-              <span className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-medium">
-                <BarChart2 className="w-4 h-4 text-purple-400" />
+            ) : usage.user_type === "pro" ? (
+              <span className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold shadow-sm">
+                <Star className="w-4 h-4 text-emerald-400 fill-emerald-400" />
                 <span>
-                  สิทธิ์การใช้งานเดือนนี้:{" "}
+                  สมาชิก Pro:{" "}
                   <strong className="text-white font-bold">
-                    เหลือ {usage.remaining} / 3 ครั้ง
+                    เหลือ {usage.remaining} / 200 ครั้งเดือนนี้
                   </strong>
                 </span>
               </span>
-            ) : null}
+            ) : (
+              <>
+                <span className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-medium">
+                  <BarChart2 className="w-4 h-4 text-purple-400" />
+                  <span>
+                    สิทธิ์สร้างสคริปต์เดือนนี้:{" "}
+                    <strong className="text-white font-bold">
+                      เหลือ {usage.remaining} / 3 ครั้ง
+                    </strong>
+                  </span>
+                </span>
+                <button
+                  onClick={() => setIsProModalOpen(true)}
+                  className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-bold shadow-md shadow-amber-500/20 transition flex items-center space-x-1"
+                >
+                  <Crown className="w-3.5 h-3.5 fill-slate-950" />
+                  <span>อัปเกรดเป็น Pro (99 บาท)</span>
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>
@@ -182,6 +202,20 @@ export default function DashboardPage() {
               <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
+            {error.includes("สิทธิ์การใช้งานในเดือนนี้ของคุณหมดแล้ว") && (
+              <div className="pt-2 border-t border-rose-500/20 flex items-center justify-between">
+                <span className="text-xs text-slate-300">
+                  อัปเกรดเป็น Pro เพื่อรับสิทธิ์ 200 สคริปต์/เดือน เพียง 99 บาท!
+                </span>
+                <button
+                  onClick={() => setIsProModalOpen(true)}
+                  className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow transition flex items-center space-x-1"
+                >
+                  <Crown className="w-3.5 h-3.5" />
+                  <span>อัปเกรดเป็น Pro</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -200,7 +234,7 @@ export default function DashboardPage() {
               placeholder='เช่น "ครีมกันแดด Dr.Pong สูตรไฮยา คุมมัน กันน้ำ"'
               className="w-full px-4 py-3.5 text-sm sm:text-base rounded-2xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
             />
-            {/* New Guideline for Product Name */}
+            {/* Guideline for Product Name */}
             <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800/60 text-xs space-y-1">
               <p className="text-slate-400 font-medium">
                 <span className="text-rose-400 font-semibold">❌ ไม่ดี:</span> ครีมหน้าใส
@@ -224,7 +258,7 @@ export default function DashboardPage() {
               placeholder='เช่น "พนักงานออฟฟิศที่ต้องออกแดดบ่อย หรือคนผิวแพ้ง่ายชอบทำกิจกรรมกลางแจ้ง"'
               className="w-full px-4 py-3.5 text-sm sm:text-base rounded-2xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
             />
-            {/* New Guideline for Target Audience */}
+            {/* Guideline for Target Audience */}
             <div className="p-3 rounded-2xl bg-slate-900/60 border border-slate-800/60 text-xs space-y-1">
               <p className="text-slate-400 font-medium">
                 <span className="text-rose-400 font-semibold">❌ ไม่ดี:</span> คนทั่วไป
@@ -235,7 +269,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Field 3: Product Link or Extra Info for AI (NEW - NO GUIDELINE) */}
+          {/* Field 3: Product Link or Extra Info for AI (NO GUIDELINE) */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-purple-300">
               🔗 ลิงก์สินค้า / รายละเอียดเพิ่มเติมส่งให้ AI{" "}
@@ -371,6 +405,12 @@ export default function DashboardPage() {
           )}
         </div>
       )}
+
+      {/* Upgrade Pro Modal */}
+      <UpgradeProModal
+        isOpen={isProModalOpen}
+        onClose={() => setIsProModalOpen(false)}
+      />
     </div>
   );
 }
