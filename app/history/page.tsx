@@ -22,6 +22,10 @@ import {
   Hash,
   Crown,
   Pencil,
+  Pin,
+  MessageSquare,
+  Clock,
+  Mic,
 } from "lucide-react";
 import UpgradeProModal from "@/components/UpgradeProModal";
 import TeleprompterModal from "@/components/TeleprompterModal";
@@ -379,13 +383,14 @@ export default function HistoryPage() {
                   <div className="flex items-center space-x-1 border-b border-slate-800/80 pb-2 text-xs font-semibold overflow-x-auto">
                     <button
                       onClick={() => setActiveTab(item.id, "script")}
-                      className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-lg flex items-center space-x-1.5 transition whitespace-nowrap cursor-pointer ${
                         currentTab === "script"
                           ? "bg-purple-600/20 text-purple-300 border border-purple-500/40 font-bold"
                           : "text-slate-400 hover:text-slate-200"
                       }`}
                     >
-                      🗣️ บทพูด
+                      <Mic className="w-3.5 h-3.5" />
+                      <span>บทพูด</span>
                     </button>
 
                     <button
@@ -587,19 +592,28 @@ export default function HistoryPage() {
                         </div>
                       ) : (
                         <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 text-xs space-y-2 text-slate-200">
-                          <div>
-                            <span className="font-bold text-emerald-400">📌 แคปชัน: </span>
-                            <span>{item.caption || `รีวิว ${item.product_name} คุ้มค่าตอบโจทย์ชัวร์!`}</span>
+                          <div className="flex items-start space-x-1.5">
+                            <Pin className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                            <div>
+                              <span className="font-bold text-emerald-400">แคปชัน: </span>
+                              <span>{item.caption || `รีวิว ${item.product_name} คุ้มค่าตอบโจทย์ชัวร์!`}</span>
+                            </div>
                           </div>
-                          <div>
-                            <span className="font-bold text-purple-400">🏷️ แฮชแท็ก: </span>
-                            <span className="font-mono text-purple-300">
-                              {item.hashtags || `#รีวิวสินค้า #${item.product_name.replace(/\s+/g, "")} #TikTokShopป้ายยา #ของดีบอกต่อ`}
-                            </span>
+                          <div className="flex items-start space-x-1.5">
+                            <Hash className="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5" />
+                            <div>
+                              <span className="font-bold text-purple-400">แฮชแท็ก: </span>
+                              <span className="font-mono text-purple-300">
+                                {item.hashtags || `#รีวิวสินค้า #${item.product_name.replace(/\s+/g, "")} #TikTokShopป้ายยา #ของดีบอกต่อ`}
+                              </span>
+                            </div>
                           </div>
-                          <div>
-                            <span className="font-bold text-amber-400">💬 ปักตะกร้า: </span>
-                            <span className="text-amber-200">{item.pinned_comment || "พิกัดกดที่ตะกร้าเหลืองซ้ายล่างได้เลยครับ!"}</span>
+                          <div className="flex items-start space-x-1.5">
+                            <MessageSquare className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                            <div>
+                              <span className="font-bold text-amber-400">ปักตะกร้า: </span>
+                              <span className="text-amber-200">{item.pinned_comment || "พิกัดกดที่ตะกร้าเหลืองซ้ายล่างได้เลยครับ!"}</span>
+                            </div>
                           </div>
                         </div>
                       )}

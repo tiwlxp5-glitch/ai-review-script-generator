@@ -17,6 +17,10 @@ import {
   Hash,
   Loader2,
   Lock,
+  Pin,
+  MessageSquare,
+  Clock,
+  Mic,
 } from "lucide-react";
 import UpgradeProModal from "@/components/UpgradeProModal";
 import TeleprompterModal from "@/components/TeleprompterModal";
@@ -942,19 +946,23 @@ export default function DashboardPage() {
                           {shotList.map((item, idx) => (
                             <div key={idx} className="p-3.5 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2 text-xs">
                               <div className="flex items-center justify-between border-b border-slate-800/80 pb-1.5">
-                                <span className="font-mono text-amber-400 font-bold px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-[11px]">
-                                  ⏱️ {item.time}
+                                <span className="font-mono text-amber-400 font-bold px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-[11px] flex items-center space-x-1">
+                                  <Clock className="w-3 h-3 text-amber-400" />
+                                  <span>{item.time}</span>
                                 </span>
-                                <span className="text-emerald-300 font-bold text-[11px] truncate max-w-[180px]">
-                                  📝 {item.text_on_screen}
+                                <span className="text-emerald-300 font-bold text-[11px] truncate max-w-[180px] flex items-center space-x-1">
+                                  <Pin className="w-3 h-3 text-emerald-400 shrink-0" />
+                                  <span>{item.text_on_screen}</span>
                                 </span>
                               </div>
                               <div className="space-y-1.5 text-slate-200">
-                                <p className="leading-relaxed">
-                                  <strong className="text-purple-300 font-semibold">🎥 ภาพ B-Roll:</strong> {item.visual}
+                                <p className="leading-relaxed flex items-start space-x-1.5">
+                                  <Video className="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5" />
+                                  <span><strong className="text-purple-300 font-semibold">ภาพ B-Roll:</strong> {item.visual}</span>
                                 </p>
-                                <p className="leading-relaxed text-slate-300">
-                                  <strong className="text-indigo-300 font-semibold">🗣️ เสียงพูด:</strong> {item.audio}
+                                <p className="leading-relaxed text-slate-300 flex items-start space-x-1.5">
+                                  <Mic className="w-3.5 h-3.5 text-indigo-400 shrink-0 mt-0.5" />
+                                  <span><strong className="text-indigo-300 font-semibold">เสียงพูด:</strong> {item.audio}</span>
                                 </p>
                               </div>
                             </div>
@@ -967,9 +975,9 @@ export default function DashboardPage() {
                             <thead className="bg-slate-900/90 text-purple-300 font-bold border-b border-slate-800 sticky top-0">
                               <tr>
                                 <th className="p-3 sm:p-4 w-20 whitespace-nowrap">เวลา</th>
-                                <th className="p-3 sm:p-4 w-2/5 min-w-[180px]">🎥 ภาพที่ต้องถ่าย (B-Roll)</th>
-                                <th className="p-3 sm:p-4 w-2/5 min-w-[200px]">🗣️ เสียงพูด</th>
-                                <th className="p-3 sm:p-4 w-1/5 min-w-[140px]">📝 ขึ้นซับกลางจอ</th>
+                                <th className="p-3 sm:p-4 w-2/5 min-w-[180px]">ภาพที่ต้องถ่าย (B-Roll)</th>
+                                <th className="p-3 sm:p-4 w-2/5 min-w-[200px]">เสียงพูด</th>
+                                <th className="p-3 sm:p-4 w-1/5 min-w-[140px]">ขึ้นซับกลางจอ</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-800/60 bg-slate-950/60 text-slate-200">
@@ -1063,8 +1071,9 @@ export default function DashboardPage() {
                     <div className="space-y-4">
                       <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-4 text-sm text-slate-200">
                         <div className="space-y-1">
-                          <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wide">
-                            📌 แคปชันสำหรับโพสต์คลิป (Caption)
+                          <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wide flex items-center space-x-1.5">
+                            <Pin className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>แคปชันสำหรับโพสต์คลิป (Caption)</span>
                           </h4>
                           <p className="p-3 rounded-xl bg-slate-950 border border-slate-800/80 leading-relaxed">
                             {caption || `รีวิว ${productName} คุ้มค่าตอบโจทย์ชัวร์!`}
@@ -1072,8 +1081,9 @@ export default function DashboardPage() {
                         </div>
 
                         <div className="space-y-1">
-                          <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wide">
-                            🏷️ แฮชแท็กดันฟีดติดเทรนด์ (Hashtags)
+                          <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wide flex items-center space-x-1.5">
+                            <Hash className="w-3.5 h-3.5 text-purple-400" />
+                            <span>แฮชแท็กดันฟีดติดเทรนด์ (Hashtags)</span>
                           </h4>
                           <p className="p-3 rounded-xl bg-slate-950 border border-slate-800/80 font-mono text-purple-300 text-xs">
                             {hashtags || "#TikTokShop #รีวิวของดีบอกต่อ #รีวิวสินค้า"}

@@ -83,35 +83,45 @@ export default function Navbar() {
     <>
       <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl transition-all">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
-          {/* Navigation Links */}
-          <nav className="flex items-center space-x-1 sm:space-x-2">
-            <Link
-              href="/dashboard"
-              className={`flex items-center space-x-1.5 sm:space-x-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                isCurrent("/dashboard")
-                  ? "bg-purple-600/20 text-purple-300 border border-purple-500/30"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
-              }`}
-            >
-              <Pencil className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-              <span>สร้างสคริปต์</span>
+          {/* Left Brand Logo & Navigation Links */}
+          <div className="flex items-center space-x-3 sm:space-x-5">
+            <Link href="/dashboard" className="flex items-center space-x-2 shrink-0 group">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/25 border border-purple-400/30 group-hover:scale-105 transition duration-200">
+                <Sparkles className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-300 fill-amber-300" />
+              </div>
+              <span className="font-extrabold text-sm sm:text-base text-white tracking-tight font-sans hidden md:inline">
+                ReviewScript<span className="text-purple-400">.AI</span>
+              </span>
             </Link>
 
-            {user && (
+            <nav className="flex items-center space-x-1 sm:space-x-2">
               <Link
-                href="/history"
+                href="/dashboard"
                 className={`flex items-center space-x-1.5 sm:space-x-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                  isCurrent("/history")
-                    ? "bg-purple-600/20 text-purple-300 border border-purple-500/30"
+                  isCurrent("/dashboard")
+                    ? "bg-purple-600/20 text-purple-300 border border-purple-500/30 shadow-sm shadow-purple-500/10"
                     : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
                 }`}
               >
-                <History className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                <span className="hidden xs:inline">ประวัติ</span>
-                <span className="xs:hidden">ประวัติ</span>
+                <Pencil className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                <span>สร้างสคริปต์</span>
               </Link>
-            )}
-          </nav>
+
+              {user && (
+                <Link
+                  href="/history"
+                  className={`flex items-center space-x-1.5 sm:space-x-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                    isCurrent("/history")
+                      ? "bg-purple-600/20 text-purple-300 border border-purple-500/30 shadow-sm shadow-purple-500/10"
+                      : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
+                  }`}
+                >
+                  <History className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                  <span>ประวัติ</span>
+                </Link>
+              )}
+            </nav>
+          </div>
 
           {/* User Profile & Actions */}
           <div className="flex items-center space-x-2 sm:space-x-3">

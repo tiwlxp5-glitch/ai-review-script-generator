@@ -1,13 +1,22 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Prompt, Outfit } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const promptFont = Prompt({
+  weight: ["300", "400", "500", "600", "700", "800"],
+  subsets: ["thai", "latin"],
+  variable: "--font-prompt",
+});
+
+const outfitFont = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+});
 
 export const metadata: Metadata = {
-  title: "AI Review Script Generator - สคริปต์รีวิวสินค้าด้วย AI",
-  description: "เครื่องมือช่วยสร้างสคริปต์รีวิวสินค้าแบบมืออาชีพ เจาะกลุ่มเป้าหมาย เพิ่มยอดขายด้วย AI",
+  title: "ReviewScript AI - เครื่องมือคิดสคริปต์รีวิวสินค้าขายดีด้วย AI",
+  description: "แพลตฟอร์มช่วยคิดสคริปต์วิดีโอรีวิวสินค้า ตารางกำกับภาพ B-Roll และเครื่องอ่านบท Teleprompter ดันยอดขายโฆษณา",
 };
 
 export default function RootLayout({
@@ -16,14 +25,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="th" className="dark">
+    <html lang="th" className={`dark ${promptFont.variable} ${outfitFont.variable}`}>
       <body
-        className={`${inter.className} min-h-screen bg-slate-950 text-slate-100 flex flex-col antialiased selection:bg-purple-500/30 selection:text-purple-200`}
+        className={`${promptFont.className} min-h-screen bg-slate-950 text-slate-100 flex flex-col antialiased selection:bg-purple-500/30 selection:text-purple-200 font-sans`}
       >
-        {/* Background glow effects */}
-        <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] pointer-events-none z-0 overflow-hidden opacity-30 blur-3xl">
-          <div className="absolute top-10 left-1/4 w-72 h-72 bg-purple-600/40 rounded-full animate-pulse" />
-          <div className="absolute top-20 right-1/4 w-80 h-80 bg-indigo-600/40 rounded-full animate-pulse delay-1000" />
+        {/* Ambient Premium Glow Mesh Background */}
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-40">
+          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-gradient-to-tr from-purple-900/30 via-indigo-900/30 to-slate-950 rounded-full blur-[140px]" />
+          <div className="absolute top-1/4 -left-40 w-96 h-96 bg-purple-600/15 rounded-full blur-[120px] animate-pulse" />
+          <div className="absolute top-1/3 -right-40 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] animate-pulse delay-1000" />
         </div>
 
         <Navbar />
