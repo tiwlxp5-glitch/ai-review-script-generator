@@ -43,22 +43,26 @@ export async function GET() {
       else if (isPro) planType = "pro";
       else if (isPlus) planType = "plus";
 
-      const defaultLimit = planType === "pro" ? 200 : planType === "plus" ? 100 : 3;
+      const defaultLimit = planType === "pro" ? 200 : planType === "plus" ? 100 : 5;
       const userLimit = profile?.monthly_limit ?? defaultLimit;
 
-      // Count scripts generated in current calendar month
-      const startOfMonth = new Date();
-      startOfMonth.setDate(1);
-      startOfMonth.setHours(0, 0, 0, 0);
+      // Count scripts generated in last 7 days for free tier or monthly for paid tiers
+      const windowStartDate = new Date();
+      if (planType === "free") {
+        windowStartDate.setDate(windowStartDate.getDate() - 7);
+      } else {
+        windowStartDate.setDate(1);
+        windowStartDate.setHours(0, 0, 0, 0);
+      }
 
       const { count, error } = await supabase
         .from("script_history")
         .select("*", { count: "exact", head: true })
         .eq("user_id", user.id)
-        .gte("created_at", startOfMonth.toISOString());
+        .gte("created_at", windowStartDate.toISOString());
 
       if (error) {
-        console.error("Failed to count monthly scripts:", error);
+        console.error("Failed to count scripts:", error);
       }
 
       const usedCount = count || 0;
@@ -70,6 +74,7 @@ export async function GET() {
         limit: userLimit,
         used: usedCount,
         remaining,
+        period: planType === "free" ? "weekly" : "monthly",
       });
     }
 

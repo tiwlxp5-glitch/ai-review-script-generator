@@ -54,28 +54,36 @@ export async function POST(request: Request) {
     else if (isPro) planType = "pro";
     else if (isPlus) planType = "plus";
 
-    const defaultLimit = planType === "pro" ? 200 : planType === "plus" ? 100 : 3;
+    const defaultLimit = planType === "pro" ? 200 : planType === "plus" ? 100 : 5;
     const userLimit = profile?.monthly_limit ?? defaultLimit;
     let usedCount = 0;
 
     if (!isAdmin) {
-      // Count current month usage from database
-      const startOfMonth = new Date();
-      startOfMonth.setDate(1);
-      startOfMonth.setHours(0, 0, 0, 0);
+      // Count usage: 7 days for free tier, current calendar month for paid tiers
+      const windowStartDate = new Date();
+      if (planType === "free") {
+        windowStartDate.setDate(windowStartDate.getDate() - 7);
+      } else {
+        windowStartDate.setDate(1);
+        windowStartDate.setHours(0, 0, 0, 0);
+      }
 
       const { count } = await supabase
         .from("script_history")
         .select("*", { count: "exact", head: true })
         .eq("user_id", user.id)
-        .gte("created_at", startOfMonth.toISOString());
+        .gte("created_at", windowStartDate.toISOString());
 
       usedCount = count || 0;
 
       if (usedCount >= userLimit) {
+        const errorMsg =
+          planType === "free"
+            ? "สิทธิ์การใช้งานฟรีในสัปดาห์นี้ของคุณหมดแล้ว (5 ครั้ง/สัปดาห์)"
+            : "สิทธิ์การใช้งานในเดือนนี้ของคุณหมดแล้ว";
         return NextResponse.json(
           {
-            error: "สิทธิ์การใช้งานในเดือนนี้ของคุณหมดแล้ว",
+            error: errorMsg,
             quotaExceeded: true,
             user_type: planType,
             limit: userLimit,
@@ -86,7 +94,13 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { product_name, target_audience, product_link_or_extra, tone_style = "general" } = body;
+    const {
+      product_name,
+      target_audience,
+      product_link_or_extra,
+      tone_style = "general",
+      script_length = "medium",
+    } = body;
 
     if (!product_name || !product_name.trim()) {
       return NextResponse.json(
@@ -101,37 +115,117 @@ export async function POST(request: Request) {
       : "";
     const selectedToneDescription = TONE_PROMPTS[tone_style] || TONE_PROMPTS.general;
 
-    // Advanced Copywriter Elite Prompt Construction
-    const prompt = `คุณคือ "Senior High-Conversion Copywriter" ค่าตัวระดับ 500-1,000 บาทต่อสคริปต์ มีความเชี่ยวชาญระดับสูงสุดในการเขียนสคริปต์วิดีโอสั้น TikTok Shop, Instagram Reels และ YouTube Shorts ที่สร้างยอดขายจริง (High Conversion Video Copywriting)
+    const lengthDesc =
+      script_length === "short"
+        ? "สั้นกระชับ (~15-30 วินาที / ประมาณ 60-90 คำ) เข้าประเด็นไว ปิดการขายด่วน"
+        : script_length === "long"
+        ? "ยาวเจาะลึก (~60-90+ วินาที / ประมาณ 220-350 คำ) รายละเอียดจัดเต็ม มีเรื่องเล่า สาธิตการใช้งาน และทลายข้อโต้แย้ง"
+        : "ความยาวปกติ (~30-60 วินาที / ประมาณ 120-180 คำ) เล่าเรื่องและโชว์จุดเด่นอย่างสมดุล";
 
-โจทย์ของคุณคือเขียนสคริปต์รีวิวสินค้า:
+    // Dynamic Multi-Tier Prompt Architecture
+    let prompt = "";
+
+    if (planType === "pro" || planType === "admin") {
+      // 🟣 PRO ENGINE: Master Copywriter (เก่งขึ้น 20 เท่า ค่าตัว 1,000+ บาท)
+      prompt = `คุณคือ "Senior High-Conversion Master Copywriter & Creative Video Director" ค่าตัว 1,000+ บาทต่อสคริปต์ มีความเชี่ยวชาญระดับสูงสุดด้านจิตวิทยาการขายและไวรัลวิดีโอสั้น (TikTok Shop, Instagram Reels, YouTube Shorts)
+
+โจทย์รีวิวสินค้า:
 - สินค้า: ${product_name}
-- กลุ่มเป้าหมายคนดู: ${audience}${extraInfo}
-- โทนอารมณ์การเล่าเรื่อง (Tone of Voice): ${selectedToneDescription}
+- กลุ่มเป้าหมาย: ${audience}${extraInfo}
+- โทนอารมณ์ (Tone): ${selectedToneDescription}
+- ความยาวที่ต้องการ: ${lengthDesc}
 
-หลักการเขียนสคริปต์ระดับ Copywriter มืออาชีพ (กรุณาปฏิบัติตามอย่างเคร่งครัด):
-1. **Hook Rate (0-3 วินาทีแรก)**: ต้องสะกดคนดูให้หยุดไถทันที! ห้ามทักทายสวัสดีทางการ ห้ามเกริ่นอ้อมค้อม ให้ใช้เทคนิค Pattern Interrupt / คำถามสะกิดใจ / ชี้จุดเจ็บปวด (Pain Point)
-2. **Body & Storytelling (3-15 วินาที)**: เล่าด้วยภาษาพูดธรรมชาติแท้ๆ (Spoken Thai) มีจังหวะจะโคน ใช้วจนภาษาเหมือนเพื่อนบอกต่อ ไม่เหมือนโฆษณาTV เน้นโชว์ประสบการณ์ตรง ความฟิน หรือผลลัพธ์หลังใช้จริง
-3. **Call to Action & Urgency (15-20 วินาที)**: ปิดการขายแบบลื่นไหล ชี้ชวนไปที่ตะกร้าเหลืองมุมซ้ายล่าง สร้างความรู้สึกต้องกดสั่งตอนนี้ก่อนโปรหมด
-4. **ตาราง Visual B-Roll (Shot-list)**: กำกับมุมกล้อง ท่าทางผู้แสดง และข้อความตัวหนังสือขึ้นกลางจอ (Subtitle Text Overlay) ให้ตรงกับจังหวะบทพูดแบบฉากต่อฉาก
+ข้อกำหนดระบบ Pro Master Level (เก่งขึ้น 20 เท่า):
+1. **3 Hook Options (0-3 วินาทีแรก)**: เสนอ 3 ทางเลือก Hook ที่ตอนต้นสคริปต์ ให้ผู้ใช้เลือกใช้ตามสไตล์ (Visual Hook, Verbal Hook, Pain-Point Hook)
+2. **Deep Psychological Storytelling**: ใช้จิตวิทยาโน้มน้าว อารมณ์ร่วมสูง ภาษาพูดธรรมชาติ 100% ไม่ประดิดประดอยหุ่นยนต์
+3. **Objection Handling (ทลายข้อโต้แย้ง)**: ดักทางความลังเลในใจคนดู (เช่น กลัวแพง, กลัวแพ้, กลัวไม่คุ้ม) แล้วให้เหตุผลสนับสนุนที่หนักแน่น
+4. **Psychological FOMO CTA**: ปิดการขายแบบลดความเสี่ยง (Risk Reversal) + เร่งด่วนให้รีบกดตะกร้าซ้ายล่าง
+5. **Director's Cut B-Roll Table**: กำกับภาพอย่างละเอียด (มุมกล้อง, แสง, อารมณ์การแสดง, เสียงเอฟเฟกต์ SFX เช่น Whoosh, Pop, Ding) และข้อความซับกลางจอ
 
-กรุณาส่งออกผลลัพธ์เป็นโครงสร้าง JSON ภาษาไทยที่ถูกต้อง 100% ดังนี้:
+กรุณาส่งออกผลลัพธ์เป็น JSON ภาษาไทยที่ถูกต้อง 100%:
 {
-  "script": "บทพูดรีวิวภาษาไทยแบบสั้นกระชับ ลื่นไหล เป็นธรรมชาติ มีจังหวะหยุดพูด เว้นวรรคสวยงาม",
+  "script": "[ตัวเลือก Hook 3 สไตล์: A/B/C]\\n\\n[เนื้อหาบทพูดพากย์เสียงฉบับเต็ม พร้อมระบุช่วงเวลา สื่ออารมณ์ธรรมชาติ และทลายข้อโต้แย้งในใจคนดู]",
   "shot_list": [
     {
       "time": "0-3s",
-      "visual": "อธิบายภาพ/มุมกล้อง/ท่าทางหน้าตาที่ต้องถ่ายฉากนี้อย่างละเอียด",
-      "audio": "บทพูดเฉพาะฉากนี้",
-      "text_on_screen": "ตัวหนังสือตัวใหญ่สะดุดตาที่จะขึ้นกลางจอ"
+      "visual": "รายละเอียดภาพ/มุมกล้อง/แสง/การแสดงอารมณ์หน้าตา",
+      "audio": "บทพูด + เสียงเอฟเฟกต์ (SFX)",
+      "text_on_screen": "ตัวหนังสือตัวใหญ่สะดุดตาขึ้นกลางจอ"
     }
   ],
-  "caption": "แคปชันรีวิวแบบอ่านแล้วอยากกดซื้อ มี Emoji ประกอบ น่าอ่าน ไม่สั้นไม่ยาวเกินไป",
-  "hashtags": "แฮชแท็กติดเทรนด์ 5-8 อันที่เกื้อหนุนให้คลิปติดการค้นหา เช่น #ของดีบอกต่อ #TikTokShopป้ายยา",
-  "pinned_comment": "ประโยคสั้นๆ พิมพ์ปักตะกร้าในคอมเมนต์ชวนกดซื้อ"
+  "caption": "แคปชันเปิดหัวกระตุกอารมณ์ เล่าเรื่องชวนอ่าน มี Emoji ภาษาสวย น่ากดซื้อ",
+  "hashtags": "แฮชแท็กติดเทรนด์ดันฟีด 6-8 อัน",
+  "pinned_comment": "ข้อความพิมพ์ปักตะกร้าในคอมเมนต์เน้นกระตุ้นยอดขายด่วน"
 }
 
-กฎเหล็ก: ห้ามมีคำอธิบายอื่นนอกเหนือจาก JSON ห้ามใส่ภาษาทางการประดิดประดอย ห้ามหุ่นยนต์`;
+กฎเหล็ก: ส่งออกเฉพาะ JSON ภาษาไทยเท่านั้น ห้ามมี markdown นอกเหนือจาก JSON ห้ามใส่คำพูดทางการแข็งๆ`;
+    } else if (planType === "plus") {
+      // 🔵 PLUS ENGINE: Experienced Copywriter (เก่งขึ้น 10 เท่า)
+      prompt = `คุณคือ "Experienced Video Copywriter" ผู้เชี่ยวชาญการทำคอนเทนต์รีวิวสินค้าสร้างยอดขายระดับมืออาชีพ
+
+โจทย์รีวิวสินค้า:
+- สินค้า: ${product_name}
+- กลุ่มเป้าหมาย: ${audience}${extraInfo}
+- โทนอารมณ์ (Tone): ${selectedToneDescription}
+- ความยาวที่ต้องการ: ${lengthDesc}
+
+หลักการเขียนสคริปต์ระดับ Plus (เก่งขึ้น 10 เท่า):
+1. **PAS Framework**: ใช้โครงสร้าง Problem (ชี้ปัญหา) -> Agitate (สะกิดแผล) -> Solution (เฉลยวิธีแก้ด้วยสินค้า)
+2. **Spoken Thai 100%**: ใช้ภาษาพูดเป็นกันเอง เหมือนเพื่อนบอกต่อ ไม่เหมือนโฆษณาTV
+3. **Visual B-Roll Shot-list**: จัดตารางถ่ายภาพ 4-6 ฉาก กำกับมุมกล้อง เสียงพูด และซับกลางจอ
+4. **Call to Action**: ชี้ชวนไปที่ตะกร้าเหลืองมุมซ้ายล่างอย่างลื่นไหล
+
+กรุณาส่งออกผลลัพธ์เป็น JSON ภาษาไทยที่ถูกต้อง 100%:
+{
+  "script": "บทพูดรีวิวภาษาไทยแบบสั้นกระชับ ลื่นไหล เป็นธรรมชาติ มีจังหวะหยุดพูด",
+  "shot_list": [
+    {
+      "time": "0-3s",
+      "visual": "ภาพและท่าทางที่ต้องถ่ายฉากนี้",
+      "audio": "บทพูดเฉพาะฉากนี้",
+      "text_on_screen": "ตัวหนังสือขึ้นกลางจอ"
+    }
+  ],
+  "caption": "แคปชันรีวิวอ่านแล้วอยากซื้อ มี Emoji",
+  "hashtags": "แฮชแท็กติดเทรนด์ 5-6 อัน",
+  "pinned_comment": "ประโยคปักตะกร้าชวนกดซื้อ"
+}
+
+กฎเหล็ก: ส่งออกเฉพาะ JSON ภาษาไทยเท่านั้น`;
+    } else {
+      // 🟢 FREE ENGINE: Standard Natural Reviewer (เก่งขึ้น 3 เท่า)
+      prompt = `คุณคือ "นักคิดสคริปต์รีวิวสินค้า TikTok" ที่เน้นภาษาพูดเป็นกันเอง เรียบง่าย และจริงใจ
+
+โจทย์รีวิวสินค้า:
+- สินค้า: ${product_name}
+- กลุ่มเป้าหมาย: ${audience}${extraInfo}
+- โทนอารมณ์ (Tone): ${selectedToneDescription}
+- ความยาวที่ต้องการ: ${lengthDesc}
+
+หลักการเขียนสคริปต์ระดับปกติ (เก่งขึ้น 3 เท่า):
+1. เปิดด้วย Hook สะกิดใจ ห้ามทักทายสวัสดีทางการ
+2. ใช้ภาษาพูดเรียบง่าย 100% สไตล์เพื่อนบอกของดี
+3. เล่าประโยชน์หลักสินค้าสั้นๆ ชัดเจน
+4. จบด้วยคำชวนกดสั่งซื้อที่ตะกร้าเหลืองซ้ายล่าง
+
+กรุณาส่งออกผลลัพธ์เป็น JSON ภาษาไทยที่ถูกต้อง 100%:
+{
+  "script": "บทพูดรีวิวภาษาไทยที่เป็นกันเอง ลื่นไหล ฟังสบาย",
+  "shot_list": [
+    {
+      "time": "0-3s",
+      "visual": "ภาพผู้พูดและสินค้า",
+      "audio": "บทพูดฉากแรก",
+      "text_on_screen": "ซับสะดุดตา"
+    }
+  ],
+  "caption": "แคปชันรีวิวสั้นๆ น่าอ่าน",
+  "hashtags": "#รีวิวสินค้า #TikTokShopป้ายยา #ของดีบอกต่อ",
+  "pinned_comment": "กดสั่งซื้อที่ตะกร้าเหลืองมุมซ้ายล่างได้เลยครับ!"
+}
+
+กฎเหล็ก: ส่งออกเฉพาะ JSON ภาษาไทยเท่านั้น`;
+    }
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {

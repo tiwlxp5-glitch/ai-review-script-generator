@@ -90,10 +90,10 @@ export default function UpgradeProModal({
           <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-indigo-500/15 border border-amber-500/30 text-left space-y-1">
             <p className="text-xs sm:text-sm font-bold text-amber-300 flex items-center space-x-1.5">
               <Crown className="w-4 h-4 text-amber-400 fill-amber-400 shrink-0" />
-              <span>Pro ไม่ใช่แค่ได้จำนวนครั้งเยอะขึ้น แต่คือ "Workflow ถ่ายคลิปแบบมืออาชีพจบในที่เดียว"</span>
+              <span>ถ้าคุณเป็นสายขายของแล้วไม่อยากเสียเวลาคิดสคริปต์ ซื้อเถอะครับคุ้มแน่นอน!</span>
             </p>
             <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed pl-5">
-              คิดสคริปต์ ➔ ดูตารางบอกมุมกล้อง B-Roll ➔ เปิดเครื่องอ่านบท Teleprompter ขณะถ่าย ➔ ก๊อปแคปชันปักตะกร้าโพสต์คลิปได้ทันที!
+              คิดสคริปต์คมๆ ➔ ดูตารางบอกมุมกล้อง B-Roll ➔ เปิดเครื่องอ่านบท Teleprompter ขณะถ่าย ➔ ก๊อปแคปชันปักตะกร้าโพสต์คลิปได้ทันที!
             </p>
           </div>
         </div>
@@ -127,7 +127,7 @@ export default function UpgradeProModal({
               <div className="flex items-center justify-between">
                 <span className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-bold flex items-center space-x-1">
                   <Zap className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>Plus Plan (เริ่มต้น)</span>
+                  <span>Plus Plan (เก่งขึ้น 10 เท่า)</span>
                 </span>
                 {isCurrentPlus ? (
                   <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold border border-emerald-500/30">
@@ -155,11 +155,11 @@ export default function UpgradeProModal({
                 </li>
                 <li className="flex items-center space-x-2">
                   <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>ปลดล็อก Tone of Voice <strong>5 สไตล์</strong></span>
+                  <span>AI เก่งขึ้น <strong>10 เท่า (PAS Framework)</strong></span>
                 </li>
                 <li className="flex items-center space-x-2">
                   <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>ประมวลผลด้วย AI Gemini 3.6</span>
+                  <span>ปลดล็อก Tone of Voice <strong>5 สไตล์</strong></span>
                 </li>
                 <li className="flex items-center space-x-2 text-slate-500">
                   <X className="w-4 h-4 text-slate-600 shrink-0" />
@@ -198,7 +198,7 @@ export default function UpgradeProModal({
               <div className="flex items-center justify-between">
                 <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center space-x-1">
                   <Crown className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                  <span>Pro Plan (แนะนำสำหรับสายถ่ายคลิป)</span>
+                  <span>Pro (เก่งขึ้น 20 เท่า Master Copywriter)</span>
                 </span>
                 {isCurrentProOrAdmin ? (
                   <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold border border-emerald-500/30">
@@ -229,10 +229,14 @@ export default function UpgradeProModal({
                   <Check className="w-4 h-4 text-amber-400 shrink-0" />
                   <span>สร้างสคริปต์จุใจ <strong>200 ครั้ง / เดือน</strong></span>
                 </li>
+                <li className="flex items-center space-x-2">
+                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>AI เก่งขึ้น <strong>20 เท่า + 3 Hook Options</strong></span>
+                </li>
                 <li className="flex items-start space-x-2">
                   <Clapperboard className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                   <span>
-                    <strong className="text-amber-300">ตารางกำกับภาพ Visual B-Roll</strong> (บอกมุมกล้อง+ซับกลางจอ ไม่ต้องคิดเอง)
+                    <strong className="text-amber-300">Director's Cut B-Roll Table</strong> (มุมกล้อง + แสง + SFX)
                   </span>
                 </li>
                 <li className="flex items-start space-x-2">

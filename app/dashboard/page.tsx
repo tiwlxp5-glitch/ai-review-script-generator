@@ -125,6 +125,7 @@ export default function DashboardPage() {
   const [targetAudience, setTargetAudience] = useState("");
   const [productLinkOrExtra, setProductLinkOrExtra] = useState("");
   const [toneStyle, setToneStyle] = useState("general");
+  const [scriptLength, setScriptLength] = useState<"short" | "medium" | "long">("medium");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -191,6 +192,7 @@ export default function DashboardPage() {
           target_audience: targetAudience,
           product_link_or_extra: productLinkOrExtra,
           tone_style: toneStyle,
+          script_length: scriptLength,
         }),
       });
 
@@ -333,7 +335,7 @@ export default function DashboardPage() {
                 <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-medium">
                   <BarChart2 className="w-4 h-4 text-purple-400" />
                   <span>
-                    สิทธิ์ฟรีเดือนนี้:{" "}
+                    สิทธิ์ฟรีสัปดาห์นี้:{" "}
                     <strong className="text-white">
                       เหลือ {usage.remaining} / {usage.limit} ครั้ง
                     </strong>
@@ -366,18 +368,23 @@ export default function DashboardPage() {
               <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
-            {error.includes("สิทธิ์การใช้งานในเดือนนี้ของคุณหมดแล้ว") && (
-              <div className="pt-2 border-t border-rose-500/20 flex items-center justify-between">
-                <span className="text-xs text-slate-300">
-                  อัปเกรดบัญชีเพื่อเพิ่มสิทธิ์ใช้งาน 100-200 ครั้ง/เดือน!
-                </span>
-                <button
-                  onClick={() => openUpgradeModal("pro")}
-                  className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow transition flex items-center space-x-1 cursor-pointer"
-                >
-                  <Crown className="w-3.5 h-3.5" />
-                  <span>ดูรายละเอียดแพ็กเกจ</span>
-                </button>
+            {(error.includes("สิทธิ์การใช้งาน") || error.includes("หมดแล้ว")) && (
+              <div className="pt-3 border-t border-rose-500/20 space-y-2">
+                <p className="text-xs font-bold text-amber-300">
+                  💡 ถ้าคุณเป็นสายขายของแล้วไม่อยากเสียเวลาคิดสคริปต์ ซื้อเถอะครับคุ้มแน่นอน!
+                </p>
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-xs text-slate-300">
+                    อัปเกรดบัญชีรับสิทธิ์ใช้งานสูงสุด 200 ครั้ง/เดือน + AI เก่งขึ้น 20 เท่า!
+                  </span>
+                  <button
+                    onClick={() => openUpgradeModal("pro")}
+                    className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow transition flex items-center space-x-1 cursor-pointer shrink-0 ml-2"
+                  >
+                    <Crown className="w-3.5 h-3.5" />
+                    <span>ดูแพ็กเกจสุดคุ้ม</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -398,6 +405,56 @@ export default function DashboardPage() {
               placeholder='เช่น "ครีมกันแดด Dr.Pong สูตรไฮยา คุมมัน กันน้ำ"'
               className="w-full px-4 py-3.5 text-sm sm:text-base rounded-2xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
             />
+          </div>
+
+          {/* Field 1.5: Script Length Selector */}
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-purple-300">
+              ⏱️ เลือกความยาวสคริปต์ (Script Length)
+            </label>
+            <div className="grid grid-cols-3 gap-2.5">
+              <button
+                type="button"
+                onClick={() => setScriptLength("short")}
+                className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
+                  scriptLength === "short"
+                    ? "bg-purple-600/25 border-purple-500 text-purple-200 ring-2 ring-purple-500/40 font-bold"
+                    : "bg-slate-900/80 border-slate-800 text-slate-400 hover:border-purple-500/40"
+                }`}
+              >
+                <div className="text-xs sm:text-sm font-bold text-slate-100">⚡ สั้น</div>
+                <div className="text-[11px] text-slate-400 mt-0.5">~15-30 วินาที</div>
+                <div className="text-[10px] text-purple-300/80 mt-1 hidden sm:block">กระชับ ปิดขายด่วน</div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setScriptLength("medium")}
+                className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
+                  scriptLength === "medium"
+                    ? "bg-purple-600/25 border-purple-500 text-purple-200 ring-2 ring-purple-500/40 font-bold"
+                    : "bg-slate-900/80 border-slate-800 text-slate-400 hover:border-purple-500/40"
+                }`}
+              >
+                <div className="text-xs sm:text-sm font-bold text-slate-100">🎬 ปกติ</div>
+                <div className="text-[11px] text-slate-400 mt-0.5">~30-60 วินาที</div>
+                <div className="text-[10px] text-purple-300/80 mt-1 hidden sm:block">เล่าเรื่องสมดุล</div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setScriptLength("long")}
+                className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
+                  scriptLength === "long"
+                    ? "bg-purple-600/25 border-purple-500 text-purple-200 ring-2 ring-purple-500/40 font-bold"
+                    : "bg-slate-900/80 border-slate-800 text-slate-400 hover:border-purple-500/40"
+                }`}
+              >
+                <div className="text-xs sm:text-sm font-bold text-slate-100">📖 ยาว</div>
+                <div className="text-[11px] text-slate-400 mt-0.5">~60-90+ วินาที</div>
+                <div className="text-[10px] text-purple-300/80 mt-1 hidden sm:block">เจาะลึก+สาธิต</div>
+              </button>
+            </div>
           </div>
 
           {/* Field 2: Tone of Voice Selection (Multi-Tiered 10 Tones) */}
@@ -709,6 +766,9 @@ export default function DashboardPage() {
                           <h3 className="text-base font-bold text-white">
                             ตารางถ่าย B-Roll ถูกล็อกสำหรับผู้ใช้ Pro
                           </h3>
+                          <p className="text-xs text-amber-300 font-semibold">
+                            💡 ถ้าคุณเป็นสายขายของแล้วไม่อยากเสียเวลาคิดสคริปต์ ซื้อเถอะครับคุ้มแน่นอน!
+                          </p>
                           <p className="text-xs text-slate-300">
                             ตาราง Shot-by-Shot แยกมุมกล้อง คำพูด และซับกลางจอของสินค้าคุณถูกล็อกไว้ ปลดล็อกเพื่อดูรายละเอียดฉบับเต็ม!
                           </p>
@@ -810,6 +870,9 @@ export default function DashboardPage() {
                           <h3 className="text-base font-bold text-white">
                             ชุดแคปชันและแฮชแท็กถูกล็อกสำหรับผู้ใช้ Pro
                           </h3>
+                          <p className="text-xs text-amber-300 font-semibold">
+                            💡 ถ้าคุณเป็นสายขายของแล้วไม่อยากเสียเวลาคิดสคริปต์ ซื้อเถอะครับคุ้มแน่นอน!
+                          </p>
                           <p className="text-xs text-slate-300">
                             แคปชันเรียกลูกค้า แฮชแท็กดันฟีด และข้อความปักตะกร้าของสินค้าคุณถูกล็อกไว้ ปลดล็อกเพื่อใช้งานจริง!
                           </p>
