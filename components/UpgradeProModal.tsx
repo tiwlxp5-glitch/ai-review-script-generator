@@ -14,6 +14,9 @@ import {
   Video,
   Clapperboard,
   Hash,
+  CreditCard,
+  QrCode,
+  Loader2,
 } from "lucide-react";
 
 interface UpgradeProModalProps {
@@ -29,24 +32,24 @@ export default function UpgradeProModal({
   defaultPlan = "pro",
   currentPlan = "free",
 }: UpgradeProModalProps) {
+  const [selectedPlan, setSelectedPlan] = useState<"plus" | "pro">(defaultPlan);
   const [copiedLineId, setCopiedLineId] = useState(false);
-  const isCurrentPlus = currentPlan === "plus";
-  const isCurrentProOrAdmin = currentPlan === "pro" || currentPlan === "admin";
-
-  // If user is already Plus, default selection MUST be "pro"
-  const [selectedPlan, setSelectedPlan] = useState<"plus" | "pro">(
-    isCurrentPlus ? "pro" : defaultPlan
-  );
+  const [isProcessingStripe, setIsProcessingStripe] = useState(false);
 
   useEffect(() => {
-    if (isCurrentPlus) {
-      setSelectedPlan("pro");
-    } else {
-      setSelectedPlan(defaultPlan);
+    if (isOpen) {
+      if (currentPlan === "plus") {
+        setSelectedPlan("pro");
+      } else {
+        setSelectedPlan(defaultPlan);
+      }
     }
-  }, [defaultPlan, isCurrentPlus, isOpen]);
+  }, [isOpen, defaultPlan, currentPlan]);
 
   if (!isOpen) return null;
+
+  const isCurrentPlus = currentPlan === "plus";
+  const isCurrentProOrAdmin = currentPlan === "pro" || currentPlan === "admin";
 
   const lineId = "tiwlip99";
   const lineUrl = `https://line.me/R/ti/p/~tiwlip99`;
@@ -58,6 +61,30 @@ export default function UpgradeProModal({
       setTimeout(() => setCopiedLineId(false), 2500);
     } catch (err) {
       console.error("Failed to copy LINE ID:", err);
+    }
+  };
+
+  const handleStripeCheckout = async (plan: "plus" | "pro") => {
+    setIsProcessingStripe(true);
+    try {
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "เกิดข้อผิดพลาดในการสร้างลิงก์ชำระเงิน");
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err: any) {
+      console.error("Stripe checkout error:", err);
+      alert(err?.message || "ไม่สามารถเชื่อมต่อกับระบบชำระเงินได้");
+      setIsProcessingStripe(false);
     }
   };
 
@@ -260,58 +287,51 @@ export default function UpgradeProModal({
           </div>
         </div>
 
-        {/* LINE Payment Box & Direct Contact Action */}
+        {/* Automated Stripe Payment Action */}
         <div className="space-y-3 pt-2">
-          <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 text-center space-y-2">
-            <p className="text-xs text-slate-300">
-              ทักแชทแจ้งชำระเงิน{" "}
-              <strong className="text-amber-400 font-bold">
-                {selectedPlan === "pro" ? "199 บาท (Pro Workflow)" : "99 บาท (Plus)"}
-              </strong>{" "}
-              กับแอดมิน เพื่อปรับบัญชีใช้งานทันที:
-            </p>
-            <div className="flex items-center justify-center space-x-2">
-              <span className="text-xs font-medium text-slate-400">Line ID:</span>
-              <code className="text-sm font-bold text-emerald-300 bg-emerald-950/80 px-3 py-1 rounded-lg border border-emerald-500/30 font-mono">
-                {lineId}
-              </code>
-              <button
-                onClick={handleCopyLineId}
-                className="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-medium border border-emerald-500/40 transition flex items-center space-x-1 cursor-pointer"
-              >
-                {copiedLineId ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>ก๊อปแล้ว</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>คัดลอก</span>
-                  </>
-                )}
-              </button>
+          <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 text-center space-y-1.5">
+            <div className="flex items-center justify-center space-x-2 text-xs font-semibold text-slate-300">
+              <QrCode className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>รองรับ <strong>PromptPay QR Code</strong> สแกนจ่ายใน 2 วินาที</span>
+              <span className="text-slate-600">|</span>
+              <CreditCard className="w-4 h-4 text-indigo-400 shrink-0" />
+              <span>บัตรเครดิต / เดบิต</span>
             </div>
+            <p className="text-[11px] text-slate-400">
+              ชำระเงินปลอดภัยสูงสุด 100% ผ่านระบบ Stripe Secure (บัญชีจะปรับเป็น{" "}
+              <strong className="text-amber-300 font-bold">
+                {selectedPlan === "pro" ? "Pro Plan (199.-)" : "Plus Plan (99.-)"}
+              </strong>{" "}
+              ให้อัตโนมัติทันทีหลังชำระเงิน)
+            </p>
           </div>
 
-          <a
-            href={lineUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`w-full py-4 px-6 rounded-2xl text-base font-bold transition duration-200 active:scale-[0.99] flex items-center justify-center space-x-2 shadow-xl cursor-pointer ${
+          <button
+            onClick={() => handleStripeCheckout(selectedPlan)}
+            disabled={isProcessingStripe}
+            className={`w-full py-4 px-6 rounded-2xl text-base font-bold transition duration-200 active:scale-[0.99] flex items-center justify-center space-x-2 shadow-xl cursor-pointer disabled:opacity-50 ${
               selectedPlan === "pro"
                 ? "text-slate-950 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 shadow-amber-500/30"
                 : "text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-indigo-500/30"
             }`}
           >
-            <MessageCircle className="w-5 h-5 fill-current" />
-            <span>
-              {isCurrentPlus && selectedPlan === "pro"
-                ? "ติดต่ออัปเกรด Pro Workflow จบในที่เดียว (199.-)"
-                : `ติดต่ออัปเกรด ${selectedPlan === "pro" ? "Pro Workflow (199.-)" : "Plus Plan (99.-)"}`}
-            </span>
-            <ExternalLink className="w-4 h-4" />
-          </a>
+            {isProcessingStripe ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>กำลังเชื่อมต่อหน้าชำระเงินปลอดภัย...</span>
+              </>
+            ) : (
+              <>
+                <CreditCard className="w-5 h-5 fill-current" />
+                <span>
+                  {isCurrentPlus && selectedPlan === "pro"
+                    ? "ชำระเงินอัปเกรดเป็น Pro (199.-/เดือน)"
+                    : `ชำระเงินอัปเกรด ${selectedPlan === "pro" ? "Pro Plan (199.-/เดือน)" : "Plus Plan (99.-/เดือน)"}`}
+                </span>
+                <ExternalLink className="w-4 h-4" />
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>

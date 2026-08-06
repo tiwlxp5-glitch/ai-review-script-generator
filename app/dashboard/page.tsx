@@ -147,6 +147,8 @@ export default function DashboardPage() {
   const [modalDefaultPlan, setModalDefaultPlan] = useState<"plus" | "pro">("pro");
   const [isTeleprompterOpen, setIsTeleprompterOpen] = useState(false);
 
+  const [successBanner, setSuccessBanner] = useState<string | null>(null);
+
   const fetchUsage = async () => {
     try {
       const res = await fetch("/api/user-usage");
@@ -161,6 +163,20 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchUsage();
+
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("payment") === "success") {
+        const plan = params.get("plan");
+        setSuccessBanner(
+          `🎉 การชำระเงินสำเร็จ! บัญชีของคุณถูกอัปเกรดเป็น ${
+            plan === "pro" ? "Pro Plan (20 เท่า)" : "Plus Plan (10 เท่า)"
+          } เรียบร้อยแล้ว`
+        );
+        fetchUsage();
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
   }, []);
 
   const isProOrAdmin = usage?.user_type === "pro" || usage?.user_type === "admin";
@@ -371,6 +387,21 @@ export default function DashboardPage() {
 
       {/* Main Input Form Card */}
       <div className="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800/80 shadow-2xl bg-slate-950/80 backdrop-blur-xl space-y-6">
+        {successBanner && (
+          <div className="p-4 sm:p-5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-sm font-semibold flex items-center justify-between animate-in fade-in">
+            <div className="flex items-center space-x-2">
+              <Check className="w-5 h-5 text-emerald-400 shrink-0" />
+              <span>{successBanner}</span>
+            </div>
+            <button
+              onClick={() => setSuccessBanner(null)}
+              className="text-emerald-400 hover:text-white p-1 text-xs"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         {error && (
           <div className="p-4 sm:p-5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm space-y-3">
             <div className="flex items-start space-x-3">
