@@ -7,16 +7,16 @@ export const dynamic = "force-dynamic";
 const ADMIN_EMAIL = "tiwlxp5@gmail.com";
 
 const TONE_PROMPTS: Record<string, string> = {
-  general: "สไตล์เพื่อนเล่าให้เพื่อนฟัง เป็นกันเอง ภาษาพูดปกติ ไม่ประดิดประดอย",
-  drama: "สไตล์เปิดด้วยดราม่า/ชวนตกใจ/ปัญหาที่แทงใจดำคนดู กระตุกอารมณ์ให้หยุดฟังตั้งแต่ 3 วินาทีแรก",
-  asmr: "สไตล์ ASMR / Unboxing / เน้นโชว์เสียงแกะกล่อง สัมผัส ความฟิน และความน่าใช้ของสินค้า",
-  expert: "สไตล์ผู้เชี่ยวชาญ / ให้ความรู้เชิงลึก น่าเชื่อถือ มีเหตุผลประกอบชัดเจน",
-  funny: "สไตล์สายฮา / ตลก / เป็นกันเอง มีมุกเสี่ยวหรือจังหวะตลกให้คนดูอารมณ์ดี",
-  hardsale: "สไตล์ Hard Sale / นาทีทอง / เน้นแจกโค้ดส่วนลด โปรโมชันพิเศษ กระตุ้นความอยากซื้อด่วนจำนวนจำกัด",
-  softsale: "สไตล์ป้ายยาแอบเนียน / โชว์ไลฟ์สไตล์ชีวิตประจำวัน แล้วสอดแทรกสินค้าเข้าบทพูดแบบเนียนๆ ไม่รู้สึกโดนขาย",
-  warning: "สไตล์เตือนภัย / ชี้ข้อผิดพลาด (Myth Buster) เปิดด้วยประโยคหยุดดู เช่น อย่าหาทำสิ่งนี้หากไม่อยาก...",
-  beforeafter: "สไตล์เปรียบเทียบก่อนใช้กับหลังใช้ (Before & After) ชี้ผลลัพธ์การเปลี่ยนแปลงอย่างชัดเจน ตรงไปตรงมา",
-  emotional: "สไตล์เล่าความซาบซึ้งประทับใจ (Emotional) ถ่ายทอดความรู้สึกอบอุ่นและการเปลี่ยนแปลงชีวิตหลังใช้สินค้า",
+  general: "สไตล์เพื่อนสนิทแนะของดี: ภาษาพูดเป็นกันเอง 100% เรียบง่าย จริงใจ ลื่นไหล ไม่สคริปต์ ไม่ท่องจำ",
+  drama: "สไตล์เปิดด้วยดราม่า/ปัญหาจุกอก: ดึงอารมณ์ร่วม 3 วินาทีแรก ชี้จุดเจ็บ (Pain Point) ที่ทำให้อยากฟังต่อจนจบ",
+  asmr: "สไตล์ ASMR & Sensory Review: เน้นการสัมผัส เสียงแกะกล่อง เนื้อสัมผัส (Texture) และความฟินขณะใช้งานจริง",
+  expert: "สไตล์ผู้เชี่ยวชาญ/รู้จริง: ให้ความรู้เชิงลึกแบบย่อยง่าย มีข้อมูลอ้างอิงชัดเจน ดูน่าเชื่อถือและเป็นมืออาชีพ",
+  funny: "สไตล์สายฮา/ตลกมีมุก: จังหวะเล่าตลก อารมณ์ดี มีมุกแซวตัวเองหรือสถานการณ์จริง คนดูยิ้มตาม",
+  hardsale: "สไตล์ Hard Sale / นาทีทอง: กระตุ้นความอยากด่วน ชี้แจงโปรโมชัน ส่วนลด และคูปองจำนวนจำกัด ต้องรีบกด",
+  softsale: "สไตล์แอบเนียนป้ายยา: เล่าเรื่องราวชีวิตประจำวัน (Vlog Style) แล้วสอดแทรกสินค้าเข้าบทพูดแบบเนียนๆ ไม่รู้สึกโดนขาย",
+  warning: "สไตล์เตือนภัย / อย่าหาทำ (Myth Buster): เปิดด้วยคำเตือนกระตุกขวัญ ชี้ข้อผิดพลาดที่คนส่วนใหญ่เข้าใจผิด",
+  beforeafter: "สไตล์โชว์ผลลัพธ์ Before & After: เปรียบเทียบความแตกต่างชัดเจนก่อนใช้กับหลังใช้ เห็นความเปลี่ยนแปลงตรงไปตรงมา",
+  emotional: "สไตล์ซาบซึ้งประทับใจ (Emotional): ถ่ายทอดความรู้สึกอบอุ่น หัวใจพองโต การเปลี่ยนแปลงชีวิตทางดีขึ้นหลังมีสิ่งนี้",
 };
 
 export async function POST(request: Request) {
@@ -95,25 +95,43 @@ export async function POST(request: Request) {
       );
     }
 
-    const audience = target_audience?.trim() || "ทั่วไป / คนที่สนใจสินค้าชนิดนี้";
+    const audience = target_audience?.trim() || "คนทั่วไปที่ต้องการแก้ปัญหาหรือสนใจสินค้านี้";
     const extraInfo = product_link_or_extra?.trim()
-      ? `\nรายละเอียดเพิ่มเติม/จุดเด่น: ${product_link_or_extra.trim()}`
+      ? `\nรายละเอียดสินค้า/จุดขายเด่นพิเศษ: ${product_link_or_extra.trim()}`
       : "";
     const selectedToneDescription = TONE_PROMPTS[tone_style] || TONE_PROMPTS.general;
 
-    const prompt = `คุณคือครีเอทีฟผู้เชี่ยวชาญการเขียนสคริปต์ขายของคลิปสั้น TikTok Shop, Reels และ YouTube Shorts
-สินค้า: ${product_name}
-กลุ่มเป้าหมาย: ${audience}${extraInfo}
-โทนการเล่าเรื่อง: ${selectedToneDescription}
+    // Advanced Copywriter Elite Prompt Construction
+    const prompt = `คุณคือ "Senior High-Conversion Copywriter" ค่าตัวระดับ 500-1,000 บาทต่อสคริปต์ มีความเชี่ยวชาญระดับสูงสุดในการเขียนสคริปต์วิดีโอสั้น TikTok Shop, Instagram Reels และ YouTube Shorts ที่สร้างยอดขายจริง (High Conversion Video Copywriting)
 
-กรุณาเขียนสคริปต์และจัดทำข้อมูลประกอบคอนเทนต์ให้ครบถ้วนในรูปแบบ JSON ดังนี้:
-1. "script": บทพูดรีวิวสำหรับพากย์เสียงหรือพูดหน้ากล้อง ภาษาพูดแท้ๆ สั้นยาวสลับกัน มี Hook หยุดดู ปิดด้วยการชวนซื้อแบบไม่ยัดเยียด
-2. "shot_list": ตารางลำดับการถ่ายทำ (Array ของ Object) แต่ละอันมี { "time": "วินาทีที่ (เช่น 0-3s)", "visual": "ภาพมุมกล้อง/ท่าทางที่ต้องถ่าย (B-Roll)", "audio": "บทพูดในฉากนั้น", "text_on_screen": "ตัวหนังสือขึ้นกลางจอ" }
-3. "caption": แคปชันน่าสนใจสำหรับพิมพ์ลง TikTok/IG
-4. "hashtags": แฮชแท็กติดเทรนด์ 5-8 อันที่เกี่ยวข้อง
-5. "pinned_comment": ประโยคพิมพ์ปักตะกร้าชวนซื้อในช่องคอมเมนต์
+โจทย์ของคุณคือเขียนสคริปต์รีวิวสินค้า:
+- สินค้า: ${product_name}
+- กลุ่มเป้าหมายคนดู: ${audience}${extraInfo}
+- โทนอารมณ์การเล่าเรื่อง (Tone of Voice): ${selectedToneDescription}
 
-กฎสำคัญ: ตอบกลับเป็น JSON ภาษาไทยที่ถูกต้องสมบูรณ์เท่านั้น ห้ามมีคำอธิบายอื่นแทรกนอกเหนือจากโครงสร้าง JSON`;
+หลักการเขียนสคริปต์ระดับ Copywriter มืออาชีพ (กรุณาปฏิบัติตามอย่างเคร่งครัด):
+1. **Hook Rate (0-3 วินาทีแรก)**: ต้องสะกดคนดูให้หยุดไถทันที! ห้ามทักทายสวัสดีทางการ ห้ามเกริ่นอ้อมค้อม ให้ใช้เทคนิค Pattern Interrupt / คำถามสะกิดใจ / ชี้จุดเจ็บปวด (Pain Point)
+2. **Body & Storytelling (3-15 วินาที)**: เล่าด้วยภาษาพูดธรรมชาติแท้ๆ (Spoken Thai) มีจังหวะจะโคน ใช้วจนภาษาเหมือนเพื่อนบอกต่อ ไม่เหมือนโฆษณาTV เน้นโชว์ประสบการณ์ตรง ความฟิน หรือผลลัพธ์หลังใช้จริง
+3. **Call to Action & Urgency (15-20 วินาที)**: ปิดการขายแบบลื่นไหล ชี้ชวนไปที่ตะกร้าเหลืองมุมซ้ายล่าง สร้างความรู้สึกต้องกดสั่งตอนนี้ก่อนโปรหมด
+4. **ตาราง Visual B-Roll (Shot-list)**: กำกับมุมกล้อง ท่าทางผู้แสดง และข้อความตัวหนังสือขึ้นกลางจอ (Subtitle Text Overlay) ให้ตรงกับจังหวะบทพูดแบบฉากต่อฉาก
+
+กรุณาส่งออกผลลัพธ์เป็นโครงสร้าง JSON ภาษาไทยที่ถูกต้อง 100% ดังนี้:
+{
+  "script": "บทพูดรีวิวภาษาไทยแบบสั้นกระชับ ลื่นไหล เป็นธรรมชาติ มีจังหวะหยุดพูด เว้นวรรคสวยงาม",
+  "shot_list": [
+    {
+      "time": "0-3s",
+      "visual": "อธิบายภาพ/มุมกล้อง/ท่าทางหน้าตาที่ต้องถ่ายฉากนี้อย่างละเอียด",
+      "audio": "บทพูดเฉพาะฉากนี้",
+      "text_on_screen": "ตัวหนังสือตัวใหญ่สะดุดตาที่จะขึ้นกลางจอ"
+    }
+  ],
+  "caption": "แคปชันรีวิวแบบอ่านแล้วอยากกดซื้อ มี Emoji ประกอบ น่าอ่าน ไม่สั้นไม่ยาวเกินไป",
+  "hashtags": "แฮชแท็กติดเทรนด์ 5-8 อันที่เกื้อหนุนให้คลิปติดการค้นหา เช่น #ของดีบอกต่อ #TikTokShopป้ายยา",
+  "pinned_comment": "ประโยคสั้นๆ พิมพ์ปักตะกร้าในคอมเมนต์ชวนกดซื้อ"
+}
+
+กฎเหล็ก: ห้ามมีคำอธิบายอื่นนอกเหนือจาก JSON ห้ามใส่ภาษาทางการประดิดประดอย ห้ามหุ่นยนต์`;
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -138,16 +156,16 @@ export async function POST(request: Request) {
       try {
         const model = genAI.getGenerativeModel({
           model: modelName,
-          generationConfig: { responseMimeType: "application/json" },
+          generationConfig: {
+            temperature: 0.85, // Higher creativity for high-converting copywriting
+            responseMimeType: "application/json",
+          },
         });
         const result = await model.generateContent(prompt);
         const response = await result.response;
         rawOutput = response.text();
-        if (rawOutput) {
-          break;
-        }
+        if (rawOutput) break;
       } catch (err) {
-        // Fallback without responseMimeType if model doesn't support json mode directly
         try {
           const model = genAI.getGenerativeModel({ model: modelName });
           const result = await model.generateContent(prompt);
@@ -172,7 +190,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Clean JSON markdown if wrapped
     let cleanJsonStr = rawOutput.trim();
     if (cleanJsonStr.startsWith("```")) {
       cleanJsonStr = cleanJsonStr.replace(/^```(json)?\n?/, "").replace(/\n?```$/, "").trim();
