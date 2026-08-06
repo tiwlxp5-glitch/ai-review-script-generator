@@ -10,6 +10,8 @@ import {
   Type,
   Gauge,
   Video,
+  Crown,
+  Lock,
 } from "lucide-react";
 
 interface TeleprompterModalProps {
@@ -17,13 +19,25 @@ interface TeleprompterModalProps {
   onClose: () => void;
   scriptText: string;
   productName: string;
+  isDemo?: boolean;
+  onUpgradeClick?: () => void;
 }
+
+const DEMO_SCRIPT_TEXT = `🎥 [ตัวอย่างทดลองใช้โหมดอ่านบท Teleprompter]
+
+ยินดีต้อนรับสู่เครื่องมืออ่านบทพูดหน้ากล้องสำหรับครีเอเตอร์!
+
+เมื่อคุณอัปเกรดเป็น Pro ตัวหนังสือบทพูดของสินค้าคุณจริงๆ จะไหลขึ้นแบบนี้ตามระดับสายตาขณะอัดคลิป ช่วยให้คุณตั้งมือถือข้างเลนส์กล้อง อ่านบทได้ลื่นไหล ไม่ต้องท่องบทให้เสียเวลา ทำคลิปเสร็จไวขึ้น 3 เท่า!
+
+ลองทดสอบกด Play / Pause ปรับความเร็วการไหล หรือปรับขนาดตัวหนังสือที่แถบควบคุมด้านล่างได้เลยครับ...`;
 
 export default function TeleprompterModal({
   isOpen,
   onClose,
   scriptText,
   productName,
+  isDemo = false,
+  onUpgradeClick,
 }: TeleprompterModalProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(2); // 1 to 10
@@ -31,6 +45,8 @@ export default function TeleprompterModal({
   const [isMirrored, setIsMirrored] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const animFrameIdRef = useRef<number | null>(null);
+
+  const displayText = isDemo ? DEMO_SCRIPT_TEXT : scriptText;
 
   useEffect(() => {
     if (!isOpen) {
@@ -48,9 +64,8 @@ export default function TeleprompterModal({
 
       if (isPlaying && scrollContainerRef.current) {
         const container = scrollContainerRef.current;
-        container.scrollTop += speed * 40 * delta; // Adjust speed multiplier
+        container.scrollTop += speed * 40 * delta;
 
-        // Stop if reached bottom
         if (
           container.scrollTop + container.clientHeight >=
           container.scrollHeight - 5
@@ -90,7 +105,7 @@ export default function TeleprompterModal({
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-slate-950 text-white select-none animate-in fade-in duration-200">
       {/* Top Header Bar */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/90 z-20">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-slate-800 bg-slate-900/90 z-20">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center">
             <Video className="w-5 h-5" />
@@ -98,23 +113,56 @@ export default function TeleprompterModal({
           <div>
             <h2 className="text-sm font-bold text-white flex items-center space-x-2">
               <span>เครื่องอ่านบทพูด (Teleprompter)</span>
-              <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold">
-                PRO
-              </span>
+              {isDemo ? (
+                <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-bold border border-indigo-500/30">
+                  DEMO PREVIEW
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/30">
+                  PRO
+                </span>
+              )}
             </h2>
             <p className="text-xs text-slate-400 truncate max-w-xs sm:max-w-md">
-              {productName || "สคริปต์รีวิวสินค้า"}
+              {isDemo
+                ? "ตัวอย่างทดลองระบบการอ่านบทพูด"
+                : productName || "สคริปต์รีวิวสินค้า"}
             </p>
           </div>
         </div>
 
-        <button
-          onClick={onClose}
-          className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-800 border border-slate-700 transition"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        <div className="flex items-center space-x-2">
+          {isDemo && onUpgradeClick && (
+            <button
+              onClick={() => {
+                onClose();
+                onUpgradeClick();
+              }}
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-black shadow-md shadow-amber-500/20 transition flex items-center space-x-1"
+            >
+              <Crown className="w-3.5 h-3.5 fill-slate-950" />
+              <span>ปลดล็อกอ่านสคริปต์จริง (199.-)</span>
+            </button>
+          )}
+
+          <button
+            onClick={onClose}
+            className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-800 border border-slate-700 transition"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       </div>
+
+      {/* Demo Watermark Banner */}
+      {isDemo && (
+        <div className="bg-amber-500/15 border-b border-amber-500/30 px-4 py-2 text-center text-xs text-amber-300 font-medium flex items-center justify-center space-x-2 z-20">
+          <Lock className="w-3.5 h-3.5 text-amber-400" />
+          <span>
+            คุณกำลังทดลองโหมดอ่านบท (Demo) — อัปเกรดเป็น Pro เพื่ออ่านบทพูดจริงของสินค้าคุณ!
+          </span>
+        </div>
+      )}
 
       {/* Main Teleprompter Text Display Area */}
       <div
@@ -125,12 +173,14 @@ export default function TeleprompterModal({
       >
         <div className="max-w-4xl mx-auto space-y-8 text-center sm:text-left">
           <div
-            className="font-bold text-amber-300 leading-relaxed tracking-wide whitespace-pre-wrap font-sans transition-all"
+            className={`font-bold leading-relaxed tracking-wide whitespace-pre-wrap font-sans transition-all ${
+              isDemo ? "text-amber-200/90" : "text-amber-300"
+            }`}
             style={{ fontSize: `${fontSize}px` }}
           >
-            {scriptText}
+            {displayText}
           </div>
-          <div className="h-64" /> {/* Bottom padding buffer to scroll past end */}
+          <div className="h-64" />
         </div>
       </div>
 
@@ -164,7 +214,7 @@ export default function TeleprompterModal({
             ) : (
               <>
                 <Play className="w-5 h-5 fill-current" />
-                <span>เริ่มเลื่อนบท</span>
+                <span>ทดลองเลื่อนบท</span>
               </>
             )}
           </button>

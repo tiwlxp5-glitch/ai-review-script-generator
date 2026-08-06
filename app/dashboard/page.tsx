@@ -21,6 +21,7 @@ import {
   MessageCircle,
   Clapperboard,
   Flame,
+  ShieldCheck,
 } from "lucide-react";
 import UpgradeProModal from "@/components/UpgradeProModal";
 import TeleprompterModal from "@/components/TeleprompterModal";
@@ -88,6 +89,14 @@ export default function DashboardPage() {
     fetchUsage();
   }, []);
 
+  const isProOrAdmin = usage?.user_type === "pro" || usage?.user_type === "admin";
+  const isPlusUser = usage?.user_type === "plus" || isProOrAdmin;
+
+  const openUpgradeModal = (plan: "plus" | "pro" = "pro") => {
+    setModalDefaultPlan(plan);
+    setIsProModalOpen(true);
+  };
+
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!productName.trim()) {
@@ -151,6 +160,10 @@ export default function DashboardPage() {
   };
 
   const handleCopyCaptionBundle = async () => {
+    if (!isProOrAdmin) {
+      openUpgradeModal("pro");
+      return;
+    }
     const bundle = `${caption}\n\n${hashtags}\n\n💬 ปักตะกร้า: ${pinnedComment}`;
     try {
       await navigator.clipboard.writeText(bundle);
@@ -172,14 +185,6 @@ export default function DashboardPage() {
     setPinnedComment("");
     setError(null);
     setCopied(false);
-  };
-
-  const isProOrAdmin = usage?.user_type === "pro" || usage?.user_type === "admin";
-  const isPlusUser = usage?.user_type === "plus" || isProOrAdmin;
-
-  const openUpgradeModal = (plan: "plus" | "pro" = "pro") => {
-    setModalDefaultPlan(plan);
-    setIsProModalOpen(true);
   };
 
   const wordCount = generatedScript
@@ -246,7 +251,7 @@ export default function DashboardPage() {
                 </span>
                 <button
                   onClick={() => openUpgradeModal("pro")}
-                  className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-bold shadow-md shadow-amber-500/20 transition flex items-center space-x-1"
+                  className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-bold shadow-md shadow-amber-500/20 transition flex items-center space-x-1 cursor-pointer"
                 >
                   <Crown className="w-3.5 h-3.5 fill-slate-950" />
                   <span>อัปเกรด Pro รับ Teleprompter & B-Roll (199.-)</span>
@@ -265,13 +270,13 @@ export default function DashboardPage() {
                 </span>
                 <button
                   onClick={() => openUpgradeModal("plus")}
-                  className="px-3 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow transition"
+                  className="px-3 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow transition cursor-pointer"
                 >
                   <span>Plus (99.-)</span>
                 </button>
                 <button
                   onClick={() => openUpgradeModal("pro")}
-                  className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-black shadow-md shadow-amber-500/20 transition flex items-center space-x-1"
+                  className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-black shadow-md shadow-amber-500/20 transition flex items-center space-x-1 cursor-pointer"
                 >
                   <Crown className="w-3.5 h-3.5 fill-slate-950" />
                   <span>Pro (199.-)</span>
@@ -417,7 +422,7 @@ export default function DashboardPage() {
                   สคริปต์รีวิว & ข้อมูลคอนเทนต์
                 </h2>
                 <p className="text-xs text-slate-400">
-                  คัดลอกหรือเปิดอ่านบทผ่าน Teleprompter ได้ทันที
+                  คัดลอกหรือทดลองอ่านบทผ่าน Teleprompter ได้ทันที
                 </p>
               </div>
             </div>
@@ -426,27 +431,29 @@ export default function DashboardPage() {
               <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
                 {/* Teleprompter Mode Button */}
                 <button
-                  onClick={() => {
-                    if (isProOrAdmin) {
-                      setIsTeleprompterOpen(true);
-                    } else {
-                      openUpgradeModal("pro");
-                    }
-                  }}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold shadow transition flex items-center space-x-1.5 ${
+                  onClick={() => setIsTeleprompterOpen(true)}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold shadow transition flex items-center space-x-1.5 cursor-pointer ${
                     isProOrAdmin
                       ? "bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 shadow-amber-500/20"
-                      : "bg-slate-900 text-slate-400 border border-slate-800 hover:text-white"
+                      : "bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500/25"
                   }`}
                 >
                   <Video className="w-4 h-4 fill-current" />
-                  <span>โหมดอ่านบท (Teleprompter)</span>
-                  {!isProOrAdmin && <Lock className="w-3.5 h-3.5 text-amber-400 ml-1" />}
+                  <span>
+                    {isProOrAdmin
+                      ? "โหมดอ่านบท (Teleprompter)"
+                      : "ทดลองโหมดอ่านบท (Demo)"}
+                  </span>
+                  {!isProOrAdmin && (
+                    <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px]">
+                      PRO
+                    </span>
+                  )}
                 </button>
 
                 <button
                   onClick={handleReset}
-                  className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition"
+                  className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition cursor-pointer"
                   title="เริ่มใหม่"
                 >
                   <RotateCcw className="w-4 h-4" />
@@ -460,7 +467,7 @@ export default function DashboardPage() {
             <div className="flex items-center space-x-2 border-b border-slate-800/80 pb-2 text-xs font-bold">
               <button
                 onClick={() => setActiveTab("script")}
-                className={`px-4 py-2 rounded-xl flex items-center space-x-1.5 transition ${
+                className={`px-4 py-2 rounded-xl flex items-center space-x-1.5 transition cursor-pointer ${
                   activeTab === "script"
                     ? "bg-purple-600/20 text-purple-300 border border-purple-500/40"
                     : "text-slate-400 hover:text-slate-200"
@@ -472,7 +479,7 @@ export default function DashboardPage() {
 
               <button
                 onClick={() => setActiveTab("shotlist")}
-                className={`px-4 py-2 rounded-xl flex items-center space-x-1.5 transition ${
+                className={`px-4 py-2 rounded-xl flex items-center space-x-1.5 transition cursor-pointer ${
                   activeTab === "shotlist"
                     ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
                     : "text-slate-400 hover:text-slate-200"
@@ -489,7 +496,7 @@ export default function DashboardPage() {
 
               <button
                 onClick={() => setActiveTab("caption")}
-                className={`px-4 py-2 rounded-xl flex items-center space-x-1.5 transition ${
+                className={`px-4 py-2 rounded-xl flex items-center space-x-1.5 transition cursor-pointer ${
                   activeTab === "caption"
                     ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
                     : "text-slate-400 hover:text-slate-200"
@@ -542,7 +549,7 @@ export default function DashboardPage() {
                     </div>
                     <button
                       onClick={handleCopyScript}
-                      className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl font-semibold transition ${
+                      className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl font-semibold transition cursor-pointer ${
                         copied
                           ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
                           : "bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-600/30"
@@ -567,56 +574,100 @@ export default function DashboardPage() {
               {/* Tab 2: Visual Shot-List Table (B-Roll) */}
               {activeTab === "shotlist" && (
                 <div className="space-y-4">
-                  {!isProOrAdmin && (
-                    <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Lock className="w-4 h-4 shrink-0 text-amber-400" />
-                        <span>
-                          อัปเกรดเป็น Pro เพื่อดูตารางกำกับภาพ Visual B-Roll ฉบับเต็ม!
-                        </span>
+                  {!isProOrAdmin ? (
+                    <div className="relative rounded-2xl overflow-hidden border border-amber-500/30 bg-slate-950/90 p-1">
+                      {/* Lock Banner Overlay */}
+                      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 bg-slate-950/85 backdrop-blur-md text-center space-y-3">
+                        <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/40 shadow-lg shadow-amber-500/10">
+                          <Lock className="w-6 h-6 text-amber-400" />
+                        </div>
+                        <div className="space-y-1 max-w-md">
+                          <h3 className="text-base font-bold text-white">
+                            ตารางถ่าย B-Roll ถูกล็อกสำหรับผู้ใช้ Pro
+                          </h3>
+                          <p className="text-xs text-slate-300">
+                            ตาราง Shot-by-Shot แยกมุมกล้อง คำพูด และซับกลางจอของสินค้าคุณถูกล็อกไว้ ปลดล็อกเพื่อดูรายละเอียดฉบับเต็ม!
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => openUpgradeModal("pro")}
+                          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 text-xs font-black shadow-xl shadow-amber-500/25 transition flex items-center space-x-1.5 cursor-pointer"
+                        >
+                          <Crown className="w-4 h-4 fill-slate-950" />
+                          <span>ปลดล็อกตาราง B-Roll ของคุณ (199.-)</span>
+                        </button>
                       </div>
-                      <button
-                        onClick={() => openUpgradeModal("pro")}
-                        className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shrink-0"
-                      >
-                        ปลดล็อก Pro (199.-)
-                      </button>
-                    </div>
-                  )}
 
-                  {shotList.length > 0 ? (
-                    <div className="overflow-x-auto rounded-2xl border border-slate-800">
-                      <table className="w-full text-left text-xs sm:text-sm">
-                        <thead className="bg-slate-900/90 text-purple-300 font-bold border-b border-slate-800">
-                          <tr>
-                            <th className="p-3 sm:p-4 w-20">เวลา</th>
-                            <th className="p-3 sm:p-4">🎥 ภาพที่ต้องถ่าย (B-Roll)</th>
-                            <th className="p-3 sm:p-4">🗣️ เสียงพูด</th>
-                            <th className="p-3 sm:p-4">📝 ขึ้นซับกลางจอ</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-800/60 bg-slate-950/60 text-slate-200">
-                          {shotList.map((item, idx) => (
-                            <tr key={idx} className="hover:bg-slate-900/50 transition">
-                              <td className="p-3 sm:p-4 font-mono text-amber-400 font-bold whitespace-nowrap">
-                                {item.time}
-                              </td>
-                              <td className="p-3 sm:p-4 leading-relaxed">{item.visual}</td>
-                              <td className="p-3 sm:p-4 leading-relaxed text-slate-300">
-                                {item.audio}
-                              </td>
-                              <td className="p-3 sm:p-4 leading-relaxed text-emerald-300 font-semibold">
-                                {item.text_on_screen}
-                              </td>
+                      {/* Dummy Teaser Mock Table (Heavily Blurred & Masked) */}
+                      <div className="overflow-x-auto filter blur-md select-none pointer-events-none opacity-20 p-2">
+                        <table className="w-full text-left text-xs sm:text-sm">
+                          <thead className="bg-slate-900 text-purple-300 font-bold border-b border-slate-800">
+                            <tr>
+                              <th className="p-3">เวลา</th>
+                              <th className="p-3">🎥 ภาพที่ต้องถ่าย (B-Roll)</th>
+                              <th className="p-3">🗣️ เสียงพูด</th>
+                              <th className="p-3">📝 ขึ้นซับกลางจอ</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody className="divide-y divide-slate-800 bg-slate-950 text-slate-200">
+                            <tr>
+                              <td className="p-3 font-mono text-amber-400 font-bold">0-3s</td>
+                              <td className="p-3">ภาพซูมหน้าผู้พูดทำหน้าตกใจ แล้วตัดภาพไปที่ปัญหา...</td>
+                              <td className="p-3">"อย่าเพิ่งทิ้งสิ่งนี้! ถ้ายังไม่ได้ลองตัวช่วยนี้..."</td>
+                              <td className="p-3 text-emerald-300 font-semibold">หยุดดูคลิปนี้ก่อน 😱</td>
+                            </tr>
+                            <tr>
+                              <td className="p-3 font-mono text-amber-400 font-bold">3-7s</td>
+                              <td className="p-3">หยิบสินค้าขึ้นมาสาธิตการใช้งานจริง โชว์ผลลัพธ์...</td>
+                              <td className="p-3">"ลองใช้ตัวนี้ แค่ 5 วินาที รู้เรื่องเลยทันที"</td>
+                              <td className="p-3 text-emerald-300 font-semibold">เห็นผลใน 5 วินาที ✨</td>
+                            </tr>
+                            <tr>
+                              <td className="p-3 font-mono text-amber-400 font-bold">7-15s</td>
+                              <td className="p-3">ชูสินค้าคู่กับหน้ายิ้มมั่นใจ เอานิ้วชี้ไปที่ตะกร้า...</td>
+                              <td className="p-3">"พิกัดกดที่ตะกร้าเหลืองซ้ายมือได้เลยครับ"</td>
+                              <td className="p-3 text-emerald-300 font-semibold">กดตะกร้าเหลืองซ้ายล่าง 🛒</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   ) : (
-                    <div className="p-8 text-center text-slate-400 bg-slate-900/50 rounded-2xl border border-slate-800">
-                      <p className="text-sm">สคริปต์นี้ไม่มีตาราง Shot-List แยก หรือสคริปต์สั้นเกินไป</p>
-                    </div>
+                    /* Actual Pro / Admin Shot-list Table */
+                    shotList.length > 0 ? (
+                      <div className="overflow-x-auto rounded-2xl border border-slate-800">
+                        <table className="w-full text-left text-xs sm:text-sm">
+                          <thead className="bg-slate-900/90 text-purple-300 font-bold border-b border-slate-800">
+                            <tr>
+                              <th className="p-3 sm:p-4 w-20">เวลา</th>
+                              <th className="p-3 sm:p-4">🎥 ภาพที่ต้องถ่าย (B-Roll)</th>
+                              <th className="p-3 sm:p-4">🗣️ เสียงพูด</th>
+                              <th className="p-3 sm:p-4">📝 ขึ้นซับกลางจอ</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-800/60 bg-slate-950/60 text-slate-200">
+                            {shotList.map((item, idx) => (
+                              <tr key={idx} className="hover:bg-slate-900/50 transition">
+                                <td className="p-3 sm:p-4 font-mono text-amber-400 font-bold whitespace-nowrap">
+                                  {item.time}
+                                </td>
+                                <td className="p-3 sm:p-4 leading-relaxed">{item.visual}</td>
+                                <td className="p-3 sm:p-4 leading-relaxed text-slate-300">
+                                  {item.audio}
+                                </td>
+                                <td className="p-3 sm:p-4 leading-relaxed text-emerald-300 font-semibold">
+                                  {item.text_on_screen}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <div className="p-8 text-center text-slate-400 bg-slate-900/50 rounded-2xl border border-slate-800">
+                        <p className="text-sm">สคริปต์นี้ไม่มีตาราง Shot-List แยก หรือสคริปต์สั้นเกินไป</p>
+                      </div>
+                    )
                   )}
                 </div>
               )}
@@ -624,72 +675,114 @@ export default function DashboardPage() {
               {/* Tab 3: TikTok Caption & Hashtags */}
               {activeTab === "caption" && (
                 <div className="space-y-4">
-                  {!isProOrAdmin && (
-                    <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Lock className="w-4 h-4 shrink-0 text-amber-400" />
-                        <span>อัปเกรดเป็น Pro เพื่อใช้แคปชันและแฮชแท็กดันฟีด!</span>
+                  {!isProOrAdmin ? (
+                    <div className="relative rounded-2xl overflow-hidden border border-amber-500/30 bg-slate-950/90 p-6 space-y-4">
+                      {/* Lock Banner Overlay */}
+                      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 bg-slate-950/85 backdrop-blur-md text-center space-y-3">
+                        <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/40 shadow-lg shadow-amber-500/10">
+                          <Lock className="w-6 h-6 text-amber-400" />
+                        </div>
+                        <div className="space-y-1 max-w-md">
+                          <h3 className="text-base font-bold text-white">
+                            ชุดแคปชันและแฮชแท็กถูกล็อกสำหรับผู้ใช้ Pro
+                          </h3>
+                          <p className="text-xs text-slate-300">
+                            แคปชันเรียกลูกค้า แฮชแท็กดันฟีด และข้อความปักตะกร้าของสินค้าคุณถูกล็อกไว้ ปลดล็อกเพื่อใช้งานจริง!
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => openUpgradeModal("pro")}
+                          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 text-xs font-black shadow-xl shadow-amber-500/25 transition flex items-center space-x-1.5 cursor-pointer"
+                        >
+                          <Crown className="w-4 h-4 fill-slate-950" />
+                          <span>ปลดล็อกแคปชัน & แฮชแท็กของคุณ (199.-)</span>
+                        </button>
                       </div>
-                      <button
-                        onClick={() => openUpgradeModal("pro")}
-                        className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shrink-0"
-                      >
-                        ปลดล็อก Pro (199.-)
-                      </button>
+
+                      {/* Dummy Teaser Mock Captions (Heavily Blurred & Masked) */}
+                      <div className="filter blur-md select-none pointer-events-none opacity-20 space-y-4">
+                        <div className="space-y-1">
+                          <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wide">
+                            📌 แคปชันสำหรับโพสต์คลิป (Caption)
+                          </h4>
+                          <p className="p-3 rounded-xl bg-slate-950 border border-slate-800 leading-relaxed">
+                            ต้องยกให้เป็นสินค้าอันดับหนึ่งในใจตอนนี้เลยแก! ทาแล้วสบายผิวมาก ไม่เหนอะ ไม่วอก ซึมไว กดที่ตะกร้าซ้ายล่างได้เลยน้า ✨
+                          </p>
+                        </div>
+                        <div className="space-y-1">
+                          <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wide">
+                            🏷️ แฮชแท็กดันฟีดติดเทรนด์ (Hashtags)
+                          </h4>
+                          <p className="p-3 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs">
+                            #รีวิวสินค้า #TikTokShopป้ายยา #ของดีบอกต่อ #ใช้ดีบอกต่อ #ไอเทมเด็ด
+                          </p>
+                        </div>
+                        <div className="space-y-1">
+                          <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wide">
+                            💬 ข้อความพิมพ์ปักตะกร้าในคอมเมนต์ (Pinned Comment)
+                          </h4>
+                          <p className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+                            พิกัดตะกร้าเหลืองมุมซ้ายล่างเลยน้าแก ช่วงนี้มีโปรลดราคาอยู่ รีบกดก่อนหมดนะ! 💛👇
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Actual Pro / Admin Captions Display */
+                    <div className="space-y-4">
+                      <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-4 text-sm text-slate-200">
+                        <div className="space-y-1">
+                          <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wide">
+                            📌 แคปชันสำหรับโพสต์คลิป (Caption)
+                          </h4>
+                          <p className="p-3 rounded-xl bg-slate-950 border border-slate-800/80 leading-relaxed">
+                            {caption || `รีวิว ${productName} คุ้มค่าตอบโจทย์ชัวร์!`}
+                          </p>
+                        </div>
+
+                        <div className="space-y-1">
+                          <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wide">
+                            🏷️ แฮชแท็กดันฟีดติดเทรนด์ (Hashtags)
+                          </h4>
+                          <p className="p-3 rounded-xl bg-slate-950 border border-slate-800/80 font-mono text-purple-300 text-xs">
+                            {hashtags || "#TikTokShop #รีวิวของดีบอกต่อ #รีวิวสินค้า"}
+                          </p>
+                        </div>
+
+                        <div className="space-y-1">
+                          <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wide">
+                            💬 ข้อความพิมพ์ปักตะกร้าในคอมเมนต์ (Pinned Comment)
+                          </h4>
+                          <p className="p-3 rounded-xl bg-slate-950 border border-slate-800/80 text-amber-200 text-xs">
+                            {pinnedComment || "พิกัดกดที่ตะกร้าเหลืองซ้ายมือได้เลยครับ!"}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end pt-2">
+                        <button
+                          onClick={handleCopyCaptionBundle}
+                          className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                            copiedCaption
+                              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                              : "bg-emerald-600 hover:bg-emerald-500 text-slate-950"
+                          }`}
+                        >
+                          {copiedCaption ? (
+                            <>
+                              <Check className="w-4 h-4 text-emerald-400" />
+                              <span>คัดลอกชุดแคปชันทั้งหมดแล้ว!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-4 h-4" />
+                              <span>คัดลอกแคปชัน + แฮชแท็ก ทั้งหมด</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   )}
-
-                  <div className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-4 text-sm text-slate-200">
-                    <div className="space-y-1">
-                      <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wide">
-                        📌 แคปชันสำหรับโพสต์คลิป (Caption)
-                      </h4>
-                      <p className="p-3 rounded-xl bg-slate-950 border border-slate-800/80 leading-relaxed">
-                        {caption || `รีวิว ${productName} คุ้มค่าตอบโจทย์ชัวร์!`}
-                      </p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wide">
-                        🏷️ แฮชแท็กดันฟีดติดเทรนด์ (Hashtags)
-                      </h4>
-                      <p className="p-3 rounded-xl bg-slate-950 border border-slate-800/80 font-mono text-purple-300 text-xs">
-                        {hashtags || "#TikTokShop #รีวิวของดีบอกต่อ #รีวิวสินค้า"}
-                      </p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wide">
-                        💬 ข้อความพิมพ์ปักตะกร้าในคอมเมนต์ (Pinned Comment)
-                      </h4>
-                      <p className="p-3 rounded-xl bg-slate-950 border border-slate-800/80 text-amber-200 text-xs">
-                        {pinnedComment || "พิกัดกดที่ตะกร้าเหลืองซ้ายมือได้เลยครับ!"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end pt-2">
-                    <button
-                      onClick={handleCopyCaptionBundle}
-                      className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold transition ${
-                        copiedCaption
-                          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                          : "bg-emerald-600 hover:bg-emerald-500 text-slate-950"
-                      }`}
-                    >
-                      {copiedCaption ? (
-                        <>
-                          <Check className="w-4 h-4 text-emerald-400" />
-                          <span>คัดลอกชุดแคปชันทั้งหมดแล้ว!</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-4 h-4" />
-                          <span>คัดลอกแคปชัน + แฮชแท็ก ทั้งหมด</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
                 </div>
               )}
             </div>
@@ -711,6 +804,8 @@ export default function DashboardPage() {
         onClose={() => setIsTeleprompterOpen(false)}
         scriptText={generatedScript || ""}
         productName={productName}
+        isDemo={!isProOrAdmin}
+        onUpgradeClick={() => openUpgradeModal("pro")}
       />
     </div>
   );
