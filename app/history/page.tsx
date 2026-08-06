@@ -45,6 +45,44 @@ interface ScriptHistoryItem {
   created_at: string;
 }
 
+const generateFallbackShotList = (scriptText: string, productName: string): ShotItem[] => {
+  const cleanLines = scriptText
+    .split(/\n+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const fullText = cleanLines.join(" ");
+  const parts = fullText
+    .split(/(?<=[!?.])\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 3);
+
+  const s1 = parts[0] || fullText.slice(0, 40) || scriptText.slice(0, 40);
+  const s2 = parts[1] || parts[0] || fullText.slice(40, 90);
+  const s3 = parts.slice(2).join(" ") || parts[1] || fullText.slice(90);
+
+  return [
+    {
+      time: "0-3s",
+      visual: `ผู้พูดถือ ${productName} ชูขึ้นมาใกล้กล้อง ทำหน้าตื่นเต้น สไตล์เป็นกันเอง`,
+      audio: s1,
+      text_on_screen: `ต้องลอง! ${productName} 🔥`,
+    },
+    {
+      time: "3-8s",
+      visual: `B-Roll ซูมภาพสินค้าขณะลองใช้งานจริง / โชว์รายละเอียดสเปกเด่น`,
+      audio: s2,
+      text_on_screen: `ใช้ง่าย ตอบโจทย์ 100% ✨`,
+    },
+    {
+      time: "8-15s",
+      visual: `โชว์ความประทับใจหลังใช้ ชูสินค้าคู่กับหน้ายิ้มมั่นใจ เอานิ้วชี้ไปที่มุมซ้ายล่าง`,
+      audio: s3 || "กดที่ตะกร้าเหลืองซ้ายล่างได้เลยครับ!",
+      text_on_screen: `กดตะกร้าเหลืองซ้ายล่าง 🛒`,
+    },
+  ];
+};
+
 export default function HistoryPage() {
   const router = useRouter();
   const supabase = createClient();
@@ -252,7 +290,10 @@ export default function HistoryPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filteredItems.map((item) => {
             const currentTab = getActiveTab(item.id);
-            const shotList = item.shot_list && Array.isArray(item.shot_list) ? item.shot_list : [];
+            const shotList =
+              item.shot_list && Array.isArray(item.shot_list) && item.shot_list.length > 0
+                ? item.shot_list
+                : generateFallbackShotList(item.script_content, item.product_name);
 
             return (
               <div
@@ -407,7 +448,7 @@ export default function HistoryPage() {
                             <p className="font-bold text-amber-400">3-7s | 🎥 สาธิตการใช้ | 🗣️ "ผลลัพธ์ว้าวมาก..."</p>
                           </div>
                         </div>
-                      ) : shotList.length > 0 ? (
+                      ) : (
                         <div className="overflow-x-auto rounded-xl border border-slate-800 max-h-60 overflow-y-auto">
                           <table className="w-full text-left text-xs">
                             <thead className="bg-slate-900 text-purple-300 font-bold border-b border-slate-800">
@@ -429,10 +470,6 @@ export default function HistoryPage() {
                               ))}
                             </tbody>
                           </table>
-                        </div>
-                      ) : (
-                        <div className="p-4 text-center text-xs text-slate-400 bg-slate-950/80 rounded-xl border border-slate-800">
-                          <p>ไม่มีตาราง Shot-List แยกสำหรับรายการนี้</p>
                         </div>
                       )}
                     </div>
@@ -463,15 +500,17 @@ export default function HistoryPage() {
                         <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 text-xs space-y-2 text-slate-200">
                           <div>
                             <span className="font-bold text-emerald-400">📌 แคปชัน: </span>
-                            <span>{item.caption || `รีวิว ${item.product_name} คุ้มค่าตอบโจทย์!`}</span>
+                            <span>{item.caption || `รีวิว ${item.product_name} คุ้มค่าตอบโจทย์ชัวร์!`}</span>
                           </div>
                           <div>
                             <span className="font-bold text-purple-400">🏷️ แฮชแท็ก: </span>
-                            <span className="font-mono text-purple-300">{item.hashtags || "#TikTokShop #รีวิวของดีบอกต่อ"}</span>
+                            <span className="font-mono text-purple-300">
+                              {item.hashtags || `#รีวิวสินค้า #${item.product_name.replace(/\s+/g, "")} #TikTokShopป้ายยา #ของดีบอกต่อ`}
+                            </span>
                           </div>
                           <div>
                             <span className="font-bold text-amber-400">💬 ปักตะกร้า: </span>
-                            <span className="text-amber-200">{item.pinned_comment || "กดที่ตะกร้าเหลืองซ้ายล่างได้เลยครับ!"}</span>
+                            <span className="text-amber-200">{item.pinned_comment || "พิกัดกดที่ตะกร้าเหลืองซ้ายล่างได้เลยครับ!"}</span>
                           </div>
                         </div>
                       )}
