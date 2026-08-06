@@ -7,7 +7,9 @@ export async function GET(request: NextRequest) {
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/confirmed";
+  
+  const defaultNext = type === "recovery" ? "/reset-password" : "/confirmed";
+  const next = searchParams.get("next") ?? defaultNext;
 
   const supabase = await createClient();
 
@@ -28,6 +30,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Redirect to confirmed page anyway or login
-  return NextResponse.redirect(new URL("/confirmed", request.url));
+  // Redirect to reset-password if recovery, otherwise confirmed
+  return NextResponse.redirect(new URL(defaultNext, request.url));
 }
