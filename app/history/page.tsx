@@ -21,6 +21,7 @@ import {
   Clapperboard,
   Hash,
   Crown,
+  Pencil,
 } from "lucide-react";
 import UpgradeProModal from "@/components/UpgradeProModal";
 import TeleprompterModal from "@/components/TeleprompterModal";
@@ -99,8 +100,10 @@ export default function HistoryPage() {
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [activeTeleprompterItem, setActiveTeleprompterItem] = useState<ScriptHistoryItem | null>(null);
 
-  // Active tab map per card ID
+  // Active tab map & custom edited script per card ID
   const [activeTabMap, setActiveTabMap] = useState<Record<string, "script" | "shotlist" | "caption">>({});
+  const [editedMap, setEditedMap] = useState<Record<string, string>>({});
+  const [scriptModeMap, setScriptModeMap] = useState<Record<string, "original" | "custom">>({});
 
   useEffect(() => {
     fetchHistoryAndUsage();
@@ -422,8 +425,67 @@ export default function HistoryPage() {
 
                   {/* Tab 1: Script Voiceover Content */}
                   {currentTab === "script" && (
-                    <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800/80 text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-wrap max-h-60 overflow-y-auto custom-scrollbar">
-                      {item.script_content}
+                    <div className="space-y-3">
+                      {/* Sub-tab mode selector */}
+                      <div className="flex items-center justify-between gap-1 pb-1 border-b border-slate-800/60">
+                        <div className="flex items-center space-x-1 text-[11px]">
+                          <button
+                            type="button"
+                            onClick={() => setScriptModeMap((prev) => ({ ...prev, [item.id]: "original" }))}
+                            className={`px-2.5 py-1 rounded-lg flex items-center space-x-1 transition cursor-pointer ${
+                              (scriptModeMap[item.id] || "original") === "original"
+                                ? "bg-purple-600/20 text-purple-300 border border-purple-500/40 font-bold"
+                                : "text-slate-400 hover:text-slate-200"
+                            }`}
+                          >
+                            <FileText className="w-3 h-3" />
+                            <span>📜 ต้นฉบับ</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (editedMap[item.id] === undefined) {
+                                setEditedMap((prev) => ({ ...prev, [item.id]: item.script_content }));
+                              }
+                              setScriptModeMap((prev) => ({ ...prev, [item.id]: "custom" }));
+                            }}
+                            className={`px-2.5 py-1 rounded-lg flex items-center space-x-1 transition cursor-pointer ${
+                              scriptModeMap[item.id] === "custom"
+                                ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold"
+                                : "text-slate-400 hover:text-slate-200"
+                            }`}
+                          >
+                            <Pencil className="w-3 h-3" />
+                            <span>✏️ แก้ไขเอง</span>
+                          </button>
+                        </div>
+
+                        {(scriptModeMap[item.id] || "original") === "custom" && (
+                          <button
+                            type="button"
+                            onClick={() => setEditedMap((prev) => ({ ...prev, [item.id]: item.script_content }))}
+                            className="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-slate-400 text-[10px] font-medium transition cursor-pointer"
+                          >
+                            คืนค่าฉบับ AI
+                          </button>
+                        )}
+                      </div>
+
+                      {(scriptModeMap[item.id] || "original") === "original" ? (
+                        <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800/80 text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-wrap max-h-60 overflow-y-auto custom-scrollbar">
+                          {item.script_content}
+                        </div>
+                      ) : (
+                        <textarea
+                          value={editedMap[item.id] !== undefined ? editedMap[item.id] : item.script_content}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setEditedMap((prev) => ({ ...prev, [item.id]: val }));
+                          }}
+                          rows={6}
+                          className="w-full p-4 rounded-xl bg-slate-950/95 border border-amber-500/40 text-amber-100 text-xs sm:text-sm leading-relaxed font-sans focus:outline-none focus:ring-2 focus:ring-amber-500/30 transition-all resize-y"
+                        />
+                      )}
                     </div>
                   )}
 
@@ -565,7 +627,7 @@ export default function HistoryPage() {
       <TeleprompterModal
         isOpen={!!activeTeleprompterItem}
         onClose={() => setActiveTeleprompterItem(null)}
-        scriptText={activeTeleprompterItem?.script_content || ""}
+        scriptText={activeTeleprompterItem ? (editedMap[activeTeleprompterItem.id] || activeTeleprompterItem.script_content) : ""}
         productName={activeTeleprompterItem?.product_name || ""}
         isDemo={!isProOrAdmin}
         onUpgradeClick={() => setIsProModalOpen(true)}

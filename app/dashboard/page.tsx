@@ -131,6 +131,8 @@ export default function DashboardPage() {
 
   // Result state
   const [generatedScript, setGeneratedScript] = useState<string | null>(null);
+  const [editedScript, setEditedScript] = useState<string>("");
+  const [scriptMode, setScriptMode] = useState<"original" | "custom">("original");
   const [shotList, setShotList] = useState<ShotItem[]>([]);
   const [caption, setCaption] = useState<string>("");
   const [hashtags, setHashtags] = useState<string>("");
@@ -202,7 +204,10 @@ export default function DashboardPage() {
         throw new Error(data.error || "เกิดข้อผิดพลาดในการสร้างสคริปต์");
       }
 
-      setGeneratedScript(data.script || "");
+      const rawScript = data.script || "";
+      setGeneratedScript(rawScript);
+      setEditedScript(rawScript);
+      setScriptMode("original");
       setShotList(data.shot_list || []);
       setCaption(data.caption || "");
       setHashtags(data.hashtags || "");
@@ -221,10 +226,12 @@ export default function DashboardPage() {
     }
   };
 
+  const activeScriptText = scriptMode === "custom" ? editedScript : (generatedScript || "");
+
   const handleCopyScript = async () => {
-    if (!generatedScript) return;
+    if (!activeScriptText) return;
     try {
-      await navigator.clipboard.writeText(generatedScript);
+      await navigator.clipboard.writeText(activeScriptText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch (err) {
@@ -252,6 +259,8 @@ export default function DashboardPage() {
     setTargetAudience("");
     setProductLinkOrExtra("");
     setGeneratedScript(null);
+    setEditedScript("");
+    setScriptMode("original");
     setShotList([]);
     setCaption("");
     setHashtags("");
@@ -260,11 +269,11 @@ export default function DashboardPage() {
     setCopied(false);
   };
 
-  const wordCount = generatedScript
-    ? generatedScript.trim().split(/\s+/).filter(Boolean).length
+  const wordCount = activeScriptText
+    ? activeScriptText.trim().split(/\s+/).filter(Boolean).length
     : 0;
 
-  const charCount = generatedScript ? generatedScript.length : 0;
+  const charCount = activeScriptText ? activeScriptText.length : 0;
 
   return (
     <div className="space-y-6 sm:space-y-10 max-w-4xl mx-auto py-2 sm:py-4 px-3 sm:px-4">
@@ -715,9 +724,84 @@ export default function DashboardPage() {
               {/* Tab 1: Voiceover Main Script */}
               {activeTab === "script" && (
                 <div className="space-y-4">
-                  <div className="p-5 sm:p-6 rounded-2xl bg-slate-900/90 border border-slate-800 text-slate-100 text-base sm:text-lg leading-relaxed whitespace-pre-wrap font-sans selection:bg-purple-500/30">
-                    {generatedScript}
+                  {/* Mode Selector Sub-header */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-1 border-b border-slate-800/60">
+                    <div className="flex items-center space-x-1.5 text-xs">
+                      <button
+                        type="button"
+                        onClick={() => setScriptMode("original")}
+                        className={`px-3 py-1.5 rounded-xl flex items-center space-x-1.5 transition cursor-pointer ${
+                          scriptMode === "original"
+                            ? "bg-purple-600/25 text-purple-300 border border-purple-500/40 font-bold shadow"
+                            : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+                        }`}
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>📜 ต้นฉบับ AI (Read-Only)</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!editedScript) setEditedScript(generatedScript || "");
+                          setScriptMode("custom");
+                        }}
+                        className={`px-3 py-1.5 rounded-xl flex items-center space-x-1.5 transition cursor-pointer ${
+                          scriptMode === "custom"
+                            ? "bg-amber-500/25 text-amber-300 border border-amber-500/40 font-bold shadow"
+                            : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+                        }`}
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                        <span>✏️ สคริปต์ที่ปรับแต่งเอง</span>
+                      </button>
+                    </div>
+
+                    {scriptMode === "original" ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!editedScript) setEditedScript(generatedScript || "");
+                          setScriptMode("custom");
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-semibold transition flex items-center space-x-1 cursor-pointer"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                        <span>คัดลอกไปแก้ไขบทพูด</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditedScript(generatedScript || "");
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-medium transition flex items-center space-x-1 cursor-pointer"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>รีเซ็ตกลับเป็นต้นฉบับ AI</span>
+                      </button>
+                    )}
                   </div>
+
+                  {/* Main Script Text Box (Read-Only vs Editable Textarea) */}
+                  {scriptMode === "original" ? (
+                    <div className="p-5 sm:p-6 rounded-2xl bg-slate-900/90 border border-slate-800 text-slate-100 text-base sm:text-lg leading-relaxed whitespace-pre-wrap font-sans selection:bg-purple-500/30">
+                      {generatedScript}
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <textarea
+                        value={editedScript}
+                        onChange={(e) => setEditedScript(e.target.value)}
+                        placeholder="พิมพ์หรือปรับแต่งบทพูดของคุณตรงนี้..."
+                        rows={10}
+                        className="w-full p-5 sm:p-6 rounded-2xl bg-slate-900/95 border border-amber-500/40 text-amber-100 text-base sm:text-lg leading-relaxed font-sans focus:outline-none focus:ring-2 focus:ring-amber-500/30 selection:bg-amber-500/30 transition-all resize-y"
+                      />
+                      <p className="text-[11px] text-amber-300/80 italic">
+                        💡 ข้อความที่คุณแก้ไขตรงนี้ จะถูกส่งต่อไปแสดงบนเครื่องอ่านบท (Teleprompter) ให้อัตโนมัติ
+                      </p>
+                    </div>
+                  )}
 
                   <div className="flex items-center justify-between text-xs text-slate-400 pt-2">
                     <div className="flex items-center space-x-4">
@@ -733,6 +817,8 @@ export default function DashboardPage() {
                       className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl font-semibold transition cursor-pointer ${
                         copied
                           ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                          : scriptMode === "custom"
+                          ? "bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30"
                           : "bg-purple-600/20 text-purple-300 border border-purple-500/30 hover:bg-purple-600/30"
                       }`}
                     >
@@ -744,7 +830,7 @@ export default function DashboardPage() {
                       ) : (
                         <>
                           <Copy className="w-4 h-4" />
-                          <span>คัดลอกสคริปต์</span>
+                          <span>{scriptMode === "custom" ? "คัดลอกสคริปต์ที่แก้ไข" : "คัดลอกสคริปต์ต้นฉบับ"}</span>
                         </>
                       )}
                     </button>
@@ -1016,7 +1102,7 @@ export default function DashboardPage() {
       <TeleprompterModal
         isOpen={isTeleprompterOpen}
         onClose={() => setIsTeleprompterOpen(false)}
-        scriptText={generatedScript || ""}
+        scriptText={activeScriptText}
         productName={productName}
         isDemo={!isProOrAdmin}
         onUpgradeClick={() => openUpgradeModal("pro")}
