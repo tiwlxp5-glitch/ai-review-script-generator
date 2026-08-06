@@ -267,16 +267,16 @@ export default function DashboardPage() {
   const charCount = generatedScript ? generatedScript.length : 0;
 
   return (
-    <div className="space-y-10 max-w-4xl mx-auto py-4 px-2 sm:px-4">
+    <div className="space-y-6 sm:space-y-10 max-w-4xl mx-auto py-2 sm:py-4 px-3 sm:px-4">
       {/* Hero Header Section */}
-      <div className="text-center space-y-4">
+      <div className="text-center space-y-3 sm:space-y-4">
         {/* Top Icon Badge */}
-        <div className="inline-flex items-center justify-center p-3.5 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 shadow-xl shadow-purple-500/25 ring-1 ring-purple-400/30">
-          <Pencil className="w-7 h-7 text-white fill-white/20" />
+        <div className="inline-flex items-center justify-center p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 shadow-xl shadow-purple-500/25 ring-1 ring-purple-400/30">
+          <Pencil className="w-5 h-5 sm:w-7 sm:h-7 text-white fill-white/20" />
         </div>
 
         {/* Main Headline */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
+        <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-white leading-snug sm:leading-tight">
           AI คิดสคริปต์{" "}
           <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-300 bg-clip-text text-transparent">
             รีวิวสินค้า TikTok Studio
@@ -284,11 +284,11 @@ export default function DashboardPage() {
         </h1>
 
         {/* Sub-headline & Description */}
-        <div className="space-y-1.5">
-          <p className="text-lg sm:text-xl font-bold text-slate-100">
+        <div className="space-y-1">
+          <p className="text-sm sm:text-xl font-bold text-slate-100 leading-snug">
             สไตล์คนใช้จริง + ตารางมุมกล้อง B-Roll + อ่านบท Teleprompter ขณะถ่าย
           </p>
-          <p className="text-sm sm:text-base text-slate-400 max-w-xl mx-auto">
+          <p className="text-xs sm:text-base text-slate-400 max-w-xl mx-auto leading-normal">
             Workflow การถ่ายคลิปแบบมืออาชีพจบในที่เดียว พร้อมแคปชันและแฮชแท็กติดเทรนด์
           </p>
         </div>
@@ -591,15 +591,15 @@ export default function DashboardPage() {
 
       {/* Output Display Card */}
       {(loading || generatedScript) && (
-        <div className="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800/80 shadow-2xl bg-slate-950/90 space-y-6">
+        <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-slate-800/80 shadow-2xl bg-slate-950/90 space-y-5 sm:space-y-6">
           {/* Header Bar with Action Controls */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800/80 gap-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-3 sm:pb-4 border-b border-slate-800/80 gap-3">
             <div className="flex items-center space-x-3">
-              <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
+              <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 shrink-0">
                 <FileText className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-slate-100">
+                <h2 className="text-base sm:text-lg font-bold text-slate-100">
                   สคริปต์รีวิว & ข้อมูลคอนเทนต์
                 </h2>
                 <p className="text-xs text-slate-400">
@@ -609,21 +609,21 @@ export default function DashboardPage() {
             </div>
 
             {generatedScript && (
-              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                 {/* Teleprompter Mode Button */}
                 <button
                   onClick={() => setIsTeleprompterOpen(true)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold shadow transition flex items-center space-x-1.5 cursor-pointer ${
+                  className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-xl text-xs font-bold shadow transition flex items-center justify-center space-x-1.5 cursor-pointer ${
                     isProOrAdmin
                       ? "bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 shadow-amber-500/20"
                       : "bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500/25"
                   }`}
                 >
-                  <Video className="w-4 h-4 fill-current" />
+                  <Video className="w-4 h-4 fill-current shrink-0" />
                   <span>
                     {isProOrAdmin
                       ? "โหมดอ่านบท (Teleprompter)"
-                      : "ทดลองโหมดอ่านบท (Demo)"}
+                      : "ทดลองโหมดอ่านบท"}
                   </span>
                   {!isProOrAdmin && (
                     <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px]">
@@ -634,7 +634,7 @@ export default function DashboardPage() {
 
                 <button
                   onClick={handleReset}
-                  className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition cursor-pointer"
+                  className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition cursor-pointer shrink-0"
                   title="เริ่มใหม่"
                 >
                   <RotateCcw className="w-4 h-4" />
@@ -645,28 +645,28 @@ export default function DashboardPage() {
 
           {/* Navigation Tabs (Script / Visual Shot-list / Caption) */}
           {generatedScript && (
-            <div className="flex items-center space-x-2 border-b border-slate-800/80 pb-2 text-xs font-bold">
+            <div className="flex items-center space-x-1.5 sm:space-x-2 border-b border-slate-800/80 pb-2 text-xs font-bold overflow-x-auto whitespace-nowrap scrollbar-none">
               <button
                 onClick={() => setActiveTab("script")}
-                className={`px-4 py-2 rounded-xl flex items-center space-x-1.5 transition cursor-pointer ${
+                className={`px-3 sm:px-4 py-2 rounded-xl flex items-center space-x-1.5 transition cursor-pointer shrink-0 ${
                   activeTab === "script"
                     ? "bg-purple-600/20 text-purple-300 border border-purple-500/40"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
-                <FileText className="w-4 h-4" />
+                <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span>บทพูดพากย์เสียง</span>
               </button>
 
               <button
                 onClick={() => setActiveTab("shotlist")}
-                className={`px-4 py-2 rounded-xl flex items-center space-x-1.5 transition cursor-pointer ${
+                className={`px-3 sm:px-4 py-2 rounded-xl flex items-center space-x-1.5 transition cursor-pointer shrink-0 ${
                   activeTab === "shotlist"
                     ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
-                <Clapperboard className="w-4 h-4" />
+                <Clapperboard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span>ตารางถ่าย B-Roll</span>
                 {!isProOrAdmin && (
                   <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px]">

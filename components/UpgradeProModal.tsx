@@ -62,8 +62,8 @@ export default function UpgradeProModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
-      <div className="relative w-full max-w-2xl glass-card rounded-3xl p-5 sm:p-7 border border-purple-500/30 shadow-2xl bg-slate-950/95 space-y-6 text-slate-100 my-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
+      <div className="relative w-full max-w-2xl glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-7 border border-purple-500/30 shadow-2xl bg-slate-950/95 space-y-4 sm:space-y-6 text-slate-100 my-auto max-h-[92vh] overflow-y-auto">
         {/* Ambient Glows */}
         <div className="absolute -top-12 -right-12 w-56 h-56 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-12 -left-12 w-56 h-56 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
