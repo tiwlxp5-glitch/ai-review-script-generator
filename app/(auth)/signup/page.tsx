@@ -14,7 +14,6 @@ import {
   Loader2,
   Sparkles,
   ArrowRight,
-  ExternalLink,
   ShieldCheck,
 } from "lucide-react";
 
@@ -58,7 +57,7 @@ export default function SignupPage() {
         return;
       }
 
-      // If user session created immediately (e.g. email confirmation disabled in Supabase)
+      // If user session created immediately
       if (data.session) {
         router.push("/dashboard");
         router.refresh();
@@ -249,7 +248,7 @@ export default function SignupPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full mt-2 py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 focus:outline-none focus:ring-2 focus:ring-purple-500/40 shadow-lg shadow-purple-600/25 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full mt-2 py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 focus:outline-none focus:ring-2 focus:ring-purple-500/40 shadow-lg shadow-purple-600/25 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {loading ? (
                     <>
@@ -266,7 +265,7 @@ export default function SignupPage() {
               </form>
 
               {/* Footer inside card */}
-              <div className="mt-6 pt-6 border-t border-slate-800/80 text-center">
+              <div className="mt-6 pt-6 border-t border-slate-800/80 text-center space-y-4">
                 <p className="text-sm text-slate-400">
                   มีบัญชีผู้ใช้งานอยู่แล้ว?{" "}
                   <Link
@@ -276,6 +275,14 @@ export default function SignupPage() {
                     เข้าสู่ระบบ
                   </Link>
                 </p>
+
+                {/* Security Guarantee Banner */}
+                <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 text-xs text-slate-300 flex items-center justify-center space-x-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>
+                    ไม่ต้องห่วงเรื่องความปลอดภัย เพราะทุกข้อมูล รวมถึงบัญชีคุณจะปลอดภัย 100%
+                  </span>
+                </div>
               </div>
             </div>
           </>
