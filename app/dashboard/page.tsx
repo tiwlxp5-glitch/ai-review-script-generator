@@ -166,7 +166,7 @@ export default function DashboardPage() {
                 <span>
                   สมาชิก Pro:{" "}
                   <strong className="text-white font-bold">
-                    เหลือ {usage.remaining} / 200 ครั้งเดือนนี้
+                    เหลือ {usage.remaining} / {usage.limit || 200} ครั้งเดือนนี้
                   </strong>
                 </span>
               </span>
@@ -177,7 +177,7 @@ export default function DashboardPage() {
                   <span>
                     สิทธิ์สร้างสคริปต์เดือนนี้:{" "}
                     <strong className="text-white font-bold">
-                      เหลือ {usage.remaining} / 3 ครั้ง
+                      เหลือ {usage.remaining} / {usage.limit || 3} ครั้ง
                     </strong>
                   </span>
                 </span>
@@ -202,7 +202,7 @@ export default function DashboardPage() {
               <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
-            {error.includes("สิทธิ์การใช้งานในเดือนนี้ของคุณหมดแล้ว") && (
+            {error.includes("สิทธิ์การใช้งานในเดือนนี้ของคุณหมดแล้ว") && usage?.user_type !== "pro" && (
               <div className="pt-2 border-t border-rose-500/20 flex items-center justify-between">
                 <span className="text-xs text-slate-300">
                   อัปเกรดเป็น Pro เพื่อรับสิทธิ์ 200 สคริปต์/เดือน เพียง 99 บาท!
@@ -269,7 +269,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Field 3: Product Link or Extra Info for AI (NO GUIDELINE) */}
+          {/* Field 3: Product Link or Extra Info for AI */}
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-purple-300">
               🔗 ลิงก์สินค้า / รายละเอียดเพิ่มเติมส่งให้ AI{" "}
