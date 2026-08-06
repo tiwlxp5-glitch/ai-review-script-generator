@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { LogIn, Mail, Lock, AlertCircle, Loader2, Sparkles } from "lucide-react";
+import { LogIn, Mail, Lock, AlertCircle, Loader2, Sparkles, ShieldCheck } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -95,12 +95,20 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2"
-              >
-                รหัสผ่าน (Password)
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-xs font-semibold text-slate-300 uppercase tracking-wider"
+                >
+                  รหัสผ่าน (Password)
+                </label>
+                <Link
+                  href="/forgot-password"
+                  className="text-xs font-medium text-purple-400 hover:text-purple-300 transition underline underline-offset-4"
+                >
+                  ลืมรหัสผ่าน?
+                </Link>
+              </div>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <input
@@ -118,7 +126,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:from-purple-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-purple-500/40 shadow-lg shadow-purple-600/25 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full mt-2 py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:from-purple-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-purple-500/40 shadow-lg shadow-purple-600/25 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? (
                 <>
@@ -135,7 +143,7 @@ export default function LoginPage() {
           </form>
 
           {/* Footer inside card */}
-          <div className="mt-6 pt-6 border-t border-slate-800/80 text-center">
+          <div className="mt-6 pt-6 border-t border-slate-800/80 text-center space-y-4">
             <p className="text-sm text-slate-400">
               ยังไม่มีบัญชีผู้ใช้งาน?{" "}
               <Link
@@ -145,6 +153,14 @@ export default function LoginPage() {
                 สมัครสมาชิก
               </Link>
             </p>
+
+            {/* Security Guarantee Banner */}
+            <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 text-xs text-slate-300 flex items-center justify-center space-x-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>
+                ไม่ต้องห่วงเรื่องความปลอดภัย เพราะทุกข้อมูล รวมถึงบัญชีคุณจะปลอดภัย 100%
+              </span>
+            </div>
           </div>
         </div>
       </div>
