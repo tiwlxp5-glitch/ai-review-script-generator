@@ -16,7 +16,21 @@ import {
   AlertCircle,
   Sparkles,
   FileText,
+  Video,
+  Lock,
+  Clapperboard,
+  Hash,
+  Crown,
 } from "lucide-react";
+import UpgradeProModal from "@/components/UpgradeProModal";
+import TeleprompterModal from "@/components/TeleprompterModal";
+
+interface ShotItem {
+  time: string;
+  visual: string;
+  audio: string;
+  text_on_screen: string;
+}
 
 interface ScriptHistoryItem {
   id: string;
@@ -24,6 +38,10 @@ interface ScriptHistoryItem {
   product_name: string;
   target_audience: string;
   script_content: string;
+  shot_list?: ShotItem[];
+  caption?: string;
+  hashtags?: string;
+  pinned_comment?: string;
   created_at: string;
 }
 
@@ -38,11 +56,19 @@ export default function HistoryPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  // User status
+  const [userType, setUserType] = useState<string>("free");
+  const [isProModalOpen, setIsProModalOpen] = useState(false);
+  const [activeTeleprompterItem, setActiveTeleprompterItem] = useState<ScriptHistoryItem | null>(null);
+
+  // Active tab map per card ID
+  const [activeTabMap, setActiveTabMap] = useState<Record<string, "script" | "shotlist" | "caption">>({});
+
   useEffect(() => {
-    fetchHistory();
+    fetchHistoryAndUsage();
   }, []);
 
-  const fetchHistory = async () => {
+  const fetchHistoryAndUsage = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -55,6 +81,18 @@ export default function HistoryPage() {
         return;
       }
 
+      // Fetch user usage status
+      try {
+        const usageRes = await fetch("/api/user-usage");
+        if (usageRes.ok) {
+          const usageData = await usageRes.json();
+          setUserType(usageData.user_type);
+        }
+      } catch (uErr) {
+        console.error("Failed to fetch user usage in history:", uErr);
+      }
+
+      // Fetch history items
       const { data, error: fetchErr } = await supabase
         .from("script_history")
         .select("*")
@@ -107,6 +145,13 @@ export default function HistoryPage() {
     } finally {
       setDeletingId(null);
     }
+  };
+
+  const isProOrAdmin = userType === "pro" || userType === "admin";
+
+  const getActiveTab = (id: string) => activeTabMap[id] || "script";
+  const setActiveTab = (id: string, tab: "script" | "shotlist" | "caption") => {
+    setActiveTabMap((prev) => ({ ...prev, [id]: tab }));
   };
 
   const filteredItems = historyItems.filter((item) => {
@@ -205,86 +250,268 @@ export default function HistoryPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredItems.map((item) => (
-            <div
-              key={item.id}
-              className="glass-card rounded-2xl p-6 border border-slate-800/80 shadow-xl flex flex-col justify-between hover:border-slate-700/80 transition-all duration-200 group"
-            >
-              {/* Card Header */}
-              <div className="space-y-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-2 text-slate-400 text-xs">
-                      <ShoppingBag className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                      <span className="font-medium text-slate-300">สินค้า</span>
+          {filteredItems.map((item) => {
+            const currentTab = getActiveTab(item.id);
+            const shotList = item.shot_list && Array.isArray(item.shot_list) ? item.shot_list : [];
+
+            return (
+              <div
+                key={item.id}
+                className="glass-card rounded-2xl p-6 border border-slate-800/80 shadow-xl flex flex-col justify-between hover:border-slate-700/80 transition-all duration-200 group space-y-4"
+              >
+                {/* Card Header */}
+                <div className="space-y-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-1">
+                      <div className="flex items-center space-x-2 text-slate-400 text-xs">
+                        <ShoppingBag className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                        <span className="font-medium text-slate-300">สินค้า</span>
+                      </div>
+                      <h3 className="text-base font-bold text-slate-100 group-hover:text-purple-300 transition-colors line-clamp-2">
+                        {item.product_name}
+                      </h3>
                     </div>
-                    <h3 className="text-base font-bold text-slate-100 group-hover:text-purple-300 transition-colors line-clamp-2">
-                      {item.product_name}
-                    </h3>
+
+                    {/* Header Action Buttons */}
+                    <div className="flex items-center space-x-1.5 shrink-0">
+                      {/* Teleprompter Button */}
+                      <button
+                        onClick={() => setActiveTeleprompterItem(item)}
+                        className={`p-2 rounded-xl text-xs font-bold transition flex items-center space-x-1 cursor-pointer ${
+                          isProOrAdmin
+                            ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30"
+                            : "bg-slate-900 text-slate-400 border border-slate-800 hover:text-white"
+                        }`}
+                        title={isProOrAdmin ? "เปิดโหมดอ่านบท" : "ทดลองโหมดอ่านบท (Demo)"}
+                      >
+                        <Video className="w-4 h-4 fill-current text-amber-400" />
+                        <span className="hidden sm:inline">อ่านบท</span>
+                        {!isProOrAdmin && <Lock className="w-3 h-3 text-amber-400" />}
+                      </button>
+
+                      <button
+                        onClick={() => handleCopy(item.id, item.script_content)}
+                        className={`p-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                          copiedId === item.id
+                            ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                            : "bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-800"
+                        }`}
+                        title="คัดลอกสคริปต์"
+                      >
+                        {copiedId === item.id ? (
+                          <Check className="w-4 h-4 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        disabled={deletingId === item.id}
+                        className="p-2 rounded-xl text-xs font-medium bg-slate-900/80 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 hover:border-rose-500/30 transition-all disabled:opacity-50 cursor-pointer"
+                        title="ลบสคริปต์"
+                      >
+                        {deletingId === item.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-rose-400" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="flex items-center space-x-1 shrink-0">
+                  {/* Target Audience Badge */}
+                  <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/60 text-xs space-y-1">
+                    <div className="flex items-center space-x-1.5 text-slate-400 font-medium">
+                      <Target className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>กลุ่มเป้าหมาย:</span>
+                    </div>
+                    <p className="text-slate-300 line-clamp-2 pl-5">
+                      {item.target_audience}
+                    </p>
+                  </div>
+
+                  {/* Feature Navigation Tabs */}
+                  <div className="flex items-center space-x-1 border-b border-slate-800/80 pb-2 text-xs font-semibold overflow-x-auto">
                     <button
-                      onClick={() => handleCopy(item.id, item.script_content)}
-                      className={`p-2 rounded-xl text-xs font-medium transition-all ${
-                        copiedId === item.id
-                          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                          : "bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-800"
+                      onClick={() => setActiveTab(item.id, "script")}
+                      className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap cursor-pointer ${
+                        currentTab === "script"
+                          ? "bg-purple-600/20 text-purple-300 border border-purple-500/40 font-bold"
+                          : "text-slate-400 hover:text-slate-200"
                       }`}
-                      title="คัดลอกสคริปต์"
                     >
-                      {copiedId === item.id ? (
-                        <Check className="w-4 h-4 text-emerald-400" />
-                      ) : (
-                        <Copy className="w-4 h-4" />
-                      )}
+                      🗣️ บทพูด
                     </button>
+
                     <button
-                      onClick={() => handleDelete(item.id)}
-                      disabled={deletingId === item.id}
-                      className="p-2 rounded-xl text-xs font-medium bg-slate-900/80 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 hover:border-rose-500/30 transition-all disabled:opacity-50"
-                      title="ลบสคริปต์"
+                      onClick={() => setActiveTab(item.id, "shotlist")}
+                      className={`px-3 py-1.5 rounded-lg flex items-center space-x-1 transition whitespace-nowrap cursor-pointer ${
+                        currentTab === "shotlist"
+                          ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold"
+                          : "text-slate-400 hover:text-slate-200"
+                      }`}
                     >
-                      {deletingId === item.id ? (
-                        <Loader2 className="w-4 h-4 animate-spin text-rose-400" />
-                      ) : (
-                        <Trash2 className="w-4 h-4" />
+                      <Clapperboard className="w-3.5 h-3.5" />
+                      <span>ตาราง B-Roll</span>
+                      {!isProOrAdmin && (
+                        <span className="px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px]">
+                          PRO
+                        </span>
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() => setActiveTab(item.id, "caption")}
+                      className={`px-3 py-1.5 rounded-lg flex items-center space-x-1 transition whitespace-nowrap cursor-pointer ${
+                        currentTab === "caption"
+                          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold"
+                          : "text-slate-400 hover:text-slate-200"
+                      }`}
+                    >
+                      <Hash className="w-3.5 h-3.5" />
+                      <span>แคปชัน</span>
+                      {!isProOrAdmin && (
+                        <span className="px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px]">
+                          PRO
+                        </span>
                       )}
                     </button>
                   </div>
+
+                  {/* Tab 1: Script Voiceover Content */}
+                  {currentTab === "script" && (
+                    <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800/80 text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-wrap max-h-60 overflow-y-auto custom-scrollbar">
+                      {item.script_content}
+                    </div>
+                  )}
+
+                  {/* Tab 2: Visual Shot-List Table (B-Roll) */}
+                  {currentTab === "shotlist" && (
+                    <div>
+                      {!isProOrAdmin ? (
+                        <div className="relative rounded-xl overflow-hidden border border-amber-500/30 bg-slate-950/90 p-1">
+                          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md text-center space-y-2">
+                            <Lock className="w-5 h-5 text-amber-400" />
+                            <p className="text-xs font-bold text-white">ตาราง B-Roll ถูกล็อกสำหรับผู้ใช้ Pro</p>
+                            <button
+                              onClick={() => setIsProModalOpen(true)}
+                              className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow flex items-center space-x-1 cursor-pointer"
+                            >
+                              <Crown className="w-3.5 h-3.5 fill-slate-950" />
+                              <span>ปลดล็อก Pro (199.-)</span>
+                            </button>
+                          </div>
+                          <div className="filter blur-md select-none pointer-events-none opacity-20 p-2 text-xs">
+                            <p className="font-bold text-amber-400">0-3s | 🎥 ซูมสินค้า | 🗣️ "อย่าเพิ่งเลื่อน..."</p>
+                            <p className="font-bold text-amber-400">3-7s | 🎥 สาธิตการใช้ | 🗣️ "ผลลัพธ์ว้าวมาก..."</p>
+                          </div>
+                        </div>
+                      ) : shotList.length > 0 ? (
+                        <div className="overflow-x-auto rounded-xl border border-slate-800 max-h-60 overflow-y-auto">
+                          <table className="w-full text-left text-xs">
+                            <thead className="bg-slate-900 text-purple-300 font-bold border-b border-slate-800">
+                              <tr>
+                                <th className="p-2.5">เวลา</th>
+                                <th className="p-2.5">🎥 ภาพ B-Roll</th>
+                                <th className="p-2.5">🗣️ เสียงพูด</th>
+                                <th className="p-2.5">📝 ซับกลางจอ</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-800 bg-slate-950/60 text-slate-200">
+                              {shotList.map((shot, idx) => (
+                                <tr key={idx}>
+                                  <td className="p-2.5 font-mono text-amber-400 font-bold whitespace-nowrap">{shot.time}</td>
+                                  <td className="p-2.5">{shot.visual}</td>
+                                  <td className="p-2.5 text-slate-300">{shot.audio}</td>
+                                  <td className="p-2.5 text-emerald-300 font-semibold">{shot.text_on_screen}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <div className="p-4 text-center text-xs text-slate-400 bg-slate-950/80 rounded-xl border border-slate-800">
+                          <p>ไม่มีตาราง Shot-List แยกสำหรับรายการนี้</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Tab 3: TikTok Caption & Hashtags */}
+                  {currentTab === "caption" && (
+                    <div>
+                      {!isProOrAdmin ? (
+                        <div className="relative rounded-xl overflow-hidden border border-amber-500/30 bg-slate-950/90 p-4">
+                          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md text-center space-y-2">
+                            <Lock className="w-5 h-5 text-amber-400" />
+                            <p className="text-xs font-bold text-white">แคปชันและแฮชแท็กถูกล็อกสำหรับผู้ใช้ Pro</p>
+                            <button
+                              onClick={() => setIsProModalOpen(true)}
+                              className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow flex items-center space-x-1 cursor-pointer"
+                            >
+                              <Crown className="w-3.5 h-3.5 fill-slate-950" />
+                              <span>ปลดล็อก Pro (199.-)</span>
+                            </button>
+                          </div>
+                          <div className="filter blur-md select-none pointer-events-none opacity-20 text-xs space-y-2">
+                            <p className="text-emerald-400">📌 แคปชัน: ต้องลองตัวนี้เลยแก...</p>
+                            <p className="text-purple-400">🏷️ แฮชแท็ก: #รีวิวสินค้า #TikTokShop</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 text-xs space-y-2 text-slate-200">
+                          <div>
+                            <span className="font-bold text-emerald-400">📌 แคปชัน: </span>
+                            <span>{item.caption || `รีวิว ${item.product_name} คุ้มค่าตอบโจทย์!`}</span>
+                          </div>
+                          <div>
+                            <span className="font-bold text-purple-400">🏷️ แฮชแท็ก: </span>
+                            <span className="font-mono text-purple-300">{item.hashtags || "#TikTokShop #รีวิวของดีบอกต่อ"}</span>
+                          </div>
+                          <div>
+                            <span className="font-bold text-amber-400">💬 ปักตะกร้า: </span>
+                            <span className="text-amber-200">{item.pinned_comment || "กดที่ตะกร้าเหลืองซ้ายล่างได้เลยครับ!"}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
-                {/* Target Audience Badge */}
-                <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/60 text-xs space-y-1">
-                  <div className="flex items-center space-x-1.5 text-slate-400 font-medium">
-                    <Target className="w-3.5 h-3.5 text-indigo-400" />
-                    <span>กลุ่มเป้าหมาย:</span>
+                {/* Card Footer */}
+                <div className="pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-500">
+                  <div className="flex items-center space-x-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                    <span>{formatDate(item.created_at)}</span>
                   </div>
-                  <p className="text-slate-300 line-clamp-2 pl-5">
-                    {item.target_audience}
-                  </p>
-                </div>
-
-                {/* Script Body Preview / Full Text */}
-                <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800/80 text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-wrap max-h-60 overflow-y-auto custom-scrollbar">
-                  {item.script_content}
+                  <span className="text-[11px] text-slate-400">
+                    {item.script_content.trim().split(/\s+/).filter(Boolean).length} คำ
+                  </span>
                 </div>
               </div>
-
-              {/* Card Footer */}
-              <div className="mt-5 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-500">
-                <div className="flex items-center space-x-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                  <span>{formatDate(item.created_at)}</span>
-                </div>
-                <span className="text-[11px] text-slate-400">
-                  {item.script_content.trim().split(/\s+/).filter(Boolean).length} คำ
-                </span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
+
+      {/* Teleprompter Modal */}
+      <TeleprompterModal
+        isOpen={!!activeTeleprompterItem}
+        onClose={() => setActiveTeleprompterItem(null)}
+        scriptText={activeTeleprompterItem?.script_content || ""}
+        productName={activeTeleprompterItem?.product_name || ""}
+        isDemo={!isProOrAdmin}
+        onUpgradeClick={() => setIsProModalOpen(true)}
+      />
+
+      {/* Upgrade Pro Modal */}
+      <UpgradeProModal
+        isOpen={isProModalOpen}
+        onClose={() => setIsProModalOpen(false)}
+        defaultPlan="pro"
+        currentPlan={userType as any}
+      />
     </div>
   );
 }

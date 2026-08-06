@@ -27,6 +27,12 @@ CREATE TABLE IF NOT EXISTS public.script_history (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Ensure extra feature columns exist on script_history
+ALTER TABLE public.script_history ADD COLUMN IF NOT EXISTS shot_list JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.script_history ADD COLUMN IF NOT EXISTS caption TEXT DEFAULT '';
+ALTER TABLE public.script_history ADD COLUMN IF NOT EXISTS hashtags TEXT DEFAULT '';
+ALTER TABLE public.script_history ADD COLUMN IF NOT EXISTS pinned_comment TEXT DEFAULT '';
+
 -- 3. Enable Row Level Security (RLS)
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.script_history ENABLE ROW LEVEL SECURITY;
