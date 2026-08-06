@@ -283,12 +283,11 @@ export default function DashboardPage() {
 
         {/* Sub-headline & Description */}
         <div className="space-y-1.5">
-          <p className="text-lg sm:text-xl font-bold text-amber-300 flex items-center justify-center space-x-1.5">
-            <Sparkles className="w-5 h-5 text-amber-400" />
-            <span>Workflow ถ่ายคลิปรีวิวมืออาชีพจบในที่เดียว</span>
+          <p className="text-lg sm:text-xl font-bold text-slate-100">
+            สไตล์คนใช้จริง + ตารางมุมกล้อง B-Roll + อ่านบท Teleprompter ขณะถ่าย
           </p>
-          <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto">
-            มีสคริปต์บทพูด + ตารางบอกมุมกล้อง B-Roll + เครื่องอ่านบท Teleprompter ขณะอัดคลิป
+          <p className="text-sm sm:text-base text-slate-400 max-w-xl mx-auto">
+            Workflow การถ่ายคลิปแบบมืออาชีพจบในที่เดียว พร้อมแคปชันและแฮชแท็กติดเทรนด์
           </p>
         </div>
 
@@ -326,7 +325,7 @@ export default function DashboardPage() {
                   className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-bold shadow-md shadow-amber-500/20 transition flex items-center space-x-1 cursor-pointer"
                 >
                   <Crown className="w-3.5 h-3.5 fill-slate-950" />
-                  <span>อัปเกรด Pro รับ Teleprompter & B-Roll (199.-)</span>
+                  <span>อัปเกรด Pro Workflow (199.-)</span>
                 </button>
               </div>
             ) : (
@@ -351,7 +350,7 @@ export default function DashboardPage() {
                   className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-black shadow-md shadow-amber-500/20 transition flex items-center space-x-1 cursor-pointer"
                 >
                   <Crown className="w-3.5 h-3.5 fill-slate-950" />
-                  <span>Pro (199.-)</span>
+                  <span>Pro Workflow (199.-)</span>
                 </button>
               </div>
             )}
