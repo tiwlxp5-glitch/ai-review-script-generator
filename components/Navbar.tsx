@@ -131,8 +131,8 @@ export default function Navbar() {
 
                   {/* Premium Gold Plan Badge */}
                   {planType === "admin" ? (
-                    <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/40 font-extrabold text-[10px]">
-                      <Crown className="w-3 h-3 text-purple-400 fill-purple-400" />
+                    <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-lg bg-gradient-to-r from-red-500 via-amber-400 via-emerald-400 via-sky-400 to-purple-500 text-slate-950 border border-white/40 font-black text-[10px] shadow-md shadow-purple-500/30">
+                      <Crown className="w-3 h-3 text-slate-950 fill-slate-950" />
                       <span>ADMIN</span>
                     </span>
                   ) : planType === "pro" ? (

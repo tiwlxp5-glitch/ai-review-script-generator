@@ -295,8 +295,8 @@ export default function DashboardPage() {
         {usage && (
           <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
             {usage.user_type === "admin" ? (
-              <span className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-semibold shadow-sm">
-                <Crown className="w-4 h-4 text-purple-400" />
+              <span className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-red-500 via-amber-400 via-emerald-400 via-sky-400 to-purple-500 text-slate-950 text-xs font-black shadow-lg shadow-purple-500/25 border border-white/40">
+                <Crown className="w-4 h-4 text-slate-950 fill-slate-950" />
                 <span>ผู้ดูแลระบบ (ใช้งานไม่จำกัด)</span>
               </span>
             ) : usage.user_type === "pro" ? (
