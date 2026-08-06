@@ -819,33 +819,60 @@ export default function DashboardPage() {
                   ) : (
                     /* Actual Pro / Admin Shot-list Table */
                     shotList.length > 0 ? (
-                      <div className="overflow-x-auto rounded-2xl border border-slate-800">
-                        <table className="w-full text-left text-xs sm:text-sm">
-                          <thead className="bg-slate-900/90 text-purple-300 font-bold border-b border-slate-800">
-                            <tr>
-                              <th className="p-3 sm:p-4 w-20">เวลา</th>
-                              <th className="p-3 sm:p-4">🎥 ภาพที่ต้องถ่าย (B-Roll)</th>
-                              <th className="p-3 sm:p-4">🗣️ เสียงพูด</th>
-                              <th className="p-3 sm:p-4">📝 ขึ้นซับกลางจอ</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-slate-800/60 bg-slate-950/60 text-slate-200">
-                            {shotList.map((item, idx) => (
-                              <tr key={idx} className="hover:bg-slate-900/50 transition">
-                                <td className="p-3 sm:p-4 font-mono text-amber-400 font-bold whitespace-nowrap">
-                                  {item.time}
-                                </td>
-                                <td className="p-3 sm:p-4 leading-relaxed">{item.visual}</td>
-                                <td className="p-3 sm:p-4 leading-relaxed text-slate-300">
-                                  {item.audio}
-                                </td>
-                                <td className="p-3 sm:p-4 leading-relaxed text-emerald-300 font-semibold">
-                                  {item.text_on_screen}
-                                </td>
+                      <div>
+                        {/* Mobile View: Stacked Cards for Phone Screens */}
+                        <div className="space-y-3 sm:hidden max-h-80 overflow-y-auto pr-1">
+                          {shotList.map((item, idx) => (
+                            <div key={idx} className="p-3.5 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2 text-xs">
+                              <div className="flex items-center justify-between border-b border-slate-800/80 pb-1.5">
+                                <span className="font-mono text-amber-400 font-bold px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-[11px]">
+                                  ⏱️ {item.time}
+                                </span>
+                                <span className="text-emerald-300 font-bold text-[11px] truncate max-w-[180px]">
+                                  📝 {item.text_on_screen}
+                                </span>
+                              </div>
+                              <div className="space-y-1.5 text-slate-200">
+                                <p className="leading-relaxed">
+                                  <strong className="text-purple-300 font-semibold">🎥 ภาพ B-Roll:</strong> {item.visual}
+                                </p>
+                                <p className="leading-relaxed text-slate-300">
+                                  <strong className="text-indigo-300 font-semibold">🗣️ เสียงพูด:</strong> {item.audio}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Desktop & Tablet View: Wide Scrollable Table */}
+                        <div className="hidden sm:block overflow-x-auto rounded-2xl border border-slate-800 max-h-96 overflow-y-auto">
+                          <table className="w-full min-w-[600px] text-left text-xs sm:text-sm">
+                            <thead className="bg-slate-900/90 text-purple-300 font-bold border-b border-slate-800 sticky top-0">
+                              <tr>
+                                <th className="p-3 sm:p-4 w-20 whitespace-nowrap">เวลา</th>
+                                <th className="p-3 sm:p-4 w-2/5 min-w-[180px]">🎥 ภาพที่ต้องถ่าย (B-Roll)</th>
+                                <th className="p-3 sm:p-4 w-2/5 min-w-[200px]">🗣️ เสียงพูด</th>
+                                <th className="p-3 sm:p-4 w-1/5 min-w-[140px]">📝 ขึ้นซับกลางจอ</th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                            </thead>
+                            <tbody className="divide-y divide-slate-800/60 bg-slate-950/60 text-slate-200">
+                              {shotList.map((item, idx) => (
+                                <tr key={idx} className="hover:bg-slate-900/50 transition">
+                                  <td className="p-3 sm:p-4 font-mono text-amber-400 font-bold whitespace-nowrap">
+                                    {item.time}
+                                  </td>
+                                  <td className="p-3 sm:p-4 leading-relaxed">{item.visual}</td>
+                                  <td className="p-3 sm:p-4 leading-relaxed text-slate-300">
+                                    {item.audio}
+                                  </td>
+                                  <td className="p-3 sm:p-4 leading-relaxed text-emerald-300 font-semibold">
+                                    {item.text_on_screen}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     ) : (
                       <div className="p-8 text-center text-slate-400 bg-slate-900/50 rounded-2xl border border-slate-800">

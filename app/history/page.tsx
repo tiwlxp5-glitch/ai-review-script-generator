@@ -449,27 +449,54 @@ export default function HistoryPage() {
                           </div>
                         </div>
                       ) : (
-                        <div className="overflow-x-auto rounded-xl border border-slate-800 max-h-60 overflow-y-auto">
-                          <table className="w-full text-left text-xs">
-                            <thead className="bg-slate-900 text-purple-300 font-bold border-b border-slate-800">
-                              <tr>
-                                <th className="p-2.5">เวลา</th>
-                                <th className="p-2.5">🎥 ภาพ B-Roll</th>
-                                <th className="p-2.5">🗣️ เสียงพูด</th>
-                                <th className="p-2.5">📝 ซับกลางจอ</th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-800 bg-slate-950/60 text-slate-200">
-                              {shotList.map((shot, idx) => (
-                                <tr key={idx}>
-                                  <td className="p-2.5 font-mono text-amber-400 font-bold whitespace-nowrap">{shot.time}</td>
-                                  <td className="p-2.5">{shot.visual}</td>
-                                  <td className="p-2.5 text-slate-300">{shot.audio}</td>
-                                  <td className="p-2.5 text-emerald-300 font-semibold">{shot.text_on_screen}</td>
+                        <div>
+                          {/* Mobile View: Clean Stacked Cards for Phone Screens */}
+                          <div className="space-y-3 sm:hidden max-h-72 overflow-y-auto pr-1">
+                            {shotList.map((shot, idx) => (
+                              <div key={idx} className="p-3 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2 text-xs">
+                                <div className="flex items-center justify-between border-b border-slate-800/80 pb-1.5">
+                                  <span className="font-mono text-amber-400 font-bold px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-[11px]">
+                                    ⏱️ {shot.time}
+                                  </span>
+                                  <span className="text-emerald-300 font-bold text-[11px] truncate max-w-[170px]">
+                                    📝 {shot.text_on_screen}
+                                  </span>
+                                </div>
+                                <div className="space-y-1 text-slate-200">
+                                  <p className="leading-relaxed">
+                                    <strong className="text-purple-300 font-semibold">🎥 ภาพ B-Roll:</strong> {shot.visual}
+                                  </p>
+                                  <p className="leading-relaxed text-slate-300">
+                                    <strong className="text-indigo-300 font-semibold">🗣️ เสียงพูด:</strong> {shot.audio}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Desktop & Tablet View: Spacious Scrollable Table */}
+                          <div className="hidden sm:block overflow-x-auto rounded-xl border border-slate-800 max-h-72 overflow-y-auto">
+                            <table className="w-full min-w-[600px] text-left text-xs">
+                              <thead className="bg-slate-900 text-purple-300 font-bold border-b border-slate-800 sticky top-0">
+                                <tr>
+                                  <th className="p-2.5 w-20 whitespace-nowrap">เวลา</th>
+                                  <th className="p-2.5 w-2/5 min-w-[180px]">🎥 ภาพ B-Roll</th>
+                                  <th className="p-2.5 w-2/5 min-w-[200px]">🗣️ เสียงพูด</th>
+                                  <th className="p-2.5 w-1/5 min-w-[140px]">📝 ซับกลางจอ</th>
                                 </tr>
-                              ))}
-                            </tbody>
-                          </table>
+                              </thead>
+                              <tbody className="divide-y divide-slate-800 bg-slate-950/60 text-slate-200">
+                                {shotList.map((shot, idx) => (
+                                  <tr key={idx} className="hover:bg-slate-900/50 transition">
+                                    <td className="p-2.5 font-mono text-amber-400 font-bold whitespace-nowrap">{shot.time}</td>
+                                    <td className="p-2.5 leading-relaxed">{shot.visual}</td>
+                                    <td className="p-2.5 leading-relaxed text-slate-300">{shot.audio}</td>
+                                    <td className="p-2.5 leading-relaxed text-emerald-300 font-semibold">{shot.text_on_screen}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                       )}
                     </div>
