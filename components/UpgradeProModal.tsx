@@ -11,6 +11,9 @@ import {
   Crown,
   MessageCircle,
   ShieldCheck,
+  Video,
+  Clapperboard,
+  Hash,
 } from "lucide-react";
 
 interface UpgradeProModalProps {
@@ -60,7 +63,7 @@ export default function UpgradeProModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
-      <div className="relative w-full max-w-2xl glass-card rounded-3xl p-5 sm:p-7 border border-purple-500/30 shadow-2xl bg-slate-950/95 space-y-6 text-slate-100 my-auto">
+      <div className="relative w-full max-w-2xl glass-card rounded-3xl p-5 sm:p-7 border border-purple-500/30 shadow-2xl bg-slate-950/95 space-y-5 text-slate-100 my-auto">
         {/* Ambient Glows */}
         <div className="absolute -top-12 -right-12 w-56 h-56 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-12 -left-12 w-56 h-56 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
@@ -68,7 +71,7 @@ export default function UpgradeProModal({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-white bg-slate-900/80 border border-slate-800 transition z-10"
+          className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-white bg-slate-900/80 border border-slate-800 transition z-10 cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -82,10 +85,16 @@ export default function UpgradeProModal({
           <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
             {isCurrentPlus ? "อัปเกรดเป็น Pro Plan" : "เลือกแพ็กเกจที่เหมาะกับคุณ"}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
-            {isCurrentPlus
-              ? "คุณเป็นสมาชิก Plus อยู่แล้ว อัปเกรดเป็น Pro เพื่อรับสิทธิ์ 200 ครั้ง/เดือน + ตาราง B-Roll และ Teleprompter!"
-              : "สร้างสคริปต์รีวิวสินค้า TikTok & Reels อย่างมืออาชีพประหยัดเวลาทำคลิปไปเกิน 80%"}
+        </div>
+
+        {/* Pro Value Banner */}
+        <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-indigo-500/15 border border-amber-500/30 text-slate-200 text-xs sm:text-sm space-y-1 text-center">
+          <p className="font-extrabold text-amber-300 flex items-center justify-center space-x-1.5">
+            <Crown className="w-4 h-4 text-amber-400 fill-amber-400" />
+            <span>Pro ไม่ใช่แค่เพิ่มจำนวนสคริปต์ แต่คือ Workflow ถ่ายคลิปจบในที่เดียว! 🎬</span>
+          </p>
+          <p className="text-slate-300 text-[11px] sm:text-xs">
+            มีตารางบอกมุมกล้อง B-Roll + เครื่องอ่านบท Teleprompter ขณะอัดคลิป + แฮชแท็กและปักตะกร้าครบเซ็ต
           </p>
         </div>
 
@@ -136,13 +145,13 @@ export default function UpgradeProModal({
                   <span className="text-3xl font-black text-white">99</span>
                   <span className="text-xs font-semibold text-slate-400">บาท / เดือน</span>
                 </div>
-                <p className="text-[11px] text-slate-400 pt-0.5">ตกครั้งละประมาณ 0.99 บาท</p>
+                <p className="text-[11px] text-slate-400 pt-0.5">เน้นสร้างบทพูดสคริปต์รีวิวมาตรฐาน</p>
               </div>
 
               <ul className="space-y-2 text-xs text-slate-300">
                 <li className="flex items-center space-x-2">
                   <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>สร้างสคริปต์ <strong>100 ครั้ง / เดือน</strong></span>
+                  <span>สร้างสคริปต์บทพูด <strong>100 ครั้ง / เดือน</strong></span>
                 </li>
                 <li className="flex items-center space-x-2">
                   <Check className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -158,7 +167,7 @@ export default function UpgradeProModal({
                 </li>
                 <li className="flex items-center space-x-2 text-slate-500">
                   <X className="w-4 h-4 text-slate-600 shrink-0" />
-                  <span className="line-through">โหมดอ่านบท Teleprompter</span>
+                  <span className="line-through">เครื่องอ่านบท Teleprompter</span>
                 </li>
               </ul>
             </div>
@@ -181,7 +190,7 @@ export default function UpgradeProModal({
               </div>
             ) : (
               <div className="absolute -top-3 right-4 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-[10px] uppercase tracking-wider shadow-md">
-                {isCurrentPlus ? "⚡ อัปเกรดบวกเพิ่ม 100.-" : "🔥 คุ้มค่าที่สุด"}
+                {isCurrentPlus ? "⚡ เพิ่ม 100.- ได้เวิร์กโฟลว์ครบ" : "🔥 คุ้มค่าที่สุด (มืออาชีพ)"}
               </div>
             )}
 
@@ -189,7 +198,7 @@ export default function UpgradeProModal({
               <div className="flex items-center justify-between">
                 <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center space-x-1">
                   <Crown className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                  <span>Pro Plan (แนะนำ)</span>
+                  <span>Pro Plan (เวิร์กโฟลว์ครบ)</span>
                 </span>
                 {isCurrentProOrAdmin ? (
                   <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-extrabold border border-emerald-500/30">
@@ -210,8 +219,8 @@ export default function UpgradeProModal({
                 </div>
                 <p className="text-[11px] text-amber-300/90 font-medium pt-0.5">
                   {isCurrentPlus
-                    ? "เพิ่มเงินอีกเพียง 100 บาท เพื่อปลดล็อกโควตา 200 ครั้ง + ฟีเจอร์ Pro ทั้งหมด!"
-                    : "ตกครั้งละเพียง 0.99 บาท + ฟีเจอร์ระดับพรีเมียมครบเซ็ต"}
+                    ? "เพิ่มเงินเพียง 100 บ. ปลดล็อกตาราง B-Roll + Teleprompter ถ่ายคลิปง่ายขึ้น 10 เท่า!"
+                    : "ครบจบในที่เดียว: สคริปต์ + ตาราง B-Roll + เครื่องมืออ่านบท Teleprompter"}
                 </p>
               </div>
 
@@ -221,20 +230,20 @@ export default function UpgradeProModal({
                   <span>สร้างสคริปต์จุใจ <strong>200 ครั้ง / เดือน</strong></span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span><strong>สคริปต์ตาราง Shot-by-Shot Visual B-Roll</strong></span>
+                  <Clapperboard className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span><strong>ตารางถ่าย B-Roll:</strong> บอกมุมกล้อง + ซับกลางจอ</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <Video className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span><strong>อ่านบท Teleprompter:</strong> สลับเลื่อนอ่านบทขณะอัดคลิป</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <Hash className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span><strong>แคปชัน & แฮชแท็ก:</strong> พร้อมข้อความปักตะกร้า</span>
                 </li>
                 <li className="flex items-center space-x-2">
                   <Check className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span><strong>ใช้งานโหมดเครื่องอ่านบท Teleprompter</strong></span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span><strong>ฟรี! แคปชัน TikTok & แฮชแท็ก + ปักตะกร้า</strong></span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>เลือก Tone of Voice <strong>5 สไตล์</strong></span>
+                  <span>เลือก Tone of Voice <strong>ครบทั้ง 10 สไตล์</strong></span>
                 </li>
               </ul>
             </div>
@@ -249,7 +258,7 @@ export default function UpgradeProModal({
               <strong className="text-amber-400 font-bold">
                 {selectedPlan === "pro" ? "199 บาท (Pro)" : "99 บาท (Plus)"}
               </strong>{" "}
-              กับแอดมิน เพื่อปรับปรับบัญชีทันที:
+              กับแอดมิน เพื่ออัปเกรดบัญชีทันที:
             </p>
             <div className="flex items-center justify-center space-x-2">
               <span className="text-xs font-medium text-slate-400">Line ID:</span>
@@ -258,7 +267,7 @@ export default function UpgradeProModal({
               </code>
               <button
                 onClick={handleCopyLineId}
-                className="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-medium border border-emerald-500/40 transition flex items-center space-x-1"
+                className="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-medium border border-emerald-500/40 transition flex items-center space-x-1 cursor-pointer"
               >
                 {copiedLineId ? (
                   <>
@@ -279,7 +288,7 @@ export default function UpgradeProModal({
             href={lineUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className={`w-full py-4 px-6 rounded-2xl text-base font-bold transition duration-200 active:scale-[0.99] flex items-center justify-center space-x-2 shadow-xl ${
+            className={`w-full py-4 px-6 rounded-2xl text-base font-bold transition duration-200 active:scale-[0.99] flex items-center justify-center space-x-2 shadow-xl cursor-pointer ${
               selectedPlan === "pro"
                 ? "text-slate-950 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 shadow-amber-500/30"
                 : "text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-indigo-500/30"

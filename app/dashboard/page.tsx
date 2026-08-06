@@ -283,11 +283,12 @@ export default function DashboardPage() {
 
         {/* Sub-headline & Description */}
         <div className="space-y-1.5">
-          <p className="text-lg sm:text-xl font-bold text-slate-100">
-            สไตล์คนใช้จริง + ตารางถ่าย B-Roll + อ่านบท Teleprompter
+          <p className="text-lg sm:text-xl font-bold text-amber-300 flex items-center justify-center space-x-1.5">
+            <Sparkles className="w-5 h-5 text-amber-400" />
+            <span>Workflow ถ่ายคลิปรีวิวมืออาชีพจบในที่เดียว</span>
           </p>
-          <p className="text-sm sm:text-base text-slate-400 max-w-xl mx-auto">
-            สร้างสคริปต์สั้นกระชับ ปิดการขายง่าย พร้อมแคปชันและแฮชแท็กติดเทรนด์
+          <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto">
+            มีสคริปต์บทพูด + ตารางบอกมุมกล้อง B-Roll + เครื่องอ่านบท Teleprompter ขณะอัดคลิป
           </p>
         </div>
 
