@@ -25,14 +25,14 @@ export default function HomePage() {
             href="/dashboard"
             className="w-full sm:w-auto px-8 py-4 rounded-xl text-base font-bold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 shadow-xl shadow-purple-600/30 transition-all duration-200 flex items-center justify-center space-x-2 group"
           >
-            <span>เริ่มสร้างสคริปต์เลย</span>
+            <span>ทดลองสร้างสคริปต์ฟรี (ไม่ต้องสมัครก่อน) ✨</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link
-            href="/signup"
-            className="w-full sm:w-auto px-8 py-4 rounded-xl text-base font-semibold text-slate-200 bg-slate-900/80 hover:bg-slate-800 border border-slate-800 transition"
+            href="/dashboard"
+            className="w-full sm:w-auto px-8 py-4 rounded-xl text-base font-semibold text-slate-200 bg-slate-900/80 hover:bg-slate-800 border border-slate-800 transition text-center"
           >
-            สมัครสมาชิกฟรี
+            ไปที่เครื่องมือสร้างสคริปต์
           </Link>
         </div>
       </section>

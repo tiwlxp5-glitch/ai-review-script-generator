@@ -26,6 +26,7 @@ import UpgradeProModal from "@/components/UpgradeProModal";
 import TeleprompterModal from "@/components/TeleprompterModal";
 import AIBrainComparisonModal from "@/components/AIBrainComparisonModal";
 import ProductAnalyzerModal from "@/components/ProductAnalyzerModal";
+import AuthModal from "@/components/AuthModal";
 
 interface UsageData {
   user_type: "admin" | "pro" | "plus" | "free" | "guest";
@@ -155,6 +156,7 @@ export default function DashboardPage() {
   const [isTeleprompterOpen, setIsTeleprompterOpen] = useState(false);
   const [isBrainModalOpen, setIsBrainModalOpen] = useState(false);
   const [isAnalyzerModalOpen, setIsAnalyzerModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Live Countdown & Progress States
   const [countdown, setCountdown] = useState(5);
@@ -240,19 +242,18 @@ export default function DashboardPage() {
     setIsProModalOpen(true);
   };
 
-  const handleGenerate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!productName.trim()) {
-      setError("กรุณากรอกชื่อสินค้าที่ต้องการรีวิว");
-      return;
-    }
-
+  const triggerScriptGeneration = async (formData: {
+    product_name: string;
+    target_audience: string;
+    product_link_or_extra: string;
+    tone_style: string;
+    script_length: "short" | "medium" | "long";
+  }) => {
     setLoading(true);
     setError(null);
     setCopied(false);
     setCopiedCaption(false);
 
-    // Initialize Countdown & Progress states
     setCountdown(5);
     setLoadingProgress(5);
     setStepMessage("🧠 AI กำลังวิเคราะห์สินค้าและกลุ่มเป้าหมาย...");
@@ -263,7 +264,6 @@ export default function DashboardPage() {
       const remainingSec = Math.max(0, Math.ceil(5 - elapsedSec));
       setCountdown(remainingSec);
 
-      // Smooth progress from 5% to 92%
       const newProgress = Math.min(92, Math.round(5 + elapsedSec * 18));
       setLoadingProgress(newProgress);
 
@@ -282,18 +282,16 @@ export default function DashboardPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          product_name: productName,
-          target_audience: targetAudience,
-          product_link_or_extra: productLinkOrExtra,
-          tone_style: toneStyle,
-          script_length: scriptLength,
-        }),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 401) {
+          setIsAuthModalOpen(true);
+          return;
+        }
         if (data.quotaExceeded || response.status === 403) {
           const quotaMsg = data.error || "คุณใช้สิทธิ์ทดลองฟรีครบ 7 ครั้งแล้ว! อัปเกรดเป็น Pro Plan เพียง 199.- เพื่อสร้างสคริปต์ไม่อั้น 200 ครั้ง/เดือน + ปลดล็อกตาราง B-Roll";
           setError(quotaMsg);
@@ -327,6 +325,33 @@ export default function DashboardPage() {
       clearInterval(timerInterval);
       setLoading(false);
     }
+  };
+
+  const handleGenerate = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!productName.trim()) {
+      setError("กรุณากรอกชื่อสินค้าที่ต้องการรีวิว");
+      return;
+    }
+
+    const currentForm = {
+      product_name: productName,
+      target_audience: targetAudience,
+      product_link_or_extra: productLinkOrExtra,
+      tone_style: toneStyle,
+      script_length: scriptLength,
+    };
+
+    // Guest Auth Intercept
+    if (!usage || usage.user_type === "guest") {
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("pending_script_form", JSON.stringify(currentForm));
+      }
+      setIsAuthModalOpen(true);
+      return;
+    }
+
+    await triggerScriptGeneration(currentForm);
   };
 
   const activeScriptText = scriptMode === "custom" ? editedScript : (generatedScript || "");
@@ -1339,6 +1364,42 @@ export default function DashboardPage() {
         }}
         userPlan={usage?.user_type}
         onUpgradeClick={(plan) => openUpgradeModal(plan)}
+      />
+
+      {/* Auth Modal for Try-Before-Login PLG Flow */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onAuthSuccess={async () => {
+          await fetchUsage();
+          let formToUse = {
+            product_name: productName,
+            target_audience: targetAudience,
+            product_link_or_extra: productLinkOrExtra,
+            tone_style: toneStyle,
+            script_length: scriptLength,
+          };
+          if (typeof window !== "undefined") {
+            const pendingStr = sessionStorage.getItem("pending_script_form");
+            if (pendingStr) {
+              try {
+                const parsed = JSON.parse(pendingStr);
+                sessionStorage.removeItem("pending_script_form");
+                formToUse = { ...formToUse, ...parsed };
+                if (parsed.product_name) setProductName(parsed.product_name);
+                if (parsed.target_audience) setTargetAudience(parsed.target_audience);
+                if (parsed.product_link_or_extra) setProductLinkOrExtra(parsed.product_link_or_extra);
+                if (parsed.tone_style) setToneStyle(parsed.tone_style);
+                if (parsed.script_length) setScriptLength(parsed.script_length);
+              } catch (e) {
+                console.error("Pending form parse error:", e);
+              }
+            }
+          }
+          if (formToUse.product_name) {
+            triggerScriptGeneration(formToUse);
+          }
+        }}
       />
     </div>
   );
