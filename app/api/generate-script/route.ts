@@ -237,8 +237,12 @@ export async function POST(request: Request) {
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const modelsToTry = [
-      "gemini-2.0-flash",
+      "gemini-1.5-flash-latest",
+      "gemini-1.5-pro-latest",
+      "gemini-1.5-flash-002",
+      "gemini-1.5-flash-001",
       "gemini-1.5-flash",
+      "gemini-pro",
     ];
 
     let rawOutput = "";
