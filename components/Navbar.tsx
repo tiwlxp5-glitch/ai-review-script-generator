@@ -12,6 +12,8 @@ import {
   Crown,
   Sparkles,
   Edit2,
+  Menu,
+  X,
 } from "lucide-react";
 import EditDisplayNameModal from "./EditDisplayNameModal";
 
@@ -22,6 +24,7 @@ export default function Navbar() {
   const [displayName, setDisplayName] = useState<string>("");
   const [planType, setPlanType] = useState<string>("free");
   const [isEditNameModalOpen, setIsEditNameModalOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const supabase = createClient();
 
   const fetchProfile = async () => {
@@ -83,7 +86,13 @@ export default function Navbar() {
     };
   }, [supabase]);
 
+  // Close menu when route changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
+
   const handleSignOut = async () => {
+    setIsMenuOpen(false);
     await supabase.auth.signOut();
     router.push("/login");
     router.refresh();
@@ -95,7 +104,7 @@ export default function Navbar() {
     <>
       <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/85 backdrop-blur-xl transition-all">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 h-13 sm:h-16 flex items-center justify-between">
-          {/* Left Brand Logo & Navigation Links */}
+          {/* Left Brand Logo & Desktop Navigation Links */}
           <div className="flex items-center space-x-2 sm:space-x-5">
             <Link href="/" className="flex items-center space-x-2 shrink-0 group">
               <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/25 border border-purple-400/30 group-hover:scale-105 transition duration-200">
@@ -135,62 +144,64 @@ export default function Navbar() {
             </nav>
           </div>
 
-          {/* User Profile & Actions */}
+          {/* User Profile & Actions / Mobile Hamburger Button */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             {user ? (
-              <div className="flex items-center space-x-1.5 sm:space-x-2">
-                {/* Mobile History Link */}
-                <Link
-                  href="/history"
-                  className={`flex sm:hidden items-center space-x-1 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    isCurrent("/history")
-                      ? "bg-purple-600/25 text-purple-300 border border-purple-500/40 shadow-sm"
-                      : "bg-slate-900/90 text-slate-300 border border-slate-800 hover:border-purple-500/30"
-                  }`}
-                >
-                  <History className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                  <span>ประวัติ</span>
-                </Link>
+              <div className="flex items-center space-x-2">
+                {/* Desktop Profile Badge */}
+                <div className="hidden sm:flex items-center space-x-2">
+                  <button
+                    onClick={() => setIsEditNameModalOpen(true)}
+                    title="คลิกเพื่อแก้ไขชื่อผู้ใช้งาน"
+                    className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/40 text-xs text-slate-200 font-medium transition group cursor-pointer"
+                  >
+                    <div className="w-5 h-5 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center border border-purple-500/20 group-hover:scale-105 transition-transform shrink-0">
+                      <User className="w-3 h-3" />
+                    </div>
+                    <span className="max-w-[140px] truncate font-semibold text-xs">
+                      {displayName}
+                    </span>
 
-                {/* Clickable Profile Badge */}
+                    {/* Premium Plan Badge */}
+                    {planType === "admin" ? (
+                      <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-lg bg-gradient-to-r from-red-500 via-amber-400 via-emerald-400 via-sky-400 to-purple-500 text-slate-950 border border-white/40 font-black text-[10px] shadow-md shadow-purple-500/30">
+                        <Crown className="w-3 h-3 text-slate-950 fill-slate-950 shrink-0" />
+                        <span>ADM</span>
+                      </span>
+                    ) : planType === "pro" ? (
+                      <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-lg bg-gradient-to-r from-amber-500/25 via-yellow-500/25 to-amber-500/25 text-amber-300 border border-amber-500/50 font-extrabold text-[10px] shadow-md shadow-amber-500/20 animate-pulse">
+                        <Crown className="w-3 h-3 text-amber-400 fill-amber-400 shrink-0" />
+                        <span>PRO</span>
+                      </span>
+                    ) : planType === "plus" ? (
+                      <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-extrabold text-[10px]">
+                        <Sparkles className="w-3 h-3 text-indigo-400 shrink-0" />
+                        <span>PLUS</span>
+                      </span>
+                    ) : null}
+                  </button>
+
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 text-xs font-semibold transition"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>ออกจากระบบ</span>
+                  </button>
+                </div>
+
+                {/* Mobile / Compact Hamburger Trigger Button */}
                 <button
-                  onClick={() => setIsEditNameModalOpen(true)}
-                  title="คลิกเพื่อแก้ไขชื่อผู้ใช้งาน"
-                  className="flex items-center space-x-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-purple-500/40 text-xs text-slate-200 font-medium transition group cursor-pointer"
+                  type="button"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:text-white hover:border-purple-500/40 transition cursor-pointer flex items-center justify-center space-x-1.5"
+                  aria-label="Toggle menu"
                 >
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center border border-purple-500/20 group-hover:scale-105 transition-transform shrink-0">
-                    <User className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                  </div>
-                  <span className="max-w-[65px] xs:max-w-[110px] sm:max-w-[160px] truncate font-semibold text-[11px] sm:text-xs">
-                    {displayName}
-                  </span>
-
-                  {/* Premium Gold Plan Badge */}
-                  {planType === "admin" ? (
-                    <span className="inline-flex items-center space-x-0.5 sm:space-x-1 px-1.5 sm:px-2.5 py-0.5 rounded-lg bg-gradient-to-r from-red-500 via-amber-400 via-emerald-400 via-sky-400 to-purple-500 text-slate-950 border border-white/40 font-black text-[9px] sm:text-[10px] shadow-md shadow-purple-500/30">
-                      <Crown className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-950 fill-slate-950 shrink-0" />
-                      <span>ADM</span>
-                    </span>
-                  ) : planType === "pro" ? (
-                    <span className="inline-flex items-center space-x-0.5 sm:space-x-1 px-1.5 sm:px-2.5 py-0.5 rounded-lg bg-gradient-to-r from-amber-500/25 via-yellow-500/25 to-amber-500/25 text-amber-300 border border-amber-500/50 font-extrabold text-[9px] sm:text-[10px] shadow-md shadow-amber-500/20 animate-pulse">
-                      <Crown className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-amber-400 fill-amber-400 shrink-0" />
-                      <span>PRO</span>
-                    </span>
-                  ) : planType === "plus" ? (
-                    <span className="inline-flex items-center space-x-0.5 sm:space-x-1 px-1.5 sm:px-2.5 py-0.5 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-extrabold text-[9px] sm:text-[10px]">
-                      <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-indigo-400 shrink-0" />
-                      <span>PLUS</span>
-                    </span>
-                  ) : null}
-                </button>
-
-                {/* Sign Out Button */}
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center space-x-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 text-xs font-semibold transition"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">ออกจากระบบ</span>
+                  {isMenuOpen ? (
+                    <X className="w-5 h-5 text-purple-400" />
+                  ) : (
+                    <Menu className="w-5 h-5 text-slate-200" />
+                  )}
                 </button>
               </div>
             ) : (
@@ -211,6 +222,98 @@ export default function Navbar() {
             )}
           </div>
         </div>
+
+        {/* Mobile / Dropdown Hamburger Slide-over Menu */}
+        {isMenuOpen && user && (
+          <div className="border-t border-slate-800/80 bg-slate-950/95 backdrop-blur-2xl p-4 space-y-4 shadow-2xl animate-in slide-in-from-top-2 duration-200">
+            {/* User Profile Card */}
+            <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-3">
+              <div className="flex items-center space-x-3 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-300 flex items-center justify-center border border-purple-500/30 shrink-0">
+                  <User className="w-4 h-4" />
+                </div>
+                <div className="min-w-0 space-y-0.5">
+                  <div className="flex items-center space-x-1.5">
+                    <span className="font-extrabold text-sm text-white truncate">
+                      {displayName}
+                    </span>
+                    {planType === "admin" ? (
+                      <span className="px-2 py-0.5 rounded-md bg-gradient-to-r from-red-500 via-amber-400 to-purple-500 text-slate-950 font-black text-[9px]">
+                        ADM
+                      </span>
+                    ) : planType === "pro" ? (
+                      <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40 font-extrabold text-[9px]">
+                        PRO
+                      </span>
+                    ) : planType === "plus" ? (
+                      <span className="px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-extrabold text-[9px]">
+                        PLUS
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-md bg-slate-800 text-slate-400 font-bold text-[9px]">
+                        FREE
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-slate-400">บัญชีผู้ใช้งาน</p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setIsEditNameModalOpen(true);
+                }}
+                className="px-3 py-1.5 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 text-xs font-bold transition flex items-center space-x-1 shrink-0 cursor-pointer"
+              >
+                <Edit2 className="w-3.5 h-3.5" />
+                <span>แก้ไขชื่อ</span>
+              </button>
+            </div>
+
+            {/* Navigation Options List */}
+            <div className="space-y-1.5">
+              <Link
+                href="/"
+                onClick={() => setIsMenuOpen(false)}
+                className={`flex items-center space-x-3 p-3 rounded-xl text-xs font-bold transition ${
+                  isCurrent("/") || isCurrent("/dashboard")
+                    ? "bg-purple-600/20 text-purple-200 border border-purple-500/30 shadow-sm"
+                    : "text-slate-300 hover:bg-slate-900"
+                }`}
+              >
+                <Pencil className="w-4 h-4 text-purple-400" />
+                <span>สร้างสคริปต์ใหม่</span>
+              </Link>
+
+              <Link
+                href="/history"
+                onClick={() => setIsMenuOpen(false)}
+                className={`flex items-center space-x-3 p-3 rounded-xl text-xs font-bold transition ${
+                  isCurrent("/history")
+                    ? "bg-purple-600/20 text-purple-200 border border-purple-500/30 shadow-sm"
+                    : "text-slate-300 hover:bg-slate-900"
+                }`}
+              >
+                <History className="w-4 h-4 text-purple-400" />
+                <span>ประวัติสคริปต์ทั้งหมด</span>
+              </Link>
+            </div>
+
+            {/* Account Sign Out Action */}
+            <div className="pt-2 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="w-full p-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 text-xs font-bold transition flex items-center justify-center space-x-2 cursor-pointer"
+              >
+                <LogOut className="w-4 h-4 text-rose-400" />
+                <span>ออกจากระบบ</span>
+              </button>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Edit Display Name Modal */}
