@@ -831,16 +831,16 @@ export default function DashboardPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 px-6 rounded-2xl text-base font-bold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-purple-500/50 shadow-xl shadow-purple-600/30 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full py-4 px-4 sm:px-6 rounded-2xl text-xs sm:text-base font-bold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-purple-500/50 shadow-xl shadow-purple-600/30 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-center"
           >
             {loading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin text-white" />
-                <span>กำลังออกแบบสคริปต์ + ตารางถ่าย B-Roll ด้วย AI...</span>
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-white shrink-0" />
+                <span>กำลังคิดสคริปต์ + ตาราง B-Roll ด้วย AI...</span>
               </>
             ) : (
               <>
-                <Zap className="w-5 h-5 text-white fill-white" />
+                <Zap className="w-5 h-5 text-white fill-white shrink-0" />
                 <span>สร้างสคริปต์รีวิวสินค้า</span>
               </>
             )}
@@ -850,24 +850,24 @@ export default function DashboardPage() {
 
       {/* Live Countdown & Progress Card */}
       {loading && (
-        <div className="glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-purple-500/40 shadow-2xl bg-slate-950/95 space-y-4 animate-in fade-in duration-200">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-300 shrink-0">
-                <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
+        <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-7 border border-purple-500/40 shadow-2xl bg-slate-950/95 space-y-3 sm:space-y-4 animate-in fade-in duration-200">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+            <div className="flex items-start space-x-3 min-w-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-300 shrink-0 mt-0.5 sm:mt-0">
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-purple-400" />
               </div>
-              <div>
-                <h3 className="text-xs sm:text-sm font-bold text-white flex items-center space-x-2">
-                  <span>{stepMessage}</span>
+              <div className="min-w-0 space-y-0.5">
+                <h3 className="text-xs sm:text-sm font-bold text-white leading-snug">
+                  {stepMessage}
                 </h3>
-                <p className="text-[11px] sm:text-xs text-slate-400">
+                <p className="text-[11px] sm:text-xs text-slate-400 leading-relaxed">
                   กำลังออกแบบสคริปต์ + ตาราง B-Roll ด้วย AI
                 </p>
               </div>
             </div>
 
             {/* Countdown Badge */}
-            <div className="px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-black flex items-center space-x-1.5 shrink-0 shadow-sm">
+            <div className="self-start sm:self-auto px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-black flex items-center space-x-1.5 shrink-0 shadow-sm">
               <Clock className="w-3.5 h-3.5 text-amber-400 animate-spin" />
               <span>อีกประมาณ {countdown} วินาที</span>
             </div>
