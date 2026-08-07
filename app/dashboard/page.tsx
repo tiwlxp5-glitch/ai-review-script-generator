@@ -442,9 +442,9 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Quota Usage Badge & Upgrade Action Buttons */}
-        {usage && (
-          <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
+        {/* Usage status badge bar (hidden for guests) */}
+        {usage && usage.user_type !== "guest" && (
+          <div className="pt-1">
             {usage.user_type === "admin" ? (
               <span className="inline-flex items-center space-x-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-red-500 via-amber-400 via-emerald-400 via-sky-400 to-purple-500 text-slate-950 text-xs font-black shadow-lg shadow-purple-500/25 border border-white/40">
                 <Crown className="w-4 h-4 text-slate-950 fill-slate-950" />
@@ -511,8 +511,8 @@ export default function DashboardPage() {
 
       {/* Main Input Form Card */}
       <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-slate-800/80 shadow-2xl bg-slate-950/80 backdrop-blur-xl space-y-4 sm:space-y-6">
-        {/* Low Quota / Expiration Warning Banner */}
-        {usage && usage.user_type !== "admin" && usage.remaining !== "unlimited" && typeof usage.remaining === "number" && usage.remaining <= 5 && (
+        {/* Low Quota / Expiration Warning Banner (hidden for guests & admins) */}
+        {usage && usage.user_type !== "admin" && usage.user_type !== "guest" && usage.remaining !== "unlimited" && typeof usage.remaining === "number" && usage.remaining <= 5 && (
           <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs sm:text-sm font-semibold flex items-center justify-between gap-3 animate-in fade-in duration-200">
             <div className="flex items-center space-x-2.5 min-w-0">
               <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
