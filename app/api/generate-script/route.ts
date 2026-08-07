@@ -55,7 +55,7 @@ export async function POST(request: Request) {
     else if (isPlus) planType = "plus";
 
     const defaultLimit = planType === "pro" ? 200 : planType === "plus" ? 100 : 7;
-    const userLimit = profile?.monthly_limit ?? defaultLimit;
+    const userLimit = planType === "free" ? 7 : (profile?.monthly_limit ?? defaultLimit);
     let usedCount = 0;
 
     if (!isAdmin) {

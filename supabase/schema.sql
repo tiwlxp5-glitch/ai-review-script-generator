@@ -4,13 +4,14 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     email TEXT,
     display_name TEXT,
     plan_type TEXT DEFAULT 'free',
-    monthly_limit INTEGER DEFAULT 3,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    monthly_limit INTEGER DEFAULT 7,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Ensure columns exist if table was already created
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS plan_type TEXT DEFAULT 'free';
-ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS monthly_limit INTEGER DEFAULT 3;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS monthly_limit INTEGER DEFAULT 7;
 
 -- Automatically set admin plan for tiwlxp5@gmail.com
 UPDATE public.profiles 

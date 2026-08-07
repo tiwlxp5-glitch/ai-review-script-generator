@@ -44,7 +44,7 @@ export async function GET() {
       else if (isPlus) planType = "plus";
 
       const defaultLimit = planType === "pro" ? 200 : planType === "plus" ? 100 : 7;
-      const userLimit = profile?.monthly_limit ?? defaultLimit;
+      const userLimit = planType === "free" ? 7 : (profile?.monthly_limit ?? defaultLimit);
 
       // Count scripts generated in last 7 days for free tier or monthly for paid tiers
       const windowStartDate = new Date();
