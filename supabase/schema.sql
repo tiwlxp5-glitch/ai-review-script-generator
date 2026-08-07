@@ -114,6 +114,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Grant execution to all roles so RPC can be invoked safely from backend routes
-GRANT EXECUTE ON FUNCTION public.upgrade_user_profile(UUID, TEXT, INTEGER) TO anon, authenticated, service_role;
+-- Revoke execute from public/anon/authenticated and grant ONLY to service_role for security
+REVOKE EXECUTE ON FUNCTION public.upgrade_user_profile(UUID, TEXT, INTEGER) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.upgrade_user_profile(UUID, TEXT, INTEGER) TO service_role;
+
+-- 8. Add Index for Script History Quota Counting Performance
+CREATE INDEX IF NOT EXISTS idx_script_history_user_created ON public.script_history (user_id, created_at);
+
 

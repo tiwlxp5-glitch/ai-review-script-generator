@@ -130,8 +130,8 @@ export async function POST(request: Request) {
       prompt = `คุณคือ "Senior High-Conversion Master Copywriter & Creative Video Director" ค่าตัว 1,000+ บาทต่อสคริปต์ มีความเชี่ยวชาญระดับสูงสุดด้านจิตวิทยาการขายและไวรัลวิดีโอสั้น (TikTok Shop, Instagram Reels, YouTube Shorts)
 
 โจทย์รีวิวสินค้า:
-- สินค้า: ${product_name}
-- กลุ่มเป้าหมาย: ${audience}${extraInfo}
+- สินค้า: <user_input>${product_name}</user_input>
+- กลุ่มเป้าหมาย: <user_input>${audience}</user_input>${extraInfo ? `\n- รายละเอียดสินค้า/จุดขายเด่นพิเศษ: <user_input>${extraInfo}</user_input>` : ""}
 - โทนอารมณ์ (Tone): ${selectedToneDescription}
 - ความยาวที่ต้องการ: ${lengthDesc}
 
@@ -164,8 +164,8 @@ export async function POST(request: Request) {
       prompt = `คุณคือ "Experienced Video Copywriter" ผู้เชี่ยวชาญการทำคอนเทนต์รีวิวสินค้าสร้างยอดขายระดับมืออาชีพ
 
 โจทย์รีวิวสินค้า:
-- สินค้า: ${product_name}
-- กลุ่มเป้าหมาย: ${audience}${extraInfo}
+- สินค้า: <user_input>${product_name}</user_input>
+- กลุ่มเป้าหมาย: <user_input>${audience}</user_input>${extraInfo ? `\n- รายละเอียดสินค้า/จุดขายเด่นพิเศษ: <user_input>${extraInfo}</user_input>` : ""}
 - โทนอารมณ์ (Tone): ${selectedToneDescription}
 - ความยาวที่ต้องการ: ${lengthDesc}
 
@@ -197,8 +197,8 @@ export async function POST(request: Request) {
       prompt = `คุณคือ "นักคิดสคริปต์รีวิวสินค้า TikTok" ที่เน้นภาษาพูดเป็นกันเอง เรียบง่าย และจริงใจ
 
 โจทย์รีวิวสินค้า:
-- สินค้า: ${product_name}
-- กลุ่มเป้าหมาย: ${audience}${extraInfo}
+- สินค้า: <user_input>${product_name}</user_input>
+- กลุ่มเป้าหมาย: <user_input>${audience}</user_input>${extraInfo ? `\n- รายละเอียดสินค้า/จุดขายเด่นพิเศษ: <user_input>${extraInfo}</user_input>` : ""}
 - โทนอารมณ์ (Tone): ${selectedToneDescription}
 - ความยาวที่ต้องการ: ${lengthDesc}
 
@@ -237,8 +237,6 @@ export async function POST(request: Request) {
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const modelsToTry = [
-      "gemini-3.6-flash",
-      "gemini-3.5-flash",
       "gemini-2.0-flash",
       "gemini-1.5-flash",
     ];

@@ -93,6 +93,45 @@ export default function TeleprompterModal({
     };
   }, [isPlaying, speed]);
 
+  const wakeLockRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // 1. Screen Wake Lock API to prevent phone screen dimming
+    const requestWakeLock = async () => {
+      if ("wakeLock" in navigator) {
+        try {
+          wakeLockRef.current = await (navigator as any).wakeLock.request("screen");
+        } catch (err) {
+          console.warn("Wake Lock request failed:", err);
+        }
+      }
+    };
+
+    requestWakeLock();
+
+    // 2. Keyboard shortcuts (Space to Play/Pause, Esc to Close)
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        setIsPlaying((prev) => !prev);
+      } else if (e.code === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      if (wakeLockRef.current) {
+        wakeLockRef.current.release().catch(() => {});
+        wakeLockRef.current = null;
+      }
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleResetScroll = () => {
@@ -103,7 +142,7 @@ export default function TeleprompterModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-slate-950 text-white select-none animate-in fade-in duration-200">
+    <div className="fixed inset-0 h-dvh min-h-dvh z-50 flex flex-col bg-slate-950 text-white select-none animate-in fade-in duration-200">
       {/* Top Header Bar */}
       <div className="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-b border-slate-800 bg-slate-900/90 z-20">
         <div className="flex items-center space-x-2.5 sm:space-x-3">

@@ -54,10 +54,8 @@ export async function GET(request: Request) {
         isVerified = true;
       }
     } catch (stripeErr) {
-      console.warn("Stripe session retrieve warning (falling back to query params):", stripeErr);
-      if (sessionId.startsWith("cs_") && (queryPlan === "plus" || queryPlan === "pro")) {
-        isVerified = true;
-      }
+      console.error("Stripe session retrieve error in verify-payment:", stripeErr);
+      isVerified = false;
     }
 
     if (isVerified && (targetUserId || loggedInUserId)) {
