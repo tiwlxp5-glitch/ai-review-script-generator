@@ -55,7 +55,7 @@ export default function AIBrainComparisonModal({
           <div className="rounded-2xl p-4 bg-slate-900/60 border border-slate-800/80 space-y-3 flex flex-col justify-between">
             <div className="space-y-2">
               <div className="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 text-xs font-bold inline-block">
-                🟢 สายฟรี (Free Plan)
+                สายฟรี (Free Plan)
               </div>
               <h3 className="text-sm font-bold text-white">สมอง AI ระดับเบสิก</h3>
               <p className="text-[11px] text-slate-400 leading-relaxed">
@@ -86,7 +86,7 @@ export default function AIBrainComparisonModal({
           <div className="rounded-2xl p-4 bg-indigo-950/40 border border-indigo-500/30 space-y-3 flex flex-col justify-between">
             <div className="space-y-2">
               <div className="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-xs font-bold inline-flex items-center space-x-1.5">
-                <span>🔵 Plus (99.-/เดือน)</span>
+                <span>Plus (99.-/เดือน)</span>
                 <span className="px-1.5 py-0.2 rounded bg-rose-500/25 text-rose-300 border border-rose-500/40 line-through font-extrabold text-[10px]">
                   ปกติ 149.-
                 </span>
@@ -133,7 +133,7 @@ export default function AIBrainComparisonModal({
           <div className="rounded-2xl p-4 bg-gradient-to-b from-amber-500/15 via-purple-500/15 to-slate-900 border-2 border-amber-500/60 space-y-3 flex flex-col justify-between ring-2 ring-amber-500/20 shadow-xl shadow-amber-500/10">
             <div className="space-y-2">
               <div className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-xs font-black inline-flex items-center space-x-1.5 shadow-sm">
-                <span>👑 Pro Master (199.-/เดือน)</span>
+                <span>Pro Master (199.-/เดือน)</span>
                 <span className="px-1.5 py-0.2 rounded bg-slate-950/80 text-rose-300 border border-rose-500/50 line-through font-extrabold text-[10px]">
                   ปกติ 299.-
                 </span>
