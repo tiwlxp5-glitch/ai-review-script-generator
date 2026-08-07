@@ -76,7 +76,6 @@ export async function GET(request: Request) {
             .update({
               plan_type: plan,
               monthly_limit: limit,
-              updated_at: new Date().toISOString(),
             })
             .eq("id", currentId)
             .select("plan_type");
@@ -100,7 +99,6 @@ export async function GET(request: Request) {
               .update({
                 plan_type: plan,
                 monthly_limit: limit,
-                updated_at: new Date().toISOString(),
               })
               .eq("id", currentId)
               .select("plan_type");
@@ -147,7 +145,6 @@ export async function GET(request: Request) {
                   email: customerEmail || undefined,
                   plan_type: plan,
                   monthly_limit: limit,
-                  updated_at: new Date().toISOString(),
                 },
                 { onConflict: "id" }
               )

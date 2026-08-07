@@ -69,7 +69,7 @@ CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 DECLARE
   initial_plan TEXT := 'free';
-  initial_limit INTEGER := 3;
+  initial_limit INTEGER := 7;
 BEGIN
   IF NEW.email = 'tiwlxp5@gmail.com' THEN
     initial_plan := 'admin';
@@ -106,12 +106,11 @@ CREATE OR REPLACE FUNCTION public.upgrade_user_profile(
 )
 RETURNS VOID AS $$
 BEGIN
-    INSERT INTO public.profiles (id, plan_type, monthly_limit, updated_at)
-    VALUES (target_user_id, new_plan, new_limit, NOW())
+    INSERT INTO public.profiles (id, plan_type, monthly_limit)
+    VALUES (target_user_id, new_plan, new_limit)
     ON CONFLICT (id) DO UPDATE SET
         plan_type = EXCLUDED.plan_type,
-        monthly_limit = EXCLUDED.monthly_limit,
-        updated_at = NOW();
+        monthly_limit = EXCLUDED.monthly_limit;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
