@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   Pencil,
   Sparkles,
@@ -21,6 +22,7 @@ import {
   MessageSquare,
   Clock,
   Mic,
+  History,
 } from "lucide-react";
 import UpgradeProModal from "@/components/UpgradeProModal";
 import TeleprompterModal from "@/components/TeleprompterModal";
@@ -471,6 +473,13 @@ export default function DashboardPage() {
                     </strong>
                   </span>
                 </span>
+                <Link
+                  href="/history"
+                  className="px-3 py-1.5 rounded-full bg-slate-900/90 hover:bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold transition flex items-center space-x-1 cursor-pointer"
+                >
+                  <History className="w-3.5 h-3.5 text-purple-400" />
+                  <span>ดูประวัติสคริปต์</span>
+                </Link>
                 <button
                   onClick={() => openUpgradeModal("pro")}
                   className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-bold shadow-md shadow-amber-500/20 transition flex items-center space-x-1 cursor-pointer"
@@ -490,6 +499,13 @@ export default function DashboardPage() {
                     </strong>
                   </span>
                 </span>
+                <Link
+                  href="/history"
+                  className="px-3 py-1.5 rounded-full bg-slate-900/90 hover:bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold transition flex items-center space-x-1 cursor-pointer"
+                >
+                  <History className="w-3.5 h-3.5 text-purple-400" />
+                  <span>ดูประวัติสคริปต์</span>
+                </Link>
                 <button
                   onClick={() => openUpgradeModal("plus")}
                   className="px-3 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow transition cursor-pointer"

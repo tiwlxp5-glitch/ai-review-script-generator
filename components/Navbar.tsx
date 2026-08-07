@@ -138,7 +138,20 @@ export default function Navbar() {
           {/* User Profile & Actions */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             {user ? (
-              <div className="flex items-center space-x-1.5 sm:space-x-3">
+              <div className="flex items-center space-x-1.5 sm:space-x-2">
+                {/* Mobile History Link */}
+                <Link
+                  href="/history"
+                  className={`flex sm:hidden items-center space-x-1 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    isCurrent("/history")
+                      ? "bg-purple-600/25 text-purple-300 border border-purple-500/40 shadow-sm"
+                      : "bg-slate-900/90 text-slate-300 border border-slate-800 hover:border-purple-500/30"
+                  }`}
+                >
+                  <History className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                  <span>ประวัติ</span>
+                </Link>
+
                 {/* Clickable Profile Badge */}
                 <button
                   onClick={() => setIsEditNameModalOpen(true)}
