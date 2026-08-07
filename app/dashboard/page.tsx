@@ -177,19 +177,22 @@ export default function DashboardPage() {
         if (isSuccess) {
           if (sessionId) {
             try {
-              const vRes = await fetch(`/api/verify-payment?session_id=${sessionId}`);
-              if (vRes.ok) {
+              const vRes = await fetch(`/api/verify-payment?session_id=${sessionId}&plan=${plan || ""}`);
+              const vData = await vRes.json();
+              if (vRes.ok && vData.success) {
+                setSuccessBanner(
+                  `การชำระเงินสำเร็จ! บัญชีของคุณถูกอัปเกรดเป็น ${
+                    vData.plan === "pro" ? "Pro Plan (20 เท่า)" : "Plus Plan (10 เท่า)"
+                  } เรียบร้อยแล้ว`
+                );
                 window.dispatchEvent(new Event("profileUpdated"));
+              } else {
+                console.error("Payment verification failed:", vData);
               }
             } catch (vErr) {
               console.error("Payment verification error:", vErr);
             }
           }
-          setSuccessBanner(
-            `การชำระเงินสำเร็จ! บัญชีของคุณถูกอัปเกรดเป็น ${
-              plan === "pro" ? "Pro Plan (20 เท่า)" : "Plus Plan (10 เท่า)"
-            } เรียบร้อยแล้ว`
-          );
           window.history.replaceState({}, document.title, window.location.pathname);
         }
       }

@@ -13,16 +13,21 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Missing session_id" }, { status: 400 });
     }
 
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // Try getting user from auth cookie if present (optional)
+    let loggedInUserId: string | null = null;
+    try {
+      const userSupabase = await createClient();
+      const { data: { user } } = await userSupabase.auth.getUser();
+      if (user) {
+        loggedInUserId = user.id;
+      }
+    } catch (authErr) {
+      console.warn("Auth cookie check skipped:", authErr);
     }
 
     let plan: "plus" | "pro" = queryPlan === "pro" ? "pro" : "plus";
+    let targetUserId: string | null = loggedInUserId;
+    let customerEmail: string | null = null;
     let isVerified = false;
 
     // Retrieve checkout session directly from Stripe API
@@ -36,6 +41,14 @@ export async function GET(request: Request) {
         if (session.metadata?.plan === "pro" || session.metadata?.plan === "plus") {
           plan = session.metadata.plan;
         }
+        if (session.client_reference_id) {
+          targetUserId = session.client_reference_id;
+        } else if (session.metadata?.user_id) {
+          targetUserId = session.metadata.user_id;
+        }
+        if (session.customer_email) {
+          customerEmail = session.customer_email;
+        }
         isVerified = true;
       }
     } catch (stripeErr) {
@@ -45,27 +58,32 @@ export async function GET(request: Request) {
       }
     }
 
-    if (isVerified) {
+    if (isVerified && targetUserId) {
       const limit = plan === "pro" ? 200 : 100;
 
-      // 1. Direct update via user client
-      const { error: updateErr } = await supabase
+      // Initialize Supabase client
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+      const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+      const adminSupabase = createAdminClient(supabaseUrl, supabaseKey);
+
+      // 1. Direct update profile plan_type and monthly_limit
+      const { error: updateErr } = await adminSupabase
         .from("profiles")
         .update({
           plan_type: plan,
           monthly_limit: limit,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", user.id);
+        .eq("id", targetUserId);
 
       if (updateErr) {
-        console.error("Failed to update profile via standard client:", updateErr);
+        console.error("Option 1 profile update error:", updateErr);
       }
 
-      // 2. Call RPC security definer function (bypasses RLS)
+      // 2. Call RPC security definer function (bypasses RLS guaranteed)
       try {
-        await supabase.rpc("upgrade_user_profile", {
-          target_user_id: user.id,
+        await adminSupabase.rpc("upgrade_user_profile", {
+          target_user_id: targetUserId,
           new_plan: plan,
           new_limit: limit,
         });
@@ -73,28 +91,34 @@ export async function GET(request: Request) {
         console.warn("RPC upgrade_user_profile warning:", rpcErr);
       }
 
-      // 3. Fallback upsert
-      await supabase.from("profiles").upsert(
-        {
-          id: user.id,
-          email: user.email,
-          plan_type: plan,
-          monthly_limit: limit,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "id" }
-      );
+      // 3. Upsert fallback if row didn't exist
+      if (updateErr && customerEmail) {
+        await adminSupabase.from("profiles").upsert(
+          {
+            id: targetUserId,
+            email: customerEmail,
+            plan_type: plan,
+            monthly_limit: limit,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "id" }
+        );
+      }
 
       return NextResponse.json({
         success: true,
         plan,
-        message: `Successfully upgraded user to ${plan}`,
+        userId: targetUserId,
+        message: `Successfully upgraded user ${targetUserId} to ${plan}`,
       });
     }
 
-    return NextResponse.json({ success: false, status: "unverified" });
+    return NextResponse.json(
+      { success: false, error: "Unable to verify session or missing target user ID" },
+      { status: 400 }
+    );
   } catch (err: any) {
-    console.error("Verify payment error:", err);
+    console.error("Verify payment Option 1 error:", err);
     return NextResponse.json({ error: err?.message || "Internal error" }, { status: 500 });
   }
 }
