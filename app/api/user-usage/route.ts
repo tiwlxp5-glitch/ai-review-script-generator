@@ -36,14 +36,14 @@ export async function GET() {
 
       const userPlan = profile?.plan_type || "free";
       const isPro = userPlan === "pro" || (profile?.monthly_limit && profile.monthly_limit > 100);
-      const isPlus = userPlan === "plus" || (profile?.monthly_limit && profile.monthly_limit > 3 && profile.monthly_limit <= 100);
+      const isPlus = userPlan === "plus" || (profile?.monthly_limit && profile.monthly_limit > 7 && profile.monthly_limit <= 100);
 
       let planType: "admin" | "pro" | "plus" | "free" = "free";
       if (isAdmin) planType = "admin";
       else if (isPro) planType = "pro";
       else if (isPlus) planType = "plus";
 
-      const defaultLimit = planType === "pro" ? 200 : planType === "plus" ? 100 : 5;
+      const defaultLimit = planType === "pro" ? 200 : planType === "plus" ? 100 : 7;
       const userLimit = profile?.monthly_limit ?? defaultLimit;
 
       // Count scripts generated in last 7 days for free tier or monthly for paid tiers
