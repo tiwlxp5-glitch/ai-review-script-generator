@@ -187,10 +187,14 @@ export default function UpgradeProModal({
               </div>
 
               <div>
-                <div className="flex items-baseline space-x-1.5">
-                  <span className="text-3xl font-black text-white">99</span>
-                  <span className="text-xs font-semibold text-slate-400">บาท / เดือน</span>
-                  <span className="text-[10px] text-slate-500 line-through">ปกติ 149.-</span>
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-baseline space-x-1">
+                    <span className="text-3xl font-black text-white">99</span>
+                    <span className="text-xs font-semibold text-slate-400">บาท / เดือน</span>
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs font-black line-through shadow-sm">
+                    ปกติ 149.-
+                  </span>
                 </div>
                 <p className="text-[11px] text-slate-400 pt-0.5">เน้นสร้างสคริปต์อย่างเดียว 100 ครั้ง/เดือน</p>
               </div>
@@ -271,10 +275,14 @@ export default function UpgradeProModal({
               </div>
 
               <div>
-                <div className="flex items-baseline space-x-1.5">
-                  <span className="text-3xl font-black text-amber-400">199</span>
-                  <span className="text-xs font-semibold text-slate-400">บาท / เดือน</span>
-                  <span className="text-[10px] text-slate-500 line-through">ปกติ 299.-</span>
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-baseline space-x-1.5">
+                    <span className="text-3xl font-black text-amber-400">199</span>
+                    <span className="text-xs font-semibold text-slate-400">บาท / เดือน</span>
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-lg bg-rose-500/25 text-rose-300 border border-rose-500/50 text-xs font-black line-through shadow-sm animate-pulse">
+                    ปกติ 299.-
+                  </span>
                 </div>
                 <p className="text-[11px] text-amber-300/90 font-medium pt-0.5">
                   {isCurrentPlus
