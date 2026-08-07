@@ -513,19 +513,19 @@ export default function DashboardPage() {
       <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-slate-800/80 shadow-2xl bg-slate-950/80 backdrop-blur-xl space-y-4 sm:space-y-6">
         {/* Low Quota / Expiration Warning Banner (hidden for guests & admins) */}
         {usage && usage.user_type !== "admin" && usage.user_type !== "guest" && usage.remaining !== "unlimited" && typeof usage.remaining === "number" && usage.remaining <= 5 && (
-          <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs sm:text-sm font-semibold flex items-center justify-between gap-3 animate-in fade-in duration-200">
-            <div className="flex items-center space-x-2.5 min-w-0">
-              <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
-              <span>
+          <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs sm:text-sm font-semibold flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 animate-in fade-in duration-200">
+            <div className="flex items-start sm:items-center space-x-2.5 min-w-0">
+              <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 shrink-0 mt-0.5 sm:mt-0" />
+              <span className="leading-relaxed">
                 {usage.remaining === 0
-                  ? "⚠️ โควต้าสร้างสคริปต์ในรอบนี้ของคุณหมดแล้ว! ต่ออายุเพื่อใช้งานสคริปต์ได้ต่อเนื่องทันที"
-                  : `⚠️ สิทธิ์สร้างสคริปต์ในรอบนี้ของคุณใกล้หมดแล้ว (เหลือสร้างได้อีก ${usage.remaining} ครั้ง)`}
+                  ? "⚠️ โควต้าสร้างสคริปต์รอบนี้ของคุณหมดแล้ว! กดต่ออายุเพื่อใช้งานสคริปต์ต่อเนื่องได้ทันที"
+                  : `⚠️ สิทธิ์สร้างสคริปต์ในรอบนี้ใกล้หมดแล้ว (เหลือสร้างได้อีก ${usage.remaining} ครั้ง)`}
               </span>
             </div>
             <button
               type="button"
               onClick={() => openUpgradeModal(usage.user_type === "plus" ? "pro" : "plus")}
-              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-xs shrink-0 cursor-pointer shadow-md transition"
+              className="w-full sm:w-auto px-4 py-2 sm:py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-xs shrink-0 cursor-pointer shadow-md transition text-center"
             >
               {usage.user_type === "plus" ? "อัปเกรด Pro ⚡" : "ต่ออายุแพ็กเกจ ⚡"}
             </button>
