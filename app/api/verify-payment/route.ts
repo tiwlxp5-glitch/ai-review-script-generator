@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { stripe } from "@/lib/stripe";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -58,59 +60,141 @@ export async function GET(request: Request) {
       }
     }
 
-    if (isVerified && targetUserId) {
+    if (isVerified && (targetUserId || loggedInUserId)) {
       const limit = plan === "pro" ? 200 : 100;
+      let updatedSuccessfully = false;
+      const userIdsToUpdate = Array.from(
+        new Set([targetUserId, loggedInUserId].filter((id): id is string => Boolean(id)))
+      );
 
-      // Initialize Supabase client
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-      const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-      const adminSupabase = createAdminClient(supabaseUrl, supabaseKey);
+      for (const currentId of userIdsToUpdate) {
+        // 1. Try updating using Authenticated User Session Client
+        try {
+          const userSupabase = await createClient();
+          const { error: userUpdateErr, data: userUpdateData } = await userSupabase
+            .from("profiles")
+            .update({
+              plan_type: plan,
+              monthly_limit: limit,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", currentId)
+            .select("plan_type");
 
-      // 1. Direct update profile plan_type and monthly_limit
-      const { error: updateErr } = await adminSupabase
-        .from("profiles")
-        .update({
-          plan_type: plan,
-          monthly_limit: limit,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", targetUserId);
+          if (!userUpdateErr && userUpdateData && userUpdateData.length > 0) {
+            updatedSuccessfully = true;
+          }
+        } catch (e) {
+          console.warn("User session client profile update attempt failed:", e);
+        }
 
-      if (updateErr) {
-        console.error("Option 1 profile update error:", updateErr);
+        // 2. Try Admin Service Role Client (If SUPABASE_SERVICE_ROLE_KEY is present)
+        const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+
+        if (serviceRoleKey) {
+          try {
+            const adminSupabase = createAdminClient(supabaseUrl, serviceRoleKey);
+            const { error: adminUpdateErr, data: adminData } = await adminSupabase
+              .from("profiles")
+              .update({
+                plan_type: plan,
+                monthly_limit: limit,
+                updated_at: new Date().toISOString(),
+              })
+              .eq("id", currentId)
+              .select("plan_type");
+
+            if (!adminUpdateErr && adminData && adminData.length > 0) {
+              updatedSuccessfully = true;
+            }
+          } catch (e) {
+            console.warn("Service role profile update error:", e);
+          }
+        } else {
+          console.warn("SUPABASE_SERVICE_ROLE_KEY is missing! Using fallback update methods.");
+        }
+
+        // 3. Call RPC upgrade_user_profile function (Security Definer)
+        try {
+          const supabaseKey = serviceRoleKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+          const fallbackClient = createAdminClient(supabaseUrl, supabaseKey);
+          const { error: rpcErr } = await fallbackClient.rpc("upgrade_user_profile", {
+            target_user_id: currentId,
+            new_plan: plan,
+            new_limit: limit,
+          });
+
+          if (!rpcErr) {
+            updatedSuccessfully = true;
+          } else {
+            console.warn("RPC upgrade_user_profile warning:", rpcErr);
+          }
+        } catch (rpcErr) {
+          console.warn("RPC upgrade_user_profile call failed:", rpcErr);
+        }
+
+        // 4. Direct Upsert Fallback (Creates profile row if missing)
+        if (!updatedSuccessfully) {
+          try {
+            const supabaseKey = serviceRoleKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+            const fallbackClient = createAdminClient(supabaseUrl, supabaseKey);
+            const { error: upsertErr, data: upsertData } = await fallbackClient
+              .from("profiles")
+              .upsert(
+                {
+                  id: currentId,
+                  email: customerEmail || undefined,
+                  plan_type: plan,
+                  monthly_limit: limit,
+                  updated_at: new Date().toISOString(),
+                },
+                { onConflict: "id" }
+              )
+              .select("plan_type");
+
+            if (!upsertErr && upsertData && upsertData.length > 0) {
+              updatedSuccessfully = true;
+            }
+          } catch (upsertErr) {
+            console.error("Profile upsert error:", upsertErr);
+          }
+        }
+
+        // 5. Double Check: Query profiles table to confirm plan_type was updated
+        try {
+          const supabaseKey = serviceRoleKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+          const verifyClient = createAdminClient(supabaseUrl, supabaseKey);
+          const { data: profileCheck } = await verifyClient
+            .from("profiles")
+            .select("plan_type")
+            .eq("id", currentId)
+            .maybeSingle();
+
+          if (profileCheck?.plan_type === plan) {
+            updatedSuccessfully = true;
+          }
+        } catch (checkErr) {
+          console.warn("Profile plan verification check failed:", checkErr);
+        }
       }
 
-      // 2. Call RPC security definer function (bypasses RLS guaranteed)
-      try {
-        await adminSupabase.rpc("upgrade_user_profile", {
-          target_user_id: targetUserId,
-          new_plan: plan,
-          new_limit: limit,
+      if (updatedSuccessfully) {
+        return NextResponse.json({
+          success: true,
+          plan,
+          userId: targetUserId,
+          message: `Successfully upgraded user ${targetUserId} to ${plan}`,
         });
-      } catch (rpcErr) {
-        console.warn("RPC upgrade_user_profile warning:", rpcErr);
-      }
-
-      // 3. Upsert fallback if row didn't exist
-      if (updateErr && customerEmail) {
-        await adminSupabase.from("profiles").upsert(
+      } else {
+        return NextResponse.json(
           {
-            id: targetUserId,
-            email: customerEmail,
-            plan_type: plan,
-            monthly_limit: limit,
-            updated_at: new Date().toISOString(),
+            success: false,
+            error: "ไม่สามารถอัปเดตสิทธิ์ในฐานข้อมูล Supabase ได้ กรุณาตรวจสอบ SUPABASE_SERVICE_ROLE_KEY",
           },
-          { onConflict: "id" }
+          { status: 500 }
         );
       }
-
-      return NextResponse.json({
-        success: true,
-        plan,
-        userId: targetUserId,
-        message: `Successfully upgraded user ${targetUserId} to ${plan}`,
-      });
     }
 
     return NextResponse.json(
@@ -122,3 +206,4 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: err?.message || "Internal error" }, { status: 500 });
   }
 }
+

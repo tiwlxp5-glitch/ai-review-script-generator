@@ -156,7 +156,7 @@ export default function DashboardPage() {
 
   const fetchUsage = async () => {
     try {
-      const res = await fetch("/api/user-usage");
+      const res = await fetch(`/api/user-usage?t=${Date.now()}`, { cache: "no-store" });
       if (res.ok) {
         const data = await res.json();
         setUsage(data);
@@ -188,9 +188,13 @@ export default function DashboardPage() {
                 window.dispatchEvent(new Event("profileUpdated"));
               } else {
                 console.error("Payment verification failed:", vData);
+                setError(
+                  vData.error || "เกิดข้อผิดพลาดในการยืนยันการอัปเกรดสิทธิ์ กรุณาติดต่อผู้ดูแลระบบ"
+                );
               }
             } catch (vErr) {
               console.error("Payment verification error:", vErr);
+              setError("เกิดข้อผิดพลาดในการเชื่อมต่อเพื่อยืนยันการชำระเงิน");
             }
           }
           window.history.replaceState({}, document.title, window.location.pathname);
@@ -200,7 +204,21 @@ export default function DashboardPage() {
     };
 
     checkPaymentAndUsage();
+
+    const handleProfileUpdateEvent = () => {
+      fetchUsage();
+    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("profileUpdated", handleProfileUpdateEvent);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("profileUpdated", handleProfileUpdateEvent);
+      }
+    };
   }, []);
+
 
   const isProOrAdmin = usage?.user_type === "pro" || usage?.user_type === "admin";
   const isPlusUser = usage?.user_type === "plus" || isProOrAdmin;

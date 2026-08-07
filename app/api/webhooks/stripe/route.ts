@@ -32,36 +32,72 @@ export async function POST(request: Request) {
     const session = event.data.object as any;
     const userId = session.client_reference_id || session.metadata?.user_id;
     const plan = session.metadata?.plan;
+    const customerEmail = session.customer_email || session.customer_details?.email;
 
     if (userId && (plan === "plus" || plan === "pro")) {
       const limit = plan === "pro" ? 200 : 100;
+      let updated = false;
 
-      // 1. Direct update
-      const { error: updateErr } = await supabase
+      // 1. Direct update profile
+      const { error: updateErr, data: updateData } = await supabase
         .from("profiles")
         .update({
           plan_type: plan,
           monthly_limit: limit,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", userId);
+        .eq("id", userId)
+        .select("plan_type");
 
-      if (updateErr) {
+      if (!updateErr && updateData && updateData.length > 0) {
+        updated = true;
+      } else if (updateErr) {
         console.error("Webhook profile update error:", updateErr);
       }
 
-      // 2. Security definer RPC fallback
+      // 2. Call RPC upgrade_user_profile function (Security Definer)
       try {
-        await supabase.rpc("upgrade_user_profile", {
+        const { error: rpcErr } = await supabase.rpc("upgrade_user_profile", {
           target_user_id: userId,
           new_plan: plan,
           new_limit: limit,
         });
+
+        if (!rpcErr) {
+          updated = true;
+        } else {
+          console.warn("Webhook RPC upgrade_user_profile warning:", rpcErr);
+        }
       } catch (rpcErr) {
-        console.warn("Webhook RPC upgrade_user_profile warning:", rpcErr);
+        console.warn("Webhook RPC upgrade_user_profile call failed:", rpcErr);
       }
+
+      // 3. Upsert fallback if row didn't exist or wasn't updated
+      if (!updated) {
+        try {
+          const { error: upsertErr, data: upsertData } = await supabase.from("profiles").upsert(
+            {
+              id: userId,
+              email: customerEmail || undefined,
+              plan_type: plan,
+              monthly_limit: limit,
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: "id" }
+          ).select("plan_type");
+
+          if (!upsertErr && upsertData && upsertData.length > 0) {
+            updated = true;
+          }
+        } catch (uErr) {
+          console.error("Webhook profile upsert error:", uErr);
+        }
+      }
+
+      console.log(`Stripe Webhook processed checkout.session.completed for user ${userId} -> plan: ${plan}, updated: ${updated}`);
     }
   }
 
   return NextResponse.json({ received: true });
 }
+

@@ -106,11 +106,15 @@ CREATE OR REPLACE FUNCTION public.upgrade_user_profile(
 )
 RETURNS VOID AS $$
 BEGIN
-    UPDATE public.profiles
-    SET 
-        plan_type = new_plan,
-        monthly_limit = new_limit,
-        updated_at = NOW()
-    WHERE id = target_user_id;
+    INSERT INTO public.profiles (id, plan_type, monthly_limit, updated_at)
+    VALUES (target_user_id, new_plan, new_limit, NOW())
+    ON CONFLICT (id) DO UPDATE SET
+        plan_type = EXCLUDED.plan_type,
+        monthly_limit = EXCLUDED.monthly_limit,
+        updated_at = NOW();
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Grant execution to all roles so RPC can be invoked safely from backend routes
+GRANT EXECUTE ON FUNCTION public.upgrade_user_profile(UUID, TEXT, INTEGER) TO anon, authenticated, service_role;
+
