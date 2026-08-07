@@ -42,7 +42,7 @@ export async function GET() {
         });
       }
 
-      const userPlan = profile?.plan_type || "free";
+      const userPlan = (profile?.plan_type || "free").toLowerCase();
       const isPro = userPlan === "pro" || (profile?.monthly_limit && profile.monthly_limit > 100);
       const isPlus = userPlan === "plus" || (profile?.monthly_limit && profile.monthly_limit > 7 && profile.monthly_limit <= 100);
 
