@@ -166,21 +166,33 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    fetchUsage();
-
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("payment") === "success") {
+    const checkPaymentAndUsage = async () => {
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        const isSuccess = params.get("payment") === "success";
+        const sessionId = params.get("session_id");
         const plan = params.get("plan");
-        setSuccessBanner(
-          `🎉 การชำระเงินสำเร็จ! บัญชีของคุณถูกอัปเกรดเป็น ${
-            plan === "pro" ? "Pro Plan (20 เท่า)" : "Plus Plan (10 เท่า)"
-          } เรียบร้อยแล้ว`
-        );
-        fetchUsage();
-        window.history.replaceState({}, document.title, window.location.pathname);
+
+        if (isSuccess) {
+          if (sessionId) {
+            try {
+              await fetch(`/api/verify-payment?session_id=${sessionId}`);
+            } catch (vErr) {
+              console.error("Payment verification error:", vErr);
+            }
+          }
+          setSuccessBanner(
+            `การชำระเงินสำเร็จ! บัญชีของคุณถูกอัปเกรดเป็น ${
+              plan === "pro" ? "Pro Plan (20 เท่า)" : "Plus Plan (10 เท่า)"
+            } เรียบร้อยแล้ว`
+          );
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
       }
-    }
+      fetchUsage();
+    };
+
+    checkPaymentAndUsage();
   }, []);
 
   const isProOrAdmin = usage?.user_type === "pro" || usage?.user_type === "admin";

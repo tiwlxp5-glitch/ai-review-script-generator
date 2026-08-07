@@ -60,7 +60,7 @@ export async function POST(request: Request) {
         user_id: userId,
         plan: plan,
       },
-      success_url: `${origin}/dashboard?payment=success&plan=${plan}`,
+      success_url: `${origin}/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}&plan=${plan}`,
       cancel_url: `${origin}/dashboard?payment=cancelled`,
     });
 
