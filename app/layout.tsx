@@ -16,7 +16,25 @@ const outfitFont = Outfit({
 
 export const metadata: Metadata = {
   title: "ReviewScript AI - เครื่องมือคิดสคริปต์รีวิวสินค้าขายดีด้วย AI",
-  description: "แพลตฟอร์มช่วยคิดสคริปต์วิดีโอรีวิวสินค้า ตารางกำกับภาพ B-Roll และเครื่องอ่านบท Teleprompter ดันยอดขายโฆษณา",
+  description: "แพลตฟอร์มช่วยคิดสคริปต์วิดีโอรีวิวสินค้า ตารางกำกับภาพ B-Roll และเครื่องอ่านบท Teleprompter ดันยอดขายโฆษณา TikTok, Reels & Shorts",
+  keywords: ["AI คิดสคริปต์", "สคริปต์รีวิวสินค้า", "TikTok Shop", "B-Roll Shot List", "Teleprompter", "ReviewScript AI"],
+  authors: [{ name: "ทิวลิปเองจร้าาา" }],
+  openGraph: {
+    title: "ReviewScript AI - เครื่องมือคิดสคริปต์รีวิวสินค้าขายดีด้วย AI",
+    description: "สร้างสคริปต์วิดีโอรีวิวระดับ Master Copywriter พร้อมตารางกำกับภาพ B-Roll เฟรมต่อเฟรม และโหมดอ่านบท Teleprompter",
+    type: "website",
+    locale: "th_TH",
+    siteName: "ReviewScript AI",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ReviewScript AI - เครื่องมือคิดสคริปต์รีวิวสินค้าขายดีด้วย AI",
+    description: "สร้างสคริปต์วิดีโอรีวิวระดับ Master Copywriter พร้อมตารางกำกับภาพ B-Roll เฟรมต่อเฟรม",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -29,11 +47,11 @@ export default function RootLayout({
       <body
         className={`${promptFont.className} min-h-screen bg-slate-950 text-slate-100 flex flex-col antialiased selection:bg-purple-500/30 selection:text-purple-200 font-sans`}
       >
-        {/* Ambient Premium Glow Mesh Background */}
-        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-40">
-          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-gradient-to-tr from-purple-900/30 via-indigo-900/30 to-slate-950 rounded-full blur-[140px]" />
-          <div className="absolute top-1/4 -left-40 w-96 h-96 bg-purple-600/15 rounded-full blur-[120px] animate-pulse" />
-          <div className="absolute top-1/3 -right-40 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] animate-pulse delay-1000" />
+        {/* Ambient Premium Glow Mesh Background (Optimized for GPU & Mobile) */}
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-30 sm:opacity-40">
+          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] sm:w-[800px] h-[350px] sm:h-[500px] bg-gradient-to-tr from-purple-900/30 via-indigo-900/30 to-slate-950 rounded-full blur-[60px] sm:blur-[120px]" />
+          <div className="absolute top-1/4 -left-40 w-72 sm:w-96 h-72 sm:h-96 bg-purple-600/15 rounded-full blur-[60px] sm:blur-[100px] animate-pulse" />
+          <div className="absolute top-1/3 -right-40 w-72 sm:w-96 h-72 sm:h-96 bg-amber-500/10 rounded-full blur-[60px] sm:blur-[100px] animate-pulse delay-1000" />
         </div>
 
         <Navbar />

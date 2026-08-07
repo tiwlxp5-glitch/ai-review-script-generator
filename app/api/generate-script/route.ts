@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       .maybeSingle();
 
     const isAdmin =
-      user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() ||
+      (user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() && Boolean(user.email_confirmed_at)) ||
       profile?.plan_type === "admin";
 
     const userPlan = (profile?.plan_type || "free").toLowerCase();
