@@ -18,6 +18,7 @@ import {
   QrCode,
   Loader2,
 } from "lucide-react";
+import AIBrainComparisonModal from "@/components/AIBrainComparisonModal";
 
 interface UpgradeProModalProps {
   isOpen: boolean;
@@ -37,6 +38,7 @@ export default function UpgradeProModal({
   const [selectedPlan, setSelectedPlan] = useState<"plus" | "pro">(defaultPlan);
   const [copiedLineId, setCopiedLineId] = useState(false);
   const [isProcessingStripe, setIsProcessingStripe] = useState(false);
+  const [isBrainComparisonOpen, setIsBrainComparisonOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -190,9 +192,21 @@ export default function UpgradeProModal({
                   <Check className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>สร้างสคริปต์บทพูด <strong>100 ครั้ง / เดือน</strong></span>
                 </li>
-                <li className="flex items-center space-x-2">
-                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>AI เก่งขึ้น <strong>10 เท่า (PAS Framework)</strong></span>
+                <li className="flex flex-wrap items-center justify-between gap-1">
+                  <div className="flex items-center space-x-2">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>AI เก่งขึ้น <strong>10 เท่า (PAS Framework)</strong></span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsBrainComparisonOpen(true);
+                    }}
+                    className="px-2 py-0.5 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/35 text-indigo-300 border border-indigo-500/40 text-[10px] font-bold flex items-center space-x-1 shrink-0 transition cursor-pointer"
+                  >
+                    <span>เทียบสมอง AI</span>
+                  </button>
                 </li>
                 <li className="flex items-center space-x-2">
                   <Check className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -266,9 +280,22 @@ export default function UpgradeProModal({
                   <Check className="w-4 h-4 text-amber-400 shrink-0" />
                   <span>สร้างสคริปต์จุใจ <strong>200 ครั้ง / เดือน</strong></span>
                 </li>
-                <li className="flex items-center space-x-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>AI เก่งขึ้น <strong>20 เท่า + 3 Hook Options</strong></span>
+                <li className="flex flex-wrap items-center justify-between gap-1">
+                  <div className="flex items-center space-x-2">
+                    <Check className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>AI เก่งขึ้น <strong>20 เท่า + 3 Hook Options</strong></span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsBrainComparisonOpen(true);
+                    }}
+                    className="px-2 py-0.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold flex items-center space-x-1 shrink-0 transition cursor-pointer"
+                  >
+                    <Sparkles className="w-3 h-3 text-amber-400 fill-amber-400 animate-pulse" />
+                    <span>ดูสเปกสมอง AI 🧠</span>
+                  </button>
                 </li>
                 <li className="flex items-start space-x-2">
                   <Clapperboard className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
@@ -344,6 +371,16 @@ export default function UpgradeProModal({
           </button>
         </div>
       </div>
+
+      {/* AI Brain Comparison Overlay Sub-Modal */}
+      <AIBrainComparisonModal
+        isOpen={isBrainComparisonOpen}
+        onClose={() => setIsBrainComparisonOpen(false)}
+        onUpgradeClick={(plan) => {
+          setSelectedPlan(plan);
+          setIsBrainComparisonOpen(false);
+        }}
+      />
     </div>
   );
 }
