@@ -97,7 +97,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           {/* Left Brand Logo & Navigation Links */}
           <div className="flex items-center space-x-3 sm:space-x-5">
-            <Link href="/dashboard" className="flex items-center space-x-2 shrink-0 group">
+            <Link href="/" className="flex items-center space-x-2 shrink-0 group">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/25 border border-purple-400/30 group-hover:scale-105 transition duration-200">
                 <Sparkles className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-300 fill-amber-300" />
               </div>
@@ -108,9 +108,9 @@ export default function Navbar() {
 
             <nav className="flex items-center space-x-1 sm:space-x-2">
               <Link
-                href="/dashboard"
+                href="/"
                 className={`flex items-center space-x-1.5 sm:space-x-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                  isCurrent("/dashboard")
+                  isCurrent("/") || isCurrent("/dashboard")
                     ? "bg-purple-600/20 text-purple-300 border border-purple-500/30 shadow-sm shadow-purple-500/10"
                     : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
                 }`}
