@@ -246,13 +246,13 @@ export default function ProductAnalyzerModal({
 
         {/* Tiered AI Intelligence Upsell Banner */}
         {!isProOrAdmin && (
-          <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-indigo-500/15 border border-amber-500/30 flex items-center justify-between gap-3 text-xs">
-            <div className="space-y-0.5">
+          <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-indigo-500/15 border border-amber-500/30 flex flex-col xs:flex-row xs:items-center justify-between gap-2.5 sm:gap-3 text-xs">
+            <div className="space-y-0.5 min-w-0">
               <p className="font-bold text-amber-300 flex items-center space-x-1.5">
                 <Crown className="w-4 h-4 text-amber-400 fill-amber-400 shrink-0" />
                 <span>ยกระดับการวิเคราะห์เชิงลึก 360° ด้วย Pro Plan!</span>
               </p>
-              <p className="text-[11px] text-slate-300">
+              <p className="text-[11px] text-slate-300 leading-relaxed">
                 {isPlusUser
                   ? "อัปเกรด Pro รับเพิ่ม: วิเคราะห์ Pain Points + 3 ไอเดีย Hook ไวรัล + ทลายข้อโต้แย้งคู่แข่ง"
                   : "สายฟรีได้รับการวิเคราะห์พื้นฐาน อัปเกรด Pro รับการวิเคราะห์การตลาด 360° สมบูรณ์แบบ"}
@@ -265,7 +265,7 @@ export default function ProductAnalyzerModal({
                   onClose();
                   onUpgradeClick("pro");
                 }}
-                className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shrink-0 cursor-pointer shadow-md transition"
+                className="w-full xs:w-auto px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shrink-0 cursor-pointer shadow-md transition text-center"
               >
                 อัปเกรด Pro ⚡
               </button>

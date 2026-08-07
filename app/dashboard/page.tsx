@@ -533,33 +533,33 @@ export default function DashboardPage() {
         )}
 
         {successBanner && (
-          <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/20 border border-amber-500/50 text-amber-100 text-sm font-semibold flex items-center justify-between shadow-2xl shadow-amber-500/15 animate-in fade-in zoom-in-95 backdrop-blur-md">
-            <div className="flex items-center space-x-3.5">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-300 flex items-center justify-center text-slate-950 shadow-md shadow-amber-500/30 shrink-0 ring-2 ring-amber-300/40">
-                <Crown className="w-5 h-5 fill-slate-950" />
+          <div className="relative p-3.5 sm:p-5 pr-9 rounded-2xl bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/20 border border-amber-500/50 text-amber-100 text-xs sm:text-sm font-semibold shadow-2xl shadow-amber-500/15 animate-in fade-in zoom-in-95 backdrop-blur-md">
+            <button
+              onClick={() => setSuccessBanner(null)}
+              className="absolute top-2.5 right-2.5 text-amber-400 hover:text-amber-200 p-1.5 rounded-xl hover:bg-amber-500/20 transition cursor-pointer"
+            >
+              ✕
+            </button>
+            <div className="flex items-start space-x-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-300 flex items-center justify-center text-slate-950 shadow-md shadow-amber-500/30 shrink-0 ring-2 ring-amber-300/40 mt-0.5 sm:mt-0">
+                <Crown className="w-4 h-4 sm:w-5 sm:h-5 fill-slate-950" />
               </div>
-              <div className="space-y-0.5">
-                <div className="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center space-x-1">
+              <div className="space-y-1 min-w-0 pr-1">
+                <div className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-amber-400 flex items-center space-x-1">
                   <Sparkles className="w-3.5 h-3.5 text-amber-300 fill-amber-300 animate-pulse" />
                   <span>การชำระเงินสำเร็จ 100%</span>
                 </div>
-                <p className="text-sm sm:text-base font-bold text-slate-100">
+                <p className="text-xs sm:text-base font-bold text-slate-100 leading-relaxed">
                   ยินดีด้วย! บัญชีของคุณถูกอัปเกรดเป็น{" "}
-                  <span className="bg-gradient-to-r from-amber-300 via-yellow-300 to-amber-400 bg-clip-text text-transparent font-black text-base sm:text-lg underline decoration-amber-400 decoration-2 underline-offset-4">
+                  <strong className="text-amber-300 font-extrabold underline decoration-amber-400 decoration-2 underline-offset-2">
                     {successBanner.plan === "pro"
-                      ? "Pro Plan (20 เท่า - 200 ครั้ง/เดือน)"
-                      : "Plus Plan (10 เท่า - 100 ครั้ง/เดือน)"}
-                  </span>{" "}
+                      ? "Pro Plan (200 ครั้ง/เดือน)"
+                      : "Plus Plan (100 ครั้ง/เดือน)"}
+                  </strong>{" "}
                   เรียบร้อยแล้ว ✨
                 </p>
               </div>
             </div>
-            <button
-              onClick={() => setSuccessBanner(null)}
-              className="text-amber-400 hover:text-amber-200 p-2 rounded-xl hover:bg-amber-500/20 transition cursor-pointer"
-            >
-              ✕
-            </button>
           </div>
         )}
 

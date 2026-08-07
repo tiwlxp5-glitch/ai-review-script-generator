@@ -343,12 +343,16 @@ export default function UpgradeProModal({
         {/* Automated Stripe Payment Action */}
         <div className="space-y-3 pt-2">
           <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 text-center space-y-1.5">
-            <div className="flex items-center justify-center space-x-2 text-xs font-semibold text-slate-300">
-              <QrCode className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>รองรับ <strong>PromptPay QR Code</strong> สแกนจ่ายใน 2 วินาที</span>
-              <span className="text-slate-600">|</span>
-              <CreditCard className="w-4 h-4 text-indigo-400 shrink-0" />
-              <span>บัตรเครดิต / เดบิต</span>
+            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold text-slate-300">
+              <span className="flex items-center space-x-1">
+                <QrCode className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>รองรับ <strong>PromptPay QR Code</strong> สแกนจ่ายใน 2 วินาที</span>
+              </span>
+              <span className="text-slate-600 hidden sm:inline">|</span>
+              <span className="flex items-center space-x-1">
+                <CreditCard className="w-4 h-4 text-indigo-400 shrink-0" />
+                <span>บัตรเครดิต / เดบิต</span>
+              </span>
             </div>
             <p className="text-[11px] text-slate-400">
               ชำระเงินปลอดภัยสูงสุด 100% ผ่านระบบ Stripe Secure (บัญชีจะปรับเป็น{" "}
