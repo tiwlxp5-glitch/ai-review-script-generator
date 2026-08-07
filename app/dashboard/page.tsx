@@ -149,6 +149,7 @@ export default function DashboardPage() {
   const [usage, setUsage] = useState<UsageData | null>(null);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [modalDefaultPlan, setModalDefaultPlan] = useState<"plus" | "pro">("pro");
+  const [modalCustomMessage, setModalCustomMessage] = useState<string | undefined>();
   const [isTeleprompterOpen, setIsTeleprompterOpen] = useState(false);
 
   const [successBanner, setSuccessBanner] = useState<string | null>(null);
@@ -198,8 +199,9 @@ export default function DashboardPage() {
   const isProOrAdmin = usage?.user_type === "pro" || usage?.user_type === "admin";
   const isPlusUser = usage?.user_type === "plus" || isProOrAdmin;
 
-  const openUpgradeModal = (plan: "plus" | "pro" = "pro") => {
+  const openUpgradeModal = (plan: "plus" | "pro" = "pro", msg?: string) => {
     setModalDefaultPlan(plan);
+    setModalCustomMessage(msg);
     setIsProModalOpen(true);
   };
 
@@ -233,6 +235,12 @@ export default function DashboardPage() {
       const data = await response.json();
 
       if (!response.ok) {
+        if (data.quotaExceeded || response.status === 403) {
+          const quotaMsg = data.error || "คุณใช้สิทธิ์ทดลองฟรีครบ 7 ครั้งแล้ว! อัปเกรดเป็น Pro Plan เพียง 199.- เพื่อสร้างสคริปต์ไม่อั้น 200 ครั้ง/เดือน + ปลดล็อกตาราง B-Roll";
+          setError(quotaMsg);
+          openUpgradeModal("pro", quotaMsg);
+          return;
+        }
         throw new Error(data.error || "เกิดข้อผิดพลาดในการสร้างสคริปต์");
       }
 
@@ -899,15 +907,15 @@ export default function DashboardPage() {
                           <h3 className="text-base font-bold text-white">
                             ตารางถ่าย B-Roll ถูกล็อกสำหรับผู้ใช้ Pro
                           </h3>
-                          <p className="text-xs text-amber-300 font-semibold">
-                            💡 ถ้าคุณเป็นสายขายของแล้วไม่อยากเสียเวลาคิดสคริปต์ ซื้อเถอะครับคุ้มแน่นอน!
+                          <p className="text-xs text-amber-300 font-bold">
+                            ปลดล็อกตารางกำกับภาพ Shot-by-Shot + โหมดอ่านบทขณะอัดคลิป เพียง 199.-/เดือน
                           </p>
                           <p className="text-xs text-slate-300">
                             ตาราง Shot-by-Shot แยกมุมกล้อง คำพูด และซับกลางจอของสินค้าคุณถูกล็อกไว้ ปลดล็อกเพื่อดูรายละเอียดฉบับเต็ม!
                           </p>
                         </div>
                         <button
-                          onClick={() => openUpgradeModal("pro")}
+                          onClick={() => openUpgradeModal("pro", "ปลดล็อกตารางกำกับภาพ Shot-by-Shot + โหมดอ่านบทขณะอัดคลิป เพียง 199.-/เดือน")}
                           className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 text-xs font-black shadow-xl shadow-amber-500/25 transition flex items-center space-x-1.5 cursor-pointer"
                         >
                           <Crown className="w-4 h-4 fill-slate-950" />
@@ -1146,9 +1154,13 @@ export default function DashboardPage() {
       {/* Upgrade Plus/Pro Modal */}
       <UpgradeProModal
         isOpen={isProModalOpen}
-        onClose={() => setIsProModalOpen(false)}
+        onClose={() => {
+          setIsProModalOpen(false);
+          setModalCustomMessage(undefined);
+        }}
         defaultPlan={modalDefaultPlan}
         currentPlan={usage?.user_type}
+        customMessage={modalCustomMessage}
       />
 
       {/* Teleprompter Modal */}

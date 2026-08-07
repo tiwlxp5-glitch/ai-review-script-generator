@@ -502,6 +502,7 @@ export default function HistoryPage() {
                           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md text-center space-y-2">
                             <Lock className="w-5 h-5 text-amber-400" />
                             <p className="text-xs font-bold text-white">ตาราง B-Roll ถูกล็อกสำหรับผู้ใช้ Pro</p>
+                            <p className="text-[11px] text-amber-300 font-bold max-w-xs">ปลดล็อกตารางกำกับภาพ Shot-by-Shot + โหมดอ่านบทขณะอัดคลิป เพียง 199.-/เดือน</p>
                             <button
                               onClick={() => setIsProModalOpen(true)}
                               className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow flex items-center space-x-1 cursor-pointer"

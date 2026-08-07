@@ -24,6 +24,7 @@ interface UpgradeProModalProps {
   onClose: () => void;
   defaultPlan?: "plus" | "pro";
   currentPlan?: "free" | "plus" | "pro" | "admin" | "member" | "guest";
+  customMessage?: string;
 }
 
 export default function UpgradeProModal({
@@ -31,6 +32,7 @@ export default function UpgradeProModal({
   onClose,
   defaultPlan = "pro",
   currentPlan = "free",
+  customMessage,
 }: UpgradeProModalProps) {
   const [selectedPlan, setSelectedPlan] = useState<"plus" | "pro">(defaultPlan);
   const [copiedLineId, setCopiedLineId] = useState(false);
@@ -102,6 +104,14 @@ export default function UpgradeProModal({
         >
           <X className="w-5 h-5" />
         </button>
+
+        {/* Custom High-Converting Quota Message Banner */}
+        {customMessage && (
+          <div className="p-4 rounded-2xl bg-amber-500/20 border border-amber-500/50 text-amber-200 text-xs sm:text-sm font-bold flex items-start space-x-3 shadow-lg shadow-amber-500/10 animate-in fade-in">
+            <Zap className="w-5 h-5 text-amber-400 shrink-0 mt-0.5 fill-amber-400" />
+            <span className="leading-relaxed">{customMessage}</span>
+          </div>
+        )}
 
         {/* Modal Header */}
         <div className="text-center space-y-3">
