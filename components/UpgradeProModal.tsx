@@ -392,6 +392,7 @@ export default function UpgradeProModal({
       <AIBrainComparisonModal
         isOpen={isBrainComparisonOpen}
         onClose={() => setIsBrainComparisonOpen(false)}
+        currentPlan={currentPlan}
         onUpgradeClick={(plan) => {
           setSelectedPlan(plan);
           setIsBrainComparisonOpen(false);

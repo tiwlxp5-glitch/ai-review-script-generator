@@ -6,14 +6,19 @@ interface AIBrainComparisonModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUpgradeClick: (plan: "plus" | "pro") => void;
+  currentPlan?: "free" | "plus" | "pro" | "admin" | "member" | "guest";
 }
 
 export default function AIBrainComparisonModal({
   isOpen,
   onClose,
   onUpgradeClick,
+  currentPlan = "free",
 }: AIBrainComparisonModalProps) {
   if (!isOpen) return null;
+
+  const isCurrentPlus = currentPlan === "plus";
+  const isCurrentProOrAdmin = currentPlan === "pro" || currentPlan === "admin";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
@@ -105,16 +110,23 @@ export default function AIBrainComparisonModal({
                 </li>
               </ul>
             </div>
-            <button
-              onClick={() => {
-                onClose();
-                onUpgradeClick("plus");
-              }}
-              className="w-full py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center justify-center space-x-1 cursor-pointer"
-            >
-              <span>ลอง Plus Plan (99.-)</span>
-              <ArrowRight className="w-3 h-3" />
-            </button>
+            {isCurrentPlus ? (
+              <div className="w-full py-2 px-3 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-extrabold text-center flex items-center justify-center space-x-1.5 shadow-sm">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span>กำลังใช้งานอยู่ (Plus Plan)</span>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  onClose();
+                  onUpgradeClick("plus");
+                }}
+                className="w-full py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center justify-center space-x-1 cursor-pointer"
+              >
+                <span>ลอง Plus Plan (99.-)</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            )}
           </div>
 
           {/* 3. Pro Tier Brain (Master Copywriter) */}
@@ -149,16 +161,23 @@ export default function AIBrainComparisonModal({
                 </li>
               </ul>
             </div>
-            <button
-              onClick={() => {
-                onClose();
-                onUpgradeClick("pro");
-              }}
-              className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-xs transition flex items-center justify-center space-x-1 shadow-lg shadow-amber-500/20 cursor-pointer"
-            >
-              <Crown className="w-3.5 h-3.5 fill-slate-950" />
-              <span>ปลดล็อกสมอง Pro Master (199.-)</span>
-            </button>
+            {isCurrentProOrAdmin ? (
+              <div className="w-full py-2.5 px-3 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-extrabold text-center flex items-center justify-center space-x-1.5 shadow-sm">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span>กำลังใช้งานอยู่ (Pro Plan)</span>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  onClose();
+                  onUpgradeClick("pro");
+                }}
+                className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-xs transition flex items-center justify-center space-x-1 shadow-lg shadow-amber-500/20 cursor-pointer"
+              >
+                <Crown className="w-3.5 h-3.5 fill-slate-950" />
+                <span>ปลดล็อกสมอง Pro Master (199.-)</span>
+              </button>
+            )}
           </div>
         </div>
 

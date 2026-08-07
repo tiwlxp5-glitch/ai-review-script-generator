@@ -661,7 +661,9 @@ export default function DashboardPage() {
                   </div>
                   <div className="min-w-0">
                     <div className="text-xs sm:text-sm font-bold text-amber-200 truncate">
-                      ความสามารถสมอง AI สายฟรี vs Pro Plan
+                      {isPlusUser
+                        ? "สเปกสมอง AI (คุณใช้งาน Plus Plan อยู่ 🔵)"
+                        : "ความสามารถสมอง AI สายฟรี vs Pro Plan"}
                     </div>
                     <p className="text-[11px] text-slate-400 hidden xs:block">
                       อัปเกรดเพื่อรับสคริปต์ปิดการขาย Master Copywriter 20 เท่า
@@ -1374,6 +1376,7 @@ export default function DashboardPage() {
       <AIBrainComparisonModal
         isOpen={isBrainModalOpen}
         onClose={() => setIsBrainModalOpen(false)}
+        currentPlan={usage?.user_type}
         onUpgradeClick={(plan) => openUpgradeModal(plan)}
       />
 
