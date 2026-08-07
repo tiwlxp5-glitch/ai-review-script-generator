@@ -126,8 +126,8 @@ export async function POST(request: Request) {
     let prompt = "";
 
     if (planType === "pro" || planType === "admin") {
-      // 🟣 PRO ENGINE: Master Copywriter (เก่งขึ้น 20 เท่า ค่าตัว 1,000+ บาท)
-      prompt = `คุณคือ "Senior High-Conversion Master Copywriter & Creative Video Director" ค่าตัว 1,000+ บาทต่อสคริปต์ มีความเชี่ยวชาญระดับสูงสุดด้านจิตวิทยาการขายและไวรัลวิดีโอสั้น (TikTok Shop, Instagram Reels, YouTube Shorts)
+      // 🟣 PRO ENGINE: Master Mind Copywriter (เก่งขึ้น 1,000 เท่า ระดับผลงาน 100 ล้านบาท)
+      prompt = `คุณคือ "Senior High-Conversion Master Copywriter & Creative Video Director" ค่าตัวหลักแสนต่อโปรเจกต์ มีความเชี่ยวชาญระดับสูงสุดด้านจิตวิทยาการขาย ไวรัลวิดีโอสั้น (TikTok Shop, Instagram Reels, YouTube Shorts) และการขจัดความลังเลในใจผู้บริโภค
 
 โจทย์รีวิวสินค้า:
 - สินค้า: <user_input>${product_name}</user_input>
@@ -135,12 +135,20 @@ export async function POST(request: Request) {
 - โทนอารมณ์ (Tone): ${selectedToneDescription}
 - ความยาวที่ต้องการ: ${lengthDesc}
 
-ข้อกำหนดระบบ Pro Master Level (เก่งขึ้น 20 เท่า):
-1. **3 Hook Options (0-3 วินาทีแรก)**: เสนอ 3 ทางเลือก Hook ที่ตอนต้นสคริปต์ ให้ผู้ใช้เลือกใช้ตามสไตล์ (Visual Hook, Verbal Hook, Pain-Point Hook)
-2. **Deep Psychological Storytelling**: ใช้จิตวิทยาโน้มน้าว อารมณ์ร่วมสูง ภาษาพูดธรรมชาติ 100% ไม่ประดิดประดอยหุ่นยนต์
-3. **Objection Handling (ทลายข้อโต้แย้ง)**: ดักทางความลังเลในใจคนดู (เช่น กลัวแพง, กลัวแพ้, กลัวไม่คุ้ม) แล้วให้เหตุผลสนับสนุนที่หนักแน่น
-4. **Psychological FOMO CTA**: ปิดการขายแบบลดความเสี่ยง (Risk Reversal) + เร่งด่วนให้รีบกดตะกร้าซ้ายล่าง
-5. **Director's Cut B-Roll Table**: กำกับภาพอย่างละเอียด (มุมกล้อง, แสง, อารมณ์การแสดง, เสียงเอฟเฟกต์ SFX เช่น Whoosh, Pop, Ding) และข้อความซับกลางจอ
+ตัวอย่างสคริปต์ระดับไวรัลล้านวิว (Few-Shot Master Benchmark):
+---
+[ตัวอย่าง 1 - สายแก้ปัญหาชีวิต]:
+Hook A (Visual Hook): (ซูมหน้าตกใจ + มือถือแก้วน้ำหก) "อย่าเพิ่งซื้อผ้าเช็ดรถ ถ้ายังไม่ได้ลองผืนนี้!"
+Hook B (Verbal Hook): "ใครเคยเจอปัญหานี้บ้าง? เช็ดรถทีไร คราบน้ำเกาะเป็นรอยเหมือนเดิม..."
+เนื้อหาบทพูด: "ตอนแรกก็นึกว่าผ้าอะไรก็เหมือนกัน จนกระทั่งได้ลองผ้าไฟเบอร์อัดเกรด 800GSM ตัวนี้... เช็ดป๊อบเดียว น้ำแห้งกริ๊บ ไม่ทิ้งคราบ ไม่ scratch สีรถ! ปกติผืนละ 190 แต่วันนี้ปักตะกร้าในคลิปเหลือแค่ 69 บาท!"
+---
+
+ข้อกำหนดระบบ Pro Master Level (เก่งขึ้นเวอร์ๆ):
+1. **3 Hook Options (0-3 วินาทีแรก)**: เสนอ 3 ทางเลือกคำเปิด 0-3 วินาทีแรก (Hook A: Visual/Action Hook, Hook B: Verbal Pain-Point Hook, Hook C: Shocking/Contrast Hook)
+2. **Deep Psychological Storytelling**: ใช้จิตวิทยาโน้มน้าว อารมณ์ร่วมสูง ภาษาพูดธรรมชาติ 100% (ห้ามใช้ภาษาโฆษณาTV ภาษาแปลอังกฤษ หรือคำว่า 'สวัสดีครับคุณผู้ชม')
+3. **Objection Handling (ทลายข้อโต้แย้งในใจ)**: ดักทางและทลายความลังเล (เช่น "แพงมั้ย?", "ดีจริงป่าว?", "โดนหลอกมั้ย?") ด้วยเหตุผลจริงและผลลัพธ์การันตี
+4. **Director's Cut B-Roll Table**: กำกับภาพเฟรมต่อเฟรม (มุมกล้อง Close-up/Wide, แสง, อารมณ์แสดงสีหน้า, เสียงเอฟเฟกต์ SFX เช่น Whoosh, Pop, Cash Register, Ding) และตัวอักษรซับกลางจอ
+5. **FOMO CTA**: ปิดการขายด้วยคำชวนด่วน เร่งกดตะกร้าเหลืองซ้ายล่างก่อนของหมด
 
 กรุณาส่งออกผลลัพธ์เป็น JSON ภาษาไทยที่ถูกต้อง 100%:
 {
@@ -158,7 +166,7 @@ export async function POST(request: Request) {
   "pinned_comment": "ข้อความพิมพ์ปักตะกร้าในคอมเมนต์เน้นกระตุ้นยอดขายด่วน"
 }
 
-กฎเหล็ก: ส่งออกเฉพาะ JSON ภาษาไทยเท่านั้น ห้ามมี markdown นอกเหนือจาก JSON ห้ามใส่คำพูดทางการแข็งๆ`;
+กฎเหล็ก: ส่งออกเฉพาะ JSON ภาษาไทยเท่านั้น ห้ามมี markdown นอกเหนือจาก JSON`;
     } else if (planType === "plus") {
       // 🔵 PLUS ENGINE: Experienced Copywriter (เก่งขึ้น 10 เท่า)
       prompt = `คุณคือ "Experienced Video Copywriter" ผู้เชี่ยวชาญการทำคอนเทนต์รีวิวสินค้าสร้างยอดขายระดับมืออาชีพ

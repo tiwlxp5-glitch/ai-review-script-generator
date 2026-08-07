@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import UpgradeProModal from "@/components/UpgradeProModal";
 import TeleprompterModal from "@/components/TeleprompterModal";
+import AIBrainComparisonModal from "@/components/AIBrainComparisonModal";
 
 interface UsageData {
   user_type: "admin" | "pro" | "plus" | "free" | "guest";
@@ -151,6 +152,7 @@ export default function DashboardPage() {
   const [modalDefaultPlan, setModalDefaultPlan] = useState<"plus" | "pro">("pro");
   const [modalCustomMessage, setModalCustomMessage] = useState<string | undefined>();
   const [isTeleprompterOpen, setIsTeleprompterOpen] = useState(false);
+  const [isBrainModalOpen, setIsBrainModalOpen] = useState(false);
 
   const [successBanner, setSuccessBanner] = useState<{ plan: "plus" | "pro"; message: string } | null>(null);
 
@@ -565,6 +567,23 @@ export default function DashboardPage() {
 
           {/* Field 2: Tone of Voice Selection (Multi-Tiered 10 Tones) */}
           <div className="space-y-3">
+            {/* AI Brain Upsell Banner / Button */}
+            {!isProOrAdmin && (
+              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-indigo-500/15 border border-amber-500/30 flex items-center justify-between gap-2 shadow-lg shadow-amber-500/5">
+                <div className="flex items-center space-x-2 text-xs font-bold text-amber-200">
+                  <Sparkles className="w-4 h-4 text-amber-400 fill-amber-400 shrink-0" />
+                  <span>รู้หรือไม่? สคริปต์สายฟรี ความสามารถไม่เก่งเท่าแพ็กเกจ Pro!</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsBrainModalOpen(true)}
+                  className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black shadow transition flex items-center space-x-1 shrink-0 cursor-pointer"
+                >
+                  <span>ดูข้อแตกต่างสมอง AI ⚡</span>
+                </button>
+              </div>
+            )}
+
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
               <label className="block text-sm font-semibold text-purple-300">
                 🎭 เลือกโทนการเล่าเรื่อง (Tone of Voice)
@@ -1213,6 +1232,13 @@ export default function DashboardPage() {
         productName={productName}
         isDemo={!isProOrAdmin}
         onUpgradeClick={() => openUpgradeModal("pro")}
+      />
+
+      {/* AI Brain Comparison Modal */}
+      <AIBrainComparisonModal
+        isOpen={isBrainModalOpen}
+        onClose={() => setIsBrainModalOpen(false)}
+        onUpgradeClick={(plan) => openUpgradeModal(plan)}
       />
     </div>
   );
