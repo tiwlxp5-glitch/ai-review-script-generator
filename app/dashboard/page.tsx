@@ -511,6 +511,27 @@ export default function DashboardPage() {
 
       {/* Main Input Form Card */}
       <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-slate-800/80 shadow-2xl bg-slate-950/80 backdrop-blur-xl space-y-4 sm:space-y-6">
+        {/* Low Quota / Expiration Warning Banner */}
+        {usage && usage.user_type !== "admin" && usage.remaining !== "unlimited" && typeof usage.remaining === "number" && usage.remaining <= 5 && (
+          <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs sm:text-sm font-semibold flex items-center justify-between gap-3 animate-in fade-in duration-200">
+            <div className="flex items-center space-x-2.5 min-w-0">
+              <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
+              <span>
+                {usage.remaining === 0
+                  ? "⚠️ โควต้าสร้างสคริปต์ในรอบนี้ของคุณหมดแล้ว! ต่ออายุเพื่อใช้งานสคริปต์ได้ต่อเนื่องทันที"
+                  : `⚠️ สิทธิ์สร้างสคริปต์ในรอบนี้ของคุณใกล้หมดแล้ว (เหลือสร้างได้อีก ${usage.remaining} ครั้ง)`}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => openUpgradeModal(usage.user_type === "plus" ? "pro" : "plus")}
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-black text-xs shrink-0 cursor-pointer shadow-md transition"
+            >
+              {usage.user_type === "plus" ? "อัปเกรด Pro ⚡" : "ต่ออายุแพ็กเกจ ⚡"}
+            </button>
+          </div>
+        )}
+
         {successBanner && (
           <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/20 border border-amber-500/50 text-amber-100 text-sm font-semibold flex items-center justify-between shadow-2xl shadow-amber-500/15 animate-in fade-in zoom-in-95 backdrop-blur-md">
             <div className="flex items-center space-x-3.5">
