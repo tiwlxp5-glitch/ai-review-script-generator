@@ -498,7 +498,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Main Input Form Card */}
-      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800/80 shadow-2xl bg-slate-950/80 backdrop-blur-xl space-y-6">
+      <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-slate-800/80 shadow-2xl bg-slate-950/80 backdrop-blur-xl space-y-4 sm:space-y-6">
         {successBanner && (
           <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/20 border border-amber-500/50 text-amber-100 text-sm font-semibold flex items-center justify-between shadow-2xl shadow-amber-500/15 animate-in fade-in zoom-in-95 backdrop-blur-md">
             <div className="flex items-center space-x-3.5">
@@ -523,7 +523,7 @@ export default function DashboardPage() {
             </div>
             <button
               onClick={() => setSuccessBanner(null)}
-              className="text-amber-400 hover:text-white p-1 text-sm font-bold shrink-0 ml-3 cursor-pointer"
+              className="text-amber-400 hover:text-amber-200 p-2 rounded-xl hover:bg-amber-500/20 transition cursor-pointer"
             >
               ✕
             </button>
@@ -531,12 +531,14 @@ export default function DashboardPage() {
         )}
 
         {error && (
-          <div className="p-4 sm:p-5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm space-y-3">
+          <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm space-y-2">
             <div className="flex items-start space-x-3">
               <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-              <span>{error}</span>
+              <div className="flex-1 space-y-1">
+                <span className="font-semibold">{error}</span>
+              </div>
             </div>
-            {(error.includes("สิทธิ์การใช้งาน") || error.includes("หมดแล้ว")) && (
+            {error.includes("อัปเกรด") && (
               <div className="pt-3 border-t border-rose-500/20 space-y-2">
                 <p className="text-xs font-bold text-amber-300">
                   💡 ถ้าคุณเป็นสายขายของแล้วไม่อยากเสียเวลาคิดสคริปต์ ซื้อเถอะครับคุ้มแน่นอน!
@@ -558,7 +560,7 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <form onSubmit={handleGenerate} className="space-y-6">
+        <form onSubmit={handleGenerate} className="space-y-4 sm:space-y-6">
           {/* Field 1: Product Name */}
           <div className="space-y-2">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
@@ -640,11 +642,21 @@ export default function DashboardPage() {
           <div className="space-y-3">
             {/* AI Brain Upsell Banner / Button */}
             {!isProOrAdmin && (
-              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-indigo-500/15 border border-amber-500/30 flex items-center justify-between gap-2 shadow-lg shadow-amber-500/5">
-                <div className="flex items-center space-x-2 text-xs font-bold text-amber-200">
-                  <Sparkles className="w-4 h-4 text-amber-400 fill-amber-400 shrink-0" />
-                  <span>รู้หรือไม่? สคริปต์สายฟรี ความสามารถไม่เก่งเท่าแพ็กเกจ Pro!</span>
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-900/90 border border-amber-500/35 shadow-lg shadow-amber-500/5 flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2.5">
+                <div className="flex items-center space-x-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                    <Sparkles className="w-4 h-4 text-amber-400 fill-amber-400 animate-pulse" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs sm:text-sm font-bold text-amber-200 truncate">
+                      ความสามารถสมอง AI สายฟรี vs Pro Plan
+                    </div>
+                    <p className="text-[11px] text-slate-400 hidden xs:block">
+                      อัปเกรดเพื่อรับสคริปต์ปิดการขาย Master Copywriter 20 เท่า
+                    </p>
+                  </div>
                 </div>
+
                 <button
                   type="button"
                   onClick={() => setIsBrainModalOpen(true)}
