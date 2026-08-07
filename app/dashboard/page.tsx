@@ -152,7 +152,7 @@ export default function DashboardPage() {
   const [modalCustomMessage, setModalCustomMessage] = useState<string | undefined>();
   const [isTeleprompterOpen, setIsTeleprompterOpen] = useState(false);
 
-  const [successBanner, setSuccessBanner] = useState<string | null>(null);
+  const [successBanner, setSuccessBanner] = useState<{ plan: "plus" | "pro"; message: string } | null>(null);
 
   const fetchUsage = async () => {
     try {
@@ -180,11 +180,13 @@ export default function DashboardPage() {
               const vRes = await fetch(`/api/verify-payment?session_id=${sessionId}&plan=${plan || ""}`);
               const vData = await vRes.json();
               if (vRes.ok && vData.success) {
-                setSuccessBanner(
-                  `การชำระเงินสำเร็จ! บัญชีของคุณถูกอัปเกรดเป็น ${
-                    vData.plan === "pro" ? "Pro Plan (20 เท่า)" : "Plus Plan (10 เท่า)"
-                  } เรียบร้อยแล้ว`
-                );
+                const finalPlan = vData.plan === "pro" ? "pro" : "plus";
+                setSuccessBanner({
+                  plan: finalPlan,
+                  message: `การชำระเงินสำเร็จ! บัญชีของคุณถูกอัปเกรดเป็น ${
+                    finalPlan === "pro" ? "Pro Plan (20 เท่า)" : "Plus Plan (10 เท่า)"
+                  } เรียบร้อยแล้ว`,
+                });
                 window.dispatchEvent(new Event("profileUpdated"));
               } else {
                 console.error("Payment verification failed:", vData);
@@ -436,14 +438,30 @@ export default function DashboardPage() {
       {/* Main Input Form Card */}
       <div className="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800/80 shadow-2xl bg-slate-950/80 backdrop-blur-xl space-y-6">
         {successBanner && (
-          <div className="p-4 sm:p-5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 text-sm font-semibold flex items-center justify-between animate-in fade-in">
-            <div className="flex items-center space-x-2">
-              <Check className="w-5 h-5 text-emerald-400 shrink-0" />
-              <span>{successBanner}</span>
+          <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/20 border border-amber-500/50 text-amber-100 text-sm font-semibold flex items-center justify-between shadow-2xl shadow-amber-500/15 animate-in fade-in zoom-in-95 backdrop-blur-md">
+            <div className="flex items-center space-x-3.5">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-300 flex items-center justify-center text-slate-950 shadow-md shadow-amber-500/30 shrink-0 ring-2 ring-amber-300/40">
+                <Crown className="w-5 h-5 fill-slate-950" />
+              </div>
+              <div className="space-y-0.5">
+                <div className="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center space-x-1">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300 fill-amber-300 animate-pulse" />
+                  <span>การชำระเงินสำเร็จ 100%</span>
+                </div>
+                <p className="text-sm sm:text-base font-bold text-slate-100">
+                  ยินดีด้วย! บัญชีของคุณถูกอัปเกรดเป็น{" "}
+                  <span className="bg-gradient-to-r from-amber-300 via-yellow-300 to-amber-400 bg-clip-text text-transparent font-black text-base sm:text-lg underline decoration-amber-400 decoration-2 underline-offset-4">
+                    {successBanner.plan === "pro"
+                      ? "Pro Plan (20 เท่า - 200 ครั้ง/เดือน)"
+                      : "Plus Plan (10 เท่า - 100 ครั้ง/เดือน)"}
+                  </span>{" "}
+                  เรียบร้อยแล้ว ✨
+                </p>
+              </div>
             </div>
             <button
               onClick={() => setSuccessBanner(null)}
-              className="text-emerald-400 hover:text-white p-1 text-xs"
+              className="text-amber-400 hover:text-white p-1 text-sm font-bold shrink-0 ml-3 cursor-pointer"
             >
               ✕
             </button>
