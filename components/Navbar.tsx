@@ -68,7 +68,19 @@ export default function Navbar() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    const handleProfileUpdateEvent = () => {
+      fetchProfile();
+    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("profileUpdated", handleProfileUpdateEvent);
+    }
+
+    return () => {
+      subscription.unsubscribe();
+      if (typeof window !== "undefined") {
+        window.removeEventListener("profileUpdated", handleProfileUpdateEvent);
+      }
+    };
   }, [supabase]);
 
   const handleSignOut = async () => {

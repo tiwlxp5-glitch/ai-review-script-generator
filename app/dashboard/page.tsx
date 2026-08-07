@@ -177,7 +177,10 @@ export default function DashboardPage() {
         if (isSuccess) {
           if (sessionId) {
             try {
-              await fetch(`/api/verify-payment?session_id=${sessionId}`);
+              const vRes = await fetch(`/api/verify-payment?session_id=${sessionId}`);
+              if (vRes.ok) {
+                window.dispatchEvent(new Event("profileUpdated"));
+              }
             } catch (vErr) {
               console.error("Payment verification error:", vErr);
             }
@@ -190,7 +193,7 @@ export default function DashboardPage() {
           window.history.replaceState({}, document.title, window.location.pathname);
         }
       }
-      fetchUsage();
+      await fetchUsage();
     };
 
     checkPaymentAndUsage();

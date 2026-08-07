@@ -23,24 +23,36 @@ export async function GET(request: Request) {
     // Retrieve checkout session directly from Stripe API
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    if (session.payment_status === "paid" || session.status === "complete") {
+    if (
+      session.payment_status === "paid" ||
+      session.payment_status === "no_payment_required" ||
+      session.status === "complete"
+    ) {
       const plan = session.metadata?.plan || "plus";
       const limit = plan === "pro" ? 200 : 100;
 
       // Instant upgrade in Supabase profiles table
-      const { error } = await supabase.from("profiles").upsert(
-        {
-          id: user.id,
+      const { error: updateErr } = await supabase
+        .from("profiles")
+        .update({
           plan_type: plan,
           monthly_limit: limit,
           updated_at: new Date().toISOString(),
-        },
-        { onConflict: "id" }
-      );
+        })
+        .eq("id", user.id);
 
-      if (error) {
-        console.error("Failed to upgrade profile in verify-payment:", error);
-        return NextResponse.json({ error: "Database update failed" }, { status: 500 });
+      if (updateErr) {
+        console.error("Failed to update profile in verify-payment:", updateErr);
+        await supabase.from("profiles").upsert(
+          {
+            id: user.id,
+            email: user.email,
+            plan_type: plan,
+            monthly_limit: limit,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "id" }
+        );
       }
 
       return NextResponse.json({
