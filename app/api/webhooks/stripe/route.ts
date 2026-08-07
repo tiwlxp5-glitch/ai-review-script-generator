@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createClient } from "@supabase/supabase-js";
 
-// Initialize Supabase Admin client with service role key if available, or standard client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -18,7 +17,6 @@ export async function POST(request: Request) {
     if (webhookSecret && signature) {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } else {
-      // Fallback for development testing
       event = JSON.parse(body);
     }
   } catch (err: any) {
@@ -29,7 +27,7 @@ export async function POST(request: Request) {
     );
   }
 
-  // Handle successful payment completion event
+  // Handle checkout completion (paid or 100% off zero-payment)
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as any;
     const userId = session.client_reference_id || session.metadata?.user_id;
@@ -38,22 +36,29 @@ export async function POST(request: Request) {
     if (userId && (plan === "plus" || plan === "pro")) {
       const limit = plan === "pro" ? 200 : 100;
 
-      const { error } = await supabase
+      // 1. Direct update
+      const { error: updateErr } = await supabase
         .from("profiles")
-        .upsert(
-          {
-            id: userId,
-            plan_type: plan,
-            monthly_limit: limit,
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: "id" }
-        );
+        .update({
+          plan_type: plan,
+          monthly_limit: limit,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", userId);
 
-      if (error) {
-        console.error(`Failed to upgrade user ${userId} to ${plan}:`, error);
-      } else {
-        console.log(`Successfully upgraded user ${userId} to ${plan}!`);
+      if (updateErr) {
+        console.error("Webhook profile update error:", updateErr);
+      }
+
+      // 2. Security definer RPC fallback
+      try {
+        await supabase.rpc("upgrade_user_profile", {
+          target_user_id: userId,
+          new_plan: plan,
+          new_limit: limit,
+        });
+      } catch (rpcErr) {
+        console.warn("Webhook RPC upgrade_user_profile warning:", rpcErr);
       }
     }
   }

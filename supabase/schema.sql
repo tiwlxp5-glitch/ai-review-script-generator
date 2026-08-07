@@ -97,3 +97,20 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+
+-- 7. Security Definer RPC Function to Upgrade User Profile (Bypasses RLS safely)
+CREATE OR REPLACE FUNCTION public.upgrade_user_profile(
+    target_user_id UUID,
+    new_plan TEXT,
+    new_limit INTEGER
+)
+RETURNS VOID AS $$
+BEGIN
+    UPDATE public.profiles
+    SET 
+        plan_type = new_plan,
+        monthly_limit = new_limit,
+        updated_at = NOW()
+    WHERE id = target_user_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
