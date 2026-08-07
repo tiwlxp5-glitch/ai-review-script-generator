@@ -156,6 +156,11 @@ export default function DashboardPage() {
   const [isBrainModalOpen, setIsBrainModalOpen] = useState(false);
   const [isAnalyzerModalOpen, setIsAnalyzerModalOpen] = useState(false);
 
+  // Live Countdown & Progress States
+  const [countdown, setCountdown] = useState(5);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [stepMessage, setStepMessage] = useState("🧠 AI กำลังวิเคราะห์สินค้าและกลุ่มเป้าหมาย...");
+
   const [successBanner, setSuccessBanner] = useState<{ plan: "plus" | "pro"; message: string } | null>(null);
 
   const fetchUsage = async () => {
@@ -247,6 +252,30 @@ export default function DashboardPage() {
     setCopied(false);
     setCopiedCaption(false);
 
+    // Initialize Countdown & Progress states
+    setCountdown(5);
+    setLoadingProgress(5);
+    setStepMessage("🧠 AI กำลังวิเคราะห์สินค้าและกลุ่มเป้าหมาย...");
+
+    const startTime = Date.now();
+    const timerInterval = setInterval(() => {
+      const elapsedSec = (Date.now() - startTime) / 1000;
+      const remainingSec = Math.max(0, Math.ceil(5 - elapsedSec));
+      setCountdown(remainingSec);
+
+      // Smooth progress from 5% to 92%
+      const newProgress = Math.min(92, Math.round(5 + elapsedSec * 18));
+      setLoadingProgress(newProgress);
+
+      if (elapsedSec < 1.5) {
+        setStepMessage("🧠 AI กำลังวิเคราะห์จุดขายสินค้าและกลุ่มเป้าหมาย...");
+      } else if (elapsedSec < 3.5) {
+        setStepMessage("✍️ Master Copywriter กำลังคิด Hook และบทพูดพากย์...");
+      } else {
+        setStepMessage("🎬 กำลังจัดตาราง B-Roll, แคปชัน และปักตะกร้า...");
+      }
+    }, 100);
+
     try {
       const response = await fetch("/api/generate-script", {
         method: "POST",
@@ -274,6 +303,9 @@ export default function DashboardPage() {
         throw new Error(data.error || "เกิดข้อผิดพลาดในการสร้างสคริปต์");
       }
 
+      setLoadingProgress(100);
+      setCountdown(0);
+
       const rawScript = data.script || "";
       setGeneratedScript(rawScript);
       setEditedScript(rawScript);
@@ -292,6 +324,7 @@ export default function DashboardPage() {
       console.error("Script generation error:", err);
       setError(err?.message || "ไม่สามารถเชื่อมต่อกับระบบ AI ได้ กรุณาลองใหม่อีกครั้ง");
     } finally {
+      clearInterval(timerInterval);
       setLoading(false);
     }
   };
@@ -727,8 +760,49 @@ export default function DashboardPage() {
         </form>
       </div>
 
+      {/* Live Countdown & Progress Card */}
+      {loading && (
+        <div className="glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-purple-500/40 shadow-2xl bg-slate-950/95 space-y-4 animate-in fade-in duration-200">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-300 shrink-0">
+                <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
+              </div>
+              <div>
+                <h3 className="text-xs sm:text-sm font-bold text-white flex items-center space-x-2">
+                  <span>{stepMessage}</span>
+                </h3>
+                <p className="text-[11px] sm:text-xs text-slate-400">
+                  กำลังออกแบบสคริปต์ + ตาราง B-Roll ด้วย AI
+                </p>
+              </div>
+            </div>
+
+            {/* Countdown Badge */}
+            <div className="px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-black flex items-center space-x-1.5 shrink-0 shadow-sm">
+              <Clock className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+              <span>อีกประมาณ {countdown} วินาที</span>
+            </div>
+          </div>
+
+          {/* Animated Progress Bar */}
+          <div className="space-y-1.5">
+            <div className="w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-slate-800 p-0.5">
+              <div
+                className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-amber-400 rounded-full transition-all duration-300 shadow-md shadow-purple-500/30"
+                style={{ width: `${loadingProgress}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-[11px] text-slate-400 font-semibold px-1">
+              <span>กำลังประมวลผล...</span>
+              <span>{loadingProgress}%</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Output Display Card */}
-      {(loading || generatedScript) && (
+      {generatedScript && (
         <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-slate-800/80 shadow-2xl bg-slate-950/90 space-y-5 sm:space-y-6">
           {/* Header Bar with Action Controls */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-3 sm:pb-4 border-b border-slate-800/80 gap-3">
