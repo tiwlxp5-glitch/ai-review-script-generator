@@ -254,25 +254,37 @@ export default function DashboardPage() {
     setCopied(false);
     setCopiedCaption(false);
 
-    setCountdown(5);
+    setCountdown(6);
     setLoadingProgress(5);
     setStepMessage("🧠 AI กำลังวิเคราะห์สินค้าและกลุ่มเป้าหมาย...");
 
+    const totalEstimateSec = 6;
     const startTime = Date.now();
     const timerInterval = setInterval(() => {
       const elapsedSec = (Date.now() - startTime) / 1000;
-      const remainingSec = Math.max(0, Math.ceil(5 - elapsedSec));
+
+      // Adaptive Remaining Countdown: Smoothly count down and stay at 1s if response takes longer
+      let remainingSec = Math.ceil(totalEstimateSec - elapsedSec);
+      if (remainingSec <= 0) {
+        remainingSec = 1;
+      }
       setCountdown(remainingSec);
 
-      const newProgress = Math.min(92, Math.round(5 + elapsedSec * 18));
+      // Smooth Adaptive Progress Bar
+      let newProgress = 5;
+      if (elapsedSec <= 4.5) {
+        newProgress = Math.round(5 + (elapsedSec / 4.5) * 80);
+      } else {
+        newProgress = Math.min(96, Math.round(85 + (elapsedSec - 4.5) * 3));
+      }
       setLoadingProgress(newProgress);
 
-      if (elapsedSec < 1.5) {
+      if (elapsedSec < 1.8) {
         setStepMessage("🧠 AI กำลังวิเคราะห์จุดขายสินค้าและกลุ่มเป้าหมาย...");
-      } else if (elapsedSec < 3.5) {
+      } else if (elapsedSec < 4.2) {
         setStepMessage("✍️ Master Copywriter กำลังคิด Hook และบทพูดพากย์...");
       } else {
-        setStepMessage("🎬 กำลังจัดตาราง B-Roll, แคปชัน และปักตะกร้า...");
+        setStepMessage("🎬 กำลังจัดตาราง B-Roll, แคปชัน และเตรียมผลลัพธ์ขั้นตอนสุดท้าย...");
       }
     }, 100);
 

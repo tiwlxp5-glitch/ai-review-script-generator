@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   Flame,
   HelpCircle,
+  Clock,
 } from "lucide-react";
 
 interface AnalysisResult {
@@ -51,6 +52,11 @@ export default function ProductAnalyzerModal({
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [applied, setApplied] = useState(false);
 
+  // Live Adaptive Countdown States
+  const [countdown, setCountdown] = useState(4);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [stepMessage, setStepMessage] = useState("🔍 AI กำลังสืบค้นข้อมูลและสเปกเด่นของสินค้า...");
+
   if (!isOpen) return null;
 
   const isProOrAdmin = userPlan === "pro" || userPlan === "admin";
@@ -67,6 +73,34 @@ export default function ProductAnalyzerModal({
     setError(null);
     setAnalysis(null);
     setApplied(false);
+    setCountdown(4);
+    setLoadingProgress(5);
+    setStepMessage("🔍 AI กำลังสืบค้นข้อมูลและสเปกเด่นของสินค้า...");
+
+    const totalEstimateSec = 4;
+    const startTime = Date.now();
+    const timerInterval = setInterval(() => {
+      const elapsedSec = (Date.now() - startTime) / 1000;
+      let remainingSec = Math.ceil(totalEstimateSec - elapsedSec);
+      if (remainingSec <= 0) remainingSec = 1;
+      setCountdown(remainingSec);
+
+      let newProgress = 5;
+      if (elapsedSec <= 3.0) {
+        newProgress = Math.round(5 + (elapsedSec / 3.0) * 80);
+      } else {
+        newProgress = Math.min(96, Math.round(85 + (elapsedSec - 3.0) * 4));
+      }
+      setLoadingProgress(newProgress);
+
+      if (elapsedSec < 1.2) {
+        setStepMessage("🔍 AI กำลังสืบค้นข้อมูลและสเปกเด่นของสินค้า...");
+      } else if (elapsedSec < 2.8) {
+        setStepMessage("🎯 กำลังวิเคราะห์พฤติกรรมกลุ่มเป้าหมาย...");
+      } else {
+        setStepMessage("✨ กำลังจัดทำแนวทางจุดขาย และชื่อสินค้าดึงดูดใจ...");
+      }
+    }, 100);
 
     try {
       const res = await fetch("/api/analyze-product", {
@@ -80,11 +114,14 @@ export default function ProductAnalyzerModal({
         throw new Error(data.error || "เกิดข้อผิดพลาดในการวิเคราะห์สินค้า");
       }
 
+      setLoadingProgress(100);
+      setCountdown(0);
       setAnalysis(data.analysis);
     } catch (err: any) {
       console.error("Analysis error:", err);
       setError(err?.message || "ไม่สามารถเชื่อมต่อระบบวิเคราะห์ได้");
     } finally {
+      clearInterval(timerInterval);
       setLoading(false);
     }
   };
@@ -169,6 +206,37 @@ export default function ProductAnalyzerModal({
             </button>
           </div>
         </form>
+
+        {/* Live Adaptive Countdown & Progress Card */}
+        {loading && (
+          <div className="p-4 sm:p-5 rounded-2xl border border-purple-500/40 bg-slate-900/90 space-y-3 animate-in fade-in duration-200">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center space-x-2.5 min-w-0">
+                <Loader2 className="w-5 h-5 animate-spin text-purple-400 shrink-0" />
+                <span className="text-xs sm:text-sm font-bold text-white truncate">
+                  {stepMessage}
+                </span>
+              </div>
+              <div className="px-2.5 py-1 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold flex items-center space-x-1 shrink-0">
+                <Clock className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+                <span>อีกประมาณ {countdown} วินาที</span>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800 p-0.5">
+                <div
+                  className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-amber-400 rounded-full transition-all duration-300"
+                  style={{ width: `${loadingProgress}%` }}
+                />
+              </div>
+              <div className="flex justify-between text-[10px] text-slate-400 font-medium">
+                <span>กำลังประมวลผลข้อมูลสินค้า...</span>
+                <span>{loadingProgress}%</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-medium">
