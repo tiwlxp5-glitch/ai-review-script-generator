@@ -25,6 +25,7 @@ import {
 import UpgradeProModal from "@/components/UpgradeProModal";
 import TeleprompterModal from "@/components/TeleprompterModal";
 import AIBrainComparisonModal from "@/components/AIBrainComparisonModal";
+import ProductAnalyzerModal from "@/components/ProductAnalyzerModal";
 
 interface UsageData {
   user_type: "admin" | "pro" | "plus" | "free" | "guest";
@@ -153,6 +154,7 @@ export default function DashboardPage() {
   const [modalCustomMessage, setModalCustomMessage] = useState<string | undefined>();
   const [isTeleprompterOpen, setIsTeleprompterOpen] = useState(false);
   const [isBrainModalOpen, setIsBrainModalOpen] = useState(false);
+  const [isAnalyzerModalOpen, setIsAnalyzerModalOpen] = useState(false);
 
   const [successBanner, setSuccessBanner] = useState<{ plan: "plus" | "pro"; message: string } | null>(null);
 
@@ -501,10 +503,21 @@ export default function DashboardPage() {
         <form onSubmit={handleGenerate} className="space-y-6">
           {/* Field 1: Product Name */}
           <div className="space-y-2">
-            <label className="block text-sm font-semibold text-purple-300">
-              🛒 ชื่อสินค้าที่ต้องการรีวิว{" "}
-              <span className="text-purple-400 font-normal">* จำเป็น</span>
-            </label>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <label className="block text-sm font-semibold text-purple-300">
+                🛒 ชื่อสินค้าที่ต้องการรีวิว{" "}
+                <span className="text-purple-400 font-normal">* จำเป็น</span>
+              </label>
+
+              <button
+                type="button"
+                onClick={() => setIsAnalyzerModalOpen(true)}
+                className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-amber-500/20 hover:from-purple-500/30 hover:to-amber-500/30 border border-purple-500/40 text-purple-200 text-xs font-bold transition flex items-center space-x-1.5 shrink-0 cursor-pointer shadow-sm"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400 fill-amber-400 animate-pulse" />
+                <span>ให้ AI ช่วยวิเคราะห์สินค้า & แนะนำกลุ่มเป้าหมาย ✨</span>
+              </button>
+            </div>
             <input
               type="text"
               required
@@ -1238,6 +1251,19 @@ export default function DashboardPage() {
       <AIBrainComparisonModal
         isOpen={isBrainModalOpen}
         onClose={() => setIsBrainModalOpen(false)}
+        onUpgradeClick={(plan) => openUpgradeModal(plan)}
+      />
+
+      {/* Product Analyzer Modal */}
+      <ProductAnalyzerModal
+        isOpen={isAnalyzerModalOpen}
+        onClose={() => setIsAnalyzerModalOpen(false)}
+        onApplyAnalysis={(data) => {
+          if (data.productName) setProductName(data.productName);
+          if (data.targetAudience) setTargetAudience(data.targetAudience);
+          if (data.extraInfo) setProductLinkOrExtra(data.extraInfo);
+        }}
+        userPlan={usage?.user_type}
         onUpgradeClick={(plan) => openUpgradeModal(plan)}
       />
     </div>
