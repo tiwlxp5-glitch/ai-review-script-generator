@@ -17,6 +17,7 @@ import {
   CreditCard,
   QrCode,
   Loader2,
+  Flame,
 } from "lucide-react";
 import AIBrainComparisonModal from "@/components/AIBrainComparisonModal";
 
@@ -117,13 +118,19 @@ export default function UpgradeProModal({
 
         {/* Modal Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500/10 via-purple-500/10 to-pink-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold tracking-wide">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>ยกระดับบัญชีผู้ใช้งาน</span>
+          <div className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500/20 via-pink-500/20 to-purple-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold tracking-wide shadow-md animate-pulse">
+            <Flame className="w-4 h-4 text-amber-400 fill-amber-400" />
+            <span>โปรลดพิเศษ (เฉพาะช่วงนี้)</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
             {isCurrentPlus ? "อัปเกรดเป็น Pro Plan" : "เลือกแพ็กเกจที่เหมาะกับคุณ"}
           </h2>
+
+          {/* Urgency Price Increase Notice */}
+          <div className="px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold text-center flex items-center justify-center space-x-2">
+            <Zap className="w-3.5 h-3.5 text-amber-400 fill-amber-400 shrink-0" />
+            <span>⚠️ ราคาอาจจะปรับขึ้นเร็วๆ นี้ (รีบสมัครก่อนปรับเป็นราคาปกติ!)</span>
+          </div>
 
           {/* Core Value Proposition Banner */}
           <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-indigo-500/15 border border-amber-500/30 text-left space-y-1">
@@ -180,9 +187,10 @@ export default function UpgradeProModal({
               </div>
 
               <div>
-                <div className="flex items-baseline space-x-1">
+                <div className="flex items-baseline space-x-1.5">
                   <span className="text-3xl font-black text-white">99</span>
                   <span className="text-xs font-semibold text-slate-400">บาท / เดือน</span>
+                  <span className="text-[10px] text-slate-500 line-through">ปกติ 149.-</span>
                 </div>
                 <p className="text-[11px] text-slate-400 pt-0.5">เน้นสร้างสคริปต์อย่างเดียว 100 ครั้ง/เดือน</p>
               </div>
