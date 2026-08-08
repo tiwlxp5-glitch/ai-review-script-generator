@@ -29,6 +29,7 @@ import TeleprompterModal from "@/components/TeleprompterModal";
 import AIBrainComparisonModal from "@/components/AIBrainComparisonModal";
 import ProductAnalyzerModal from "@/components/ProductAnalyzerModal";
 import AuthModal from "@/components/AuthModal";
+import { createClient } from "@/lib/supabase/client";
 
 interface UsageData {
   user_type: "admin" | "pro" | "plus" | "free" | "guest";
@@ -171,7 +172,14 @@ export default function DashboardPage() {
 
   const fetchUsage = async () => {
     try {
-      const res = await fetch(`/api/user-usage?t=${Date.now()}`, { cache: "no-store" });
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      const res = await fetch(`/api/user-usage?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       const text = await res.text();
       let data: any = {};
       try {
@@ -335,10 +343,15 @@ export default function DashboardPage() {
     }, 100);
 
     try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
       const response = await fetch("/api/generate-script", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify(formData),
       });
@@ -407,7 +420,10 @@ export default function DashboardPage() {
       script_length: scriptLength,
     };
 
-    if (!usage || usage.user_type === "guest") {
+    const supabase = createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if ((!usage || usage.user_type === "guest") && !session) {
       if (typeof window !== "undefined") {
         sessionStorage.setItem("pending_script_form", JSON.stringify(currentForm));
       }

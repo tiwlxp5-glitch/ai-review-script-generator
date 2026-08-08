@@ -17,6 +17,7 @@ import {
   HelpCircle,
   Clock,
 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 interface AnalysisResult {
   refined_product_name: string;
@@ -103,9 +104,16 @@ export default function ProductAnalyzerModal({
     }, 100);
 
     try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
       const res = await fetch("/api/analyze-product", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ product_input: productInput }),
       });
 
