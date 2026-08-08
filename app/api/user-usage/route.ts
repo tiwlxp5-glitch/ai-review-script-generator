@@ -7,12 +7,27 @@ export const runtime = "edge";
 
 const ADMIN_EMAIL = "tiwlxp5@gmail.com";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const userSupabase = await createClient();
-    const {
+    let {
       data: { user },
     } = await userSupabase.auth.getUser();
+
+    if (!user) {
+      const authHeader = request.headers.get("authorization");
+      const token = authHeader?.replace(/^Bearer\s+/i, "");
+      if (token) {
+        try {
+          const { data: tokenData } = await userSupabase.auth.getUser(token);
+          if (tokenData?.user) {
+            user = tokenData.user;
+          }
+        } catch (tErr) {
+          console.warn("User usage token verification warning:", tErr);
+        }
+      }
+    }
 
     if (user) {
       // Use Admin Client if available to bypass RLS and read profile directly
@@ -88,17 +103,22 @@ export async function GET() {
     }
 
     return NextResponse.json({
-      user_type: "guest",
+      user_type: "free",
       is_admin: false,
-      limit: 0,
+      limit: 7,
       used: 0,
-      remaining: 0,
+      remaining: 7,
+      period: "weekly",
     });
   } catch (error: any) {
     console.error("Usage check error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({
+      user_type: "free",
+      is_admin: false,
+      limit: 7,
+      used: 0,
+      remaining: 7,
+      period: "weekly",
+    });
   }
 }

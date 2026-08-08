@@ -10,10 +10,26 @@ const ADMIN_EMAIL = "tiwlxp5@gmail.com";
 export async function POST(request: Request) {
   try {
     const supabase = await createClient();
-    const {
+    let {
       data: { user },
       error: authError,
     } = await supabase.auth.getUser();
+
+    if (!user) {
+      const authHeader = request.headers.get("authorization");
+      const token = authHeader?.replace(/^Bearer\s+/i, "");
+      if (token) {
+        try {
+          const { data: tokenData } = await supabase.auth.getUser(token);
+          if (tokenData?.user) {
+            user = tokenData.user;
+            authError = null;
+          }
+        } catch (tErr) {
+          console.warn("Analyze product token verification warning:", tErr);
+        }
+      }
+    }
 
     if (authError || !user) {
       return NextResponse.json(
