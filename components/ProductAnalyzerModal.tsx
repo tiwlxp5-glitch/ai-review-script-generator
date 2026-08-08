@@ -109,9 +109,16 @@ export default function ProductAnalyzerModal({
         body: JSON.stringify({ product_input: productInput }),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      let data: any = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (e) {
+        console.error("Non-JSON response in ProductAnalyzerModal:", text);
+      }
+
       if (!res.ok) {
-        throw new Error(data.error || "เกิดข้อผิดพลาดในการวิเคราะห์สินค้า");
+        throw new Error(data.error || `เกิดข้อผิดพลาดในการวิเคราะห์สินค้า (${res.status})`);
       }
 
       setLoadingProgress(100);

@@ -172,8 +172,12 @@ export default function DashboardPage() {
   const fetchUsage = async () => {
     try {
       const res = await fetch(`/api/user-usage?t=${Date.now()}`, { cache: "no-store" });
-      if (res.ok) {
-        const data = await res.json();
+      const text = await res.text();
+      let data: any = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (e) {}
+      if (res.ok && data) {
         setUsage(data);
       }
     } catch (err) {
@@ -193,7 +197,11 @@ export default function DashboardPage() {
           if (sessionId) {
             try {
               const vRes = await fetch(`/api/verify-payment?session_id=${sessionId}&plan=${plan || ""}`);
-              const vData = await vRes.json();
+              const vText = await vRes.text();
+              let vData: any = {};
+              try {
+                vData = vText ? JSON.parse(vText) : {};
+              } catch (e) {}
               if (vRes.ok && vData.success) {
                 const finalPlan = vData.plan === "pro" ? "pro" : "plus";
                 setSuccessBanner({
@@ -335,7 +343,13 @@ export default function DashboardPage() {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      const text = await response.text();
+      let data: any = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (e) {
+        console.error("Non-JSON response in triggerScriptGeneration:", text);
+      }
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -348,7 +362,7 @@ export default function DashboardPage() {
           openUpgradeModal("pro", quotaMsg);
           return;
         }
-        throw new Error(data.error || "เกิดข้อผิดพลาดในการสร้างสคริปต์");
+        throw new Error(data.error || `เกิดข้อผิดพลาดในการสร้างสคริปต์ (${response.status})`);
       }
 
       setLoadingProgress(100);

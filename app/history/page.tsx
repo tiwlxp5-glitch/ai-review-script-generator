@@ -147,8 +147,12 @@ export default function HistoryPage() {
       // Fetch user usage status
       try {
         const usageRes = await fetch("/api/user-usage");
-        if (usageRes.ok) {
-          const usageData = await usageRes.json();
+        const usageText = await usageRes.text();
+        let usageData: any = {};
+        try {
+          usageData = usageText ? JSON.parse(usageText) : {};
+        } catch (e) {}
+        if (usageRes.ok && usageData.user_type) {
           setUserType(usageData.user_type);
         }
       } catch (uErr) {
