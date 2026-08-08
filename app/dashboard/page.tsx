@@ -1307,34 +1307,34 @@ export default function DashboardPage() {
               {activeTab === "shotlist" && (
                 <div className="space-y-4">
                   {!isProOrAdmin ? (
-                    <div className="relative rounded-2xl overflow-hidden border border-amber-500/30 bg-slate-950/90 p-1">
+                    <div className="relative rounded-2xl overflow-hidden border border-amber-500/30 bg-slate-950/90 p-1 min-h-[280px] flex flex-col justify-center">
                       {/* Lock Banner Overlay */}
-                      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 bg-slate-950/85 backdrop-blur-md text-center space-y-3">
-                        <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/40 shadow-lg shadow-amber-500/10">
-                          <Lock className="w-6 h-6 text-amber-400" />
+                      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-4 sm:p-6 bg-slate-950/85 backdrop-blur-md text-center space-y-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/40 shadow-lg shadow-amber-500/10">
+                          <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
                         </div>
                         <div className="space-y-1 max-w-md">
-                          <h3 className="text-base font-bold text-white">
+                          <h3 className="text-sm sm:text-base font-bold text-white leading-snug">
                             ตารางถ่าย B-Roll ถูกล็อกสำหรับผู้ใช้ Pro
                           </h3>
-                          <p className="text-xs text-amber-300 font-bold">
+                          <p className="text-[11px] sm:text-xs text-amber-300 font-bold leading-relaxed">
                             ปลดล็อกตารางกำกับภาพ Shot-by-Shot + โหมดอ่านบทขณะอัดคลิป เพียง 199.-/เดือน
                           </p>
-                          <p className="text-xs text-slate-300">
+                          <p className="text-[10px] sm:text-xs text-slate-300 leading-relaxed hidden sm:block">
                             ตาราง Shot-by-Shot แยกมุมกล้อง คำพูด และซับกลางจอของสินค้าคุณถูกล็อกไว้ ปลดล็อกเพื่อดูรายละเอียดฉบับเต็ม!
                           </p>
                         </div>
                         <button
                           onClick={() => openUpgradeModal("pro", "ปลดล็อกตารางกำกับภาพ Shot-by-Shot + โหมดอ่านบทขณะอัดคลิป เพียง 199.-/เดือน")}
-                          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 text-xs font-black shadow-xl shadow-amber-500/25 transition flex items-center space-x-1.5 cursor-pointer"
+                          className="px-4 py-2.5 mt-2 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-slate-950 text-xs sm:text-sm font-black shadow-xl shadow-amber-500/25 transition flex items-center justify-center space-x-1.5 cursor-pointer min-h-[48px]"
                         >
-                          <Crown className="w-4 h-4 fill-slate-950" />
+                          <Crown className="w-4 h-4 fill-slate-950 shrink-0" />
                           <span>ปลดล็อกตาราง B-Roll ของคุณ (199.-)</span>
                         </button>
                       </div>
 
                       {/* Dummy Teaser Mock Table (Heavily Blurred & Masked) */}
-                      <div className="overflow-x-auto filter blur-md select-none pointer-events-none opacity-20 p-2">
+                      <div className="overflow-x-auto filter blur-md select-none pointer-events-none opacity-20 p-2 hidden sm:block">
                         <table className="w-full text-left text-xs sm:text-sm">
                           <thead className="bg-slate-900 text-purple-300 font-bold border-b border-slate-800">
                             <tr>

@@ -583,22 +583,24 @@ export default function HistoryPage() {
                   {currentTab === "shotlist" && (
                     <div>
                       {!isProOrAdmin ? (
-                        <div className="relative rounded-xl overflow-hidden border border-amber-500/30 bg-slate-950/90 p-1">
+                        <div className="relative rounded-xl overflow-hidden border border-amber-500/30 bg-slate-950/90 p-1 min-h-[200px] flex flex-col justify-center">
                           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md text-center space-y-2">
                             <Lock className="w-5 h-5 text-amber-400" />
                             <p className="text-xs font-bold text-white">ตาราง B-Roll ถูกล็อกสำหรับผู้ใช้ Pro</p>
                             <p className="text-[11px] text-amber-300 font-bold max-w-xs">ปลดล็อกตารางกำกับภาพ Shot-by-Shot + โหมดอ่านบทขณะอัดคลิป เพียง 199.-/เดือน</p>
                             <button
                               onClick={() => setIsProModalOpen(true)}
-                              className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow flex items-center space-x-1 cursor-pointer"
+                              className="px-3.5 py-1.5 mt-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow flex items-center justify-center space-x-1 cursor-pointer min-h-[44px]"
                             >
-                              <Crown className="w-3.5 h-3.5 fill-slate-950" />
+                              <Crown className="w-3.5 h-3.5 fill-slate-950 shrink-0" />
                               <span>ปลดล็อก Pro (199.-)</span>
                             </button>
                           </div>
                           <div className="filter blur-md select-none pointer-events-none opacity-20 p-2 text-xs">
                             <p className="font-bold text-amber-400">0-3s | 🎥 ซูมสินค้า | 🗣️ "อย่าเพิ่งเลื่อน..."</p>
                             <p className="font-bold text-amber-400">3-7s | 🎥 สาธิตการใช้ | 🗣️ "ผลลัพธ์ว้าวมาก..."</p>
+                            <p className="font-bold text-amber-400">7-10s | 🎥 อธิบายฟังก์ชัน | 🗣️ "ใช้ง่ายมากแค่..."</p>
+                            <p className="font-bold text-amber-400">10-15s | 🎥 โปรโมชัน | 🗣️ "กดตะกร้าด่วน..."</p>
                           </div>
                         </div>
                       ) : (
