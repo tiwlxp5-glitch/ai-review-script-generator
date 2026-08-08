@@ -269,10 +269,10 @@ Hook B (Verbal Hook): "ใครเคยเจอปัญหานี้บ้
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const modelsToTry = [
+      "gemini-2.0-flash",
+      "gemini-1.5-flash",
+      "gemini-1.5-pro",
       "gemini-flash-latest",
-      "gemini-3.5-flash",
-      "gemini-3.6-flash",
-      "gemini-flash-lite-latest",
     ];
 
     let rawOutput = "";

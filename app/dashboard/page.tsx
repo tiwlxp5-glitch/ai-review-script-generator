@@ -514,10 +514,10 @@ export default function DashboardPage() {
               Workflow การถ่ายคลิปแบบมืออาชีพจบในที่เดียว พร้อมแคปชันและแฮชแท็กติดเทรนด์
             </p>
 
-            {/* Usage status badge bar (hidden for guests) */}
-            {usage && usage.user_type !== "guest" && (
-              <div className="pt-1">
-                {usage.user_type === "admin" ? (
+            {/* Usage status badge bar */}
+            <div className="pt-1">
+              {usage && usage.user_type !== "guest" ? (
+                usage.user_type === "admin" ? (
                   <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-red-500 via-amber-400 via-emerald-400 via-sky-400 to-purple-500 text-slate-950 text-xs font-black shadow-lg shadow-purple-500/25 border border-white/40">
                     <Crown className="w-4 h-4 text-slate-950 fill-slate-950" />
                     <span>ผู้ดูแลระบบ (ใช้งานไม่จำกัด)</span>
@@ -590,9 +590,16 @@ export default function DashboardPage() {
                       <span>Pro (199.-)</span>
                     </button>
                   </div>
-                )}
-              </div>
-            )}
+                )
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <span className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-700 dark:text-purple-300 text-xs font-medium animate-pulse">
+                    <Loader2 className="w-3.5 h-3.5 text-purple-500 animate-spin shrink-0" />
+                    <span>กำลังโหลดข้อมูลโควต้าสมาชิก...</span>
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Low Quota / Expiration Warning Banner */}
