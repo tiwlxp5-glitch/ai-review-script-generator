@@ -4,6 +4,7 @@ import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { stripe } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 export async function GET(request: Request) {
   try {

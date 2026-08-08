@@ -6,4 +6,6 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
     name: "ReviewScript AI",
     version: "1.0.0",
   },
+  httpClient: Stripe.createFetchHttpClient(),
 });
+

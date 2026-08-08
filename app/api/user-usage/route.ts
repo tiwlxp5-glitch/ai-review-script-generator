@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 const ADMIN_EMAIL = "tiwlxp5@gmail.com";
 
