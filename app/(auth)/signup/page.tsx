@@ -73,14 +73,14 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-12rem)] px-4">
-      <div className="w-full max-w-md">
+    <div className="flex items-center justify-center min-h-[calc(100vh-12rem)] px-3.5 sm:px-4 py-4 sm:py-8">
+      <div className="w-full max-w-md space-y-6">
         {emailConfirmationNeeded ? (
           /* Dedicated Email Confirmation Instruction View */
-          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-purple-500/30 shadow-2xl bg-slate-950/90 text-center space-y-6 animate-in fade-in zoom-in duration-300">
+          <div className="glass-card rounded-2xl sm:rounded-3xl p-5 xs:p-6 sm:p-8 border border-purple-500/30 shadow-2xl bg-slate-950/90 text-center space-y-5 sm:space-y-6 animate-in fade-in zoom-in duration-300">
             {/* Top Mail Icon Badge */}
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 shadow-xl shadow-purple-500/30 text-white mx-auto ring-4 ring-purple-500/20">
-              <Mail className="w-10 h-10 animate-bounce" />
+            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 shadow-xl shadow-purple-500/30 text-white mx-auto ring-4 ring-purple-500/20">
+              <Mail className="w-8 h-8 sm:w-10 sm:h-10 animate-bounce" />
             </div>
 
             <div className="space-y-2">
@@ -88,13 +88,13 @@ export default function SignupPage() {
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>สมัครสมาชิกสำเร็จ!</span>
               </span>
-              <h2 className="text-2xl font-bold text-white tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                 กรุณาตรวจสอบอีเมลของคุณ
               </h2>
               <p className="text-xs sm:text-sm text-slate-300">
                 เราได้ส่งลิงก์ยืนยันตัวตนไปที่อีเมล:
               </p>
-              <p className="font-mono text-sm text-purple-300 bg-purple-500/10 border border-purple-500/20 px-3 py-1.5 rounded-xl inline-block font-semibold">
+              <p className="font-mono text-xs sm:text-sm text-purple-300 bg-purple-500/10 border border-purple-500/20 px-3 py-1.5 rounded-xl inline-block font-semibold break-all">
                 {email}
               </p>
             </div>
@@ -102,7 +102,7 @@ export default function SignupPage() {
             {/* Clear Step-by-Step Instructions */}
             <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-800 text-left space-y-3 text-xs sm:text-sm">
               <p className="font-bold text-slate-200 flex items-center space-x-2">
-                <ShieldCheck className="w-4 h-4 text-purple-400" />
+                <ShieldCheck className="w-4 h-4 text-purple-400 shrink-0" />
                 <span>ขั้นตอนการกดยืนยันตัวตน:</span>
               </p>
               <ol className="space-y-2.5 text-slate-300 leading-relaxed">
@@ -139,10 +139,10 @@ export default function SignupPage() {
             <div className="space-y-3 pt-2">
               <Link
                 href="/login"
-                className="w-full py-3.5 px-4 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-lg shadow-purple-600/25 flex items-center justify-center space-x-2 transition"
+                className="w-full py-3.5 px-4 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-lg shadow-purple-600/25 flex items-center justify-center space-x-2 transition min-h-[48px]"
               >
                 <span>ไปยังหน้าเข้าสู่ระบบ</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 shrink-0" />
               </Link>
               <button
                 type="button"
@@ -157,27 +157,27 @@ export default function SignupPage() {
           /* Normal Signup Form View */
           <>
             {/* Card Header */}
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-purple-600/10 border border-purple-500/20 text-purple-400 mb-4 shadow-lg shadow-purple-500/10">
+            <div className="text-center space-y-2">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-purple-600/10 border border-purple-500/20 text-purple-400 mb-2 shadow-lg shadow-purple-500/10">
                 <Sparkles className="w-7 h-7" />
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                 สมัครสมาชิก
               </h1>
-              <p className="mt-2 text-sm text-slate-400">
+              <p className="text-xs sm:text-sm text-slate-400">
                 สร้างบัญชีใหม่เพื่อเริ่มสร้างสคริปต์รีวิวสินค้าด้วย AI
               </p>
             </div>
 
             {/* Glassmorphic Card */}
-            <div className="glass-card rounded-2xl p-6 sm:p-8 relative overflow-hidden border border-slate-800/80 shadow-2xl">
+            <div className="glass-card rounded-2xl sm:rounded-3xl p-5 xs:p-6 sm:p-8 relative overflow-hidden border border-slate-800/80 shadow-2xl">
               {/* Subtle Ambient Glow */}
               <div className="absolute top-0 left-0 -mt-10 -ml-10 w-40 h-40 bg-purple-600/10 rounded-full blur-2xl pointer-events-none" />
 
               {error && (
-                <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm flex items-start space-x-3">
+                <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs sm:text-sm flex items-start space-x-3">
                   <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-                  <span>{error}</span>
+                  <span className="leading-relaxed">{error}</span>
                 </div>
               )}
 
@@ -198,7 +198,7 @@ export default function SignupPage() {
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
                       placeholder="สมชาย สายรีวิว"
-                      className="glass-input w-full pl-10 pr-4 py-2.5 text-sm rounded-xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500/80 focus:ring-2 focus:ring-purple-500/20"
+                      className="glass-input w-full pl-10 pr-4 py-3 text-xs sm:text-sm min-h-[48px] rounded-xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500/80 focus:ring-2 focus:ring-purple-500/20"
                     />
                   </div>
                 </div>
@@ -219,7 +219,7 @@ export default function SignupPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="name@example.com"
-                      className="glass-input w-full pl-10 pr-4 py-2.5 text-sm rounded-xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500/80 focus:ring-2 focus:ring-purple-500/20"
+                      className="glass-input w-full pl-10 pr-4 py-3 text-xs sm:text-sm min-h-[48px] rounded-xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500/80 focus:ring-2 focus:ring-purple-500/20"
                     />
                   </div>
                 </div>
@@ -240,7 +240,7 @@ export default function SignupPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="•••••••• (อย่างน้อย 6 ตัวอักษร)"
-                      className="glass-input w-full pl-10 pr-4 py-2.5 text-sm rounded-xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500/80 focus:ring-2 focus:ring-purple-500/20"
+                      className="glass-input w-full pl-10 pr-4 py-3 text-xs sm:text-sm min-h-[48px] rounded-xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500/80 focus:ring-2 focus:ring-purple-500/20"
                     />
                   </div>
                 </div>
@@ -248,16 +248,16 @@ export default function SignupPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full mt-2 py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 focus:outline-none focus:ring-2 focus:ring-purple-500/40 shadow-lg shadow-purple-600/25 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  className="w-full mt-2 py-3.5 px-4 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 focus:outline-none focus:ring-2 focus:ring-purple-500/40 shadow-lg shadow-purple-600/25 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[48px]"
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin text-white" />
+                      <Loader2 className="w-4 h-4 animate-spin text-white shrink-0" />
                       <span>กำลังสมัครสมาชิก...</span>
                     </>
                   ) : (
                     <>
-                      <UserPlus className="w-4 h-4" />
+                      <UserPlus className="w-4 h-4 shrink-0" />
                       <span>สมัครสมาชิก</span>
                     </>
                   )}
@@ -266,7 +266,7 @@ export default function SignupPage() {
 
               {/* Footer inside card */}
               <div className="mt-6 pt-6 border-t border-slate-800/80 text-center space-y-4">
-                <p className="text-sm text-slate-400">
+                <p className="text-xs sm:text-sm text-slate-400">
                   มีบัญชีผู้ใช้งานอยู่แล้ว?{" "}
                   <Link
                     href="/login"
@@ -277,7 +277,7 @@ export default function SignupPage() {
                 </p>
 
                 {/* Security Guarantee Banner */}
-                <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 text-xs text-slate-300 flex items-center justify-center space-x-2">
+                <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 text-[11px] sm:text-xs text-slate-300 flex items-center justify-center space-x-2 text-center">
                   <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>
                     ไม่ต้องห่วงเรื่องความปลอดภัย เพราะทุกข้อมูล รวมถึงบัญชีคุณจะปลอดภัย 100%

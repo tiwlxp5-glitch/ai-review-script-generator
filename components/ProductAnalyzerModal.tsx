@@ -151,8 +151,8 @@ export default function ProductAnalyzerModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
-      <div className="relative w-full max-w-2xl glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-purple-500/30 shadow-2xl bg-slate-950/95 space-y-5 text-slate-100 my-auto max-h-[92vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 xs:p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
+      <div className="relative w-full max-w-2xl glass-card rounded-2xl sm:rounded-3xl p-4.5 xs:p-6 sm:p-7 border border-purple-500/30 shadow-2xl bg-slate-950/95 space-y-4 sm:space-y-5 text-slate-100 my-auto max-h-[90dvh] overflow-y-auto">
         {/* Glows */}
         <div className="absolute -top-12 -right-12 w-56 h-56 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-12 -left-12 w-56 h-56 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
@@ -160,21 +160,22 @@ export default function ProductAnalyzerModal({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-white bg-slate-900/80 border border-slate-800 transition z-10 cursor-pointer"
+          className="absolute top-3.5 right-3.5 w-11 h-11 rounded-xl text-slate-400 hover:text-white bg-slate-900/80 border border-slate-800 transition z-10 cursor-pointer flex items-center justify-center shrink-0"
+          aria-label="Close"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Header */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-2 pt-1">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-amber-500/20 border border-purple-500/30 text-purple-300 text-xs font-bold">
             <Sparkles className="w-3.5 h-3.5 text-purple-400 fill-purple-400" />
             <span>ผู้ช่วย AI วิเคราะห์สินค้า & แนะนำกลุ่มเป้าหมาย</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-black text-white">
+          <h2 className="text-lg xs:text-xl sm:text-2xl font-black text-white leading-snug">
             ไม่รู้จะกรอกรายละเอียดอะไร? ให้ AI ช่วยคิดให้อัตโนมัติ! ✨
           </h2>
-          <p className="text-xs text-slate-400 max-w-md mx-auto">
+          <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
             พิมพ์แค่คำกว้างๆ เช่น "ครีมกันแดด", "แก้วเก็บความเย็น" หรือ "รองเท้าวิ่ง" แล้วให้ AI ถอดรหัสกลุ่มเป้าหมายทันที
           </p>
         </div>
@@ -187,19 +188,19 @@ export default function ProductAnalyzerModal({
               required
               value={productInput}
               onChange={(e) => setProductInput(e.target.value)}
-              placeholder='เช่น "ครีมกันแดด", "หูฟังไร้สาย", "กาแฟคุมหิว"'
-              className="w-full pl-4 pr-24 py-3.5 text-xs sm:text-sm rounded-2xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+              placeholder='เช่น "ครีมกันแดด", "หูฟังไร้สาย"'
+              className="w-full pl-4 pr-28 py-3.5 text-xs sm:text-sm rounded-2xl min-h-[48px] text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
             />
             <button
               type="submit"
               disabled={loading}
-              className="absolute right-1.5 top-1.5 bottom-1.5 px-4 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 transition flex items-center space-x-1 disabled:opacity-50 cursor-pointer shadow-md"
+              className="absolute right-1.5 top-1.5 bottom-1.5 px-4 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 transition flex items-center justify-center space-x-1.5 disabled:opacity-50 cursor-pointer shadow-md min-h-[38px]"
             >
               {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
+                <Loader2 className="w-4 h-4 animate-spin text-slate-950 shrink-0" />
               ) : (
                 <>
-                  <Search className="w-3.5 h-3.5" />
+                  <Search className="w-3.5 h-3.5 shrink-0" />
                   <span>วิเคราะห์</span>
                 </>
               )}
@@ -265,7 +266,7 @@ export default function ProductAnalyzerModal({
                   onClose();
                   onUpgradeClick("pro");
                 }}
-                className="w-full xs:w-auto px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shrink-0 cursor-pointer shadow-md transition text-center"
+                className="w-full xs:w-auto px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shrink-0 cursor-pointer shadow-md transition text-center min-h-[44px] flex items-center justify-center"
               >
                 อัปเกรด Pro ⚡
               </button>
@@ -339,7 +340,7 @@ export default function ProductAnalyzerModal({
             <button
               type="button"
               onClick={handleApply}
-              className={`w-full py-3.5 px-5 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center justify-center space-x-2 shadow-xl cursor-pointer ${
+              className={`w-full py-3.5 px-5 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center justify-center space-x-2 shadow-xl cursor-pointer min-h-[48px] ${
                 applied
                   ? "bg-emerald-500 text-slate-950 shadow-emerald-500/20"
                   : "bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-purple-500/30"
@@ -347,14 +348,14 @@ export default function ProductAnalyzerModal({
             >
               {applied ? (
                 <>
-                  <Check className="w-4 h-4 text-slate-950 stroke-[3]" />
+                  <Check className="w-4 h-4 text-slate-950 stroke-[3] shrink-0" />
                   <span>นำข้อมูลเข้าใส่ฟอร์มหลักเรียบร้อยแล้ว!</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 fill-white" />
+                  <Sparkles className="w-4 h-4 fill-white shrink-0" />
                   <span>✨ นำข้อมูลผลวิเคราะห์นี้ไปใส่ในฟอร์มสร้างสคริปต์ทันที</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 shrink-0" />
                 </>
               )}
             </button>

@@ -503,9 +503,9 @@ export default function DashboardPage() {
                 </span>
               </span>
             ) : usage.user_type === "plus" ? (
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold">
-                  <Zap className="w-4 h-4 text-indigo-400" />
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
+                <span className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold min-h-[44px]">
+                  <Zap className="w-4 h-4 text-indigo-400 shrink-0" />
                   <span>
                     สมาชิก Plus:{" "}
                     <strong className="text-white">
@@ -515,23 +515,23 @@ export default function DashboardPage() {
                 </span>
                 <Link
                   href="/history"
-                  className="px-3 py-1.5 rounded-full bg-slate-900/90 hover:bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold transition flex items-center space-x-1 cursor-pointer"
+                  className="px-3.5 py-2 rounded-full bg-slate-900/90 hover:bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold transition flex items-center space-x-1 cursor-pointer min-h-[44px]"
                 >
-                  <History className="w-3.5 h-3.5 text-purple-400" />
+                  <History className="w-3.5 h-3.5 text-purple-400 shrink-0" />
                   <span>ดูประวัติสคริปต์</span>
                 </Link>
                 <button
                   onClick={() => openUpgradeModal("pro")}
-                  className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-bold shadow-md shadow-amber-500/20 transition flex items-center space-x-1 cursor-pointer"
+                  className="px-3.5 py-2 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-bold shadow-md shadow-amber-500/20 transition flex items-center space-x-1 cursor-pointer min-h-[44px]"
                 >
-                  <Crown className="w-3.5 h-3.5 fill-slate-950" />
+                  <Crown className="w-3.5 h-3.5 fill-slate-950 shrink-0" />
                   <span>อัปเกรด Pro Workflow (199.-)</span>
                 </button>
               </div>
             ) : (
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-medium">
-                  <BarChart2 className="w-4 h-4 text-purple-400" />
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
+                <span className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-medium min-h-[44px]">
+                  <BarChart2 className="w-4 h-4 text-purple-400 shrink-0" />
                   <span>
                     สิทธิ์ฟรีสัปดาห์นี้:{" "}
                     <strong className="text-white">
@@ -541,22 +541,22 @@ export default function DashboardPage() {
                 </span>
                 <Link
                   href="/history"
-                  className="px-3 py-1.5 rounded-full bg-slate-900/90 hover:bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold transition flex items-center space-x-1 cursor-pointer"
+                  className="px-3.5 py-2 rounded-full bg-slate-900/90 hover:bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold transition flex items-center space-x-1 cursor-pointer min-h-[44px]"
                 >
-                  <History className="w-3.5 h-3.5 text-purple-400" />
+                  <History className="w-3.5 h-3.5 text-purple-400 shrink-0" />
                   <span>ดูประวัติสคริปต์</span>
                 </Link>
                 <button
                   onClick={() => openUpgradeModal("plus")}
-                  className="px-3 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow transition cursor-pointer"
+                  className="px-3.5 py-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow transition cursor-pointer min-h-[44px] flex items-center justify-center"
                 >
                   <span>Plus (99.-)</span>
                 </button>
                 <button
                   onClick={() => openUpgradeModal("pro")}
-                  className="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-black shadow-md shadow-amber-500/20 transition flex items-center space-x-1 cursor-pointer"
+                  className="px-3.5 py-2 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-xs font-black shadow-md shadow-amber-500/20 transition flex items-center space-x-1 cursor-pointer min-h-[44px]"
                 >
-                  <Crown className="w-3.5 h-3.5 fill-slate-950" />
+                  <Crown className="w-3.5 h-3.5 fill-slate-950 shrink-0" />
                   <span>Pro Workflow (199.-)</span>
                 </button>
               </div>
@@ -661,9 +661,9 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setIsAnalyzerModalOpen(true)}
-                className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-amber-500/20 hover:from-purple-500/30 hover:to-amber-500/30 border border-purple-500/40 text-purple-200 text-xs font-bold transition flex items-center space-x-1.5 shrink-0 cursor-pointer shadow-sm"
+                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-amber-500/20 hover:from-purple-500/30 hover:to-amber-500/30 border border-purple-500/40 text-purple-200 text-xs font-bold transition flex items-center justify-center space-x-1.5 shrink-0 cursor-pointer shadow-sm min-h-[44px]"
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-400 fill-amber-400 animate-pulse" />
+                <Sparkles className="w-3.5 h-3.5 text-amber-400 fill-amber-400 animate-pulse shrink-0" />
                 <span>ให้ AI ช่วยวิเคราะห์สินค้า & แนะนำกลุ่มเป้าหมาย ✨</span>
               </button>
             </div>
@@ -673,7 +673,7 @@ export default function DashboardPage() {
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
               placeholder='เช่น "ครีมกันแดด Dr.Pong สูตรไฮยา คุมมัน กันน้ำ"'
-              className="w-full px-4 py-3.5 text-sm sm:text-base rounded-2xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+              className="w-full px-4 py-3.5 text-sm sm:text-base rounded-2xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all min-h-[48px]"
             />
           </div>
 
@@ -682,46 +682,46 @@ export default function DashboardPage() {
             <label className="block text-sm font-semibold text-purple-300">
               ⏱️ เลือกความยาวสคริปต์ (Script Length)
             </label>
-            <div className="grid grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
               <button
                 type="button"
                 onClick={() => setScriptLength("short")}
-                className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
+                className={`p-2.5 xs:p-3 rounded-2xl border text-center transition-all cursor-pointer min-h-[48px] flex flex-col items-center justify-center ${
                   scriptLength === "short"
                     ? "bg-purple-600/25 border-purple-500 text-purple-200 ring-2 ring-purple-500/40 font-bold"
                     : "bg-slate-900/80 border-slate-800 text-slate-400 hover:border-purple-500/40"
                 }`}
               >
                 <div className="text-xs sm:text-sm font-bold text-slate-100">⚡ สั้น</div>
-                <div className="text-[11px] text-slate-400 mt-0.5">~15-30 วินาที</div>
+                <div className="text-[10px] xs:text-[11px] text-slate-400 mt-0.5">~15-30 วินาที</div>
                 <div className="text-[10px] text-purple-300/80 mt-1 hidden sm:block">กระชับ ปิดขายด่วน</div>
               </button>
 
               <button
                 type="button"
                 onClick={() => setScriptLength("medium")}
-                className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
+                className={`p-2.5 xs:p-3 rounded-2xl border text-center transition-all cursor-pointer min-h-[48px] flex flex-col items-center justify-center ${
                   scriptLength === "medium"
                     ? "bg-purple-600/25 border-purple-500 text-purple-200 ring-2 ring-purple-500/40 font-bold"
                     : "bg-slate-900/80 border-slate-800 text-slate-400 hover:border-purple-500/40"
                 }`}
               >
                 <div className="text-xs sm:text-sm font-bold text-slate-100">🎬 ปกติ</div>
-                <div className="text-[11px] text-slate-400 mt-0.5">~30-60 วินาที</div>
+                <div className="text-[10px] xs:text-[11px] text-slate-400 mt-0.5">~30-60 วินาที</div>
                 <div className="text-[10px] text-purple-300/80 mt-1 hidden sm:block">เล่าเรื่องสมดุล</div>
               </button>
 
               <button
                 type="button"
                 onClick={() => setScriptLength("long")}
-                className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
+                className={`p-2.5 xs:p-3 rounded-2xl border text-center transition-all cursor-pointer min-h-[48px] flex flex-col items-center justify-center ${
                   scriptLength === "long"
                     ? "bg-purple-600/25 border-purple-500 text-purple-200 ring-2 ring-purple-500/40 font-bold"
                     : "bg-slate-900/80 border-slate-800 text-slate-400 hover:border-purple-500/40"
                 }`}
               >
                 <div className="text-xs sm:text-sm font-bold text-slate-100">📖 ยาว</div>
-                <div className="text-[11px] text-slate-400 mt-0.5">~60-90+ วินาที</div>
+                <div className="text-[10px] xs:text-[11px] text-slate-400 mt-0.5 whitespace-nowrap">~60-90+s</div>
                 <div className="text-[10px] text-purple-300/80 mt-1 hidden sm:block">เจาะลึก+สาธิต</div>
               </button>
             </div>
@@ -848,7 +848,7 @@ export default function DashboardPage() {
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
               placeholder='เช่น "พนักงานออฟฟิศที่ต้องออกแดดบ่อย หรือคนผิวแพ้ง่ายชอบทำกิจกรรมกลางแจ้ง"'
-              className="w-full px-4 py-3.5 text-sm sm:text-base rounded-2xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+              className="w-full px-4 py-3.5 text-sm sm:text-base rounded-2xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all min-h-[48px]"
             />
           </div>
 
@@ -863,7 +863,7 @@ export default function DashboardPage() {
               value={productLinkOrExtra}
               onChange={(e) => setProductLinkOrExtra(e.target.value)}
               placeholder="แปะลิงก์สินค้า TikTok Shop/Shopee หรือใส่สเปกเด่นที่อยากเน้น"
-              className="w-full px-4 py-3.5 text-sm sm:text-base rounded-2xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+              className="w-full px-4 py-3.5 text-sm sm:text-base rounded-2xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all min-h-[48px]"
             />
           </div>
 
@@ -871,7 +871,7 @@ export default function DashboardPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 px-4 sm:px-6 rounded-2xl text-xs sm:text-base font-bold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-purple-500/50 shadow-xl shadow-purple-600/30 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-center"
+            className="w-full py-4 px-4 sm:px-6 rounded-2xl text-xs sm:text-base font-bold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-purple-500/50 shadow-xl shadow-purple-600/30 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-center min-h-[52px]"
           >
             {loading ? (
               <>
@@ -953,7 +953,7 @@ export default function DashboardPage() {
                 {/* Teleprompter Mode Button */}
                 <button
                   onClick={() => setIsTeleprompterOpen(true)}
-                  className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-xl text-xs font-bold shadow transition flex items-center justify-center space-x-1.5 cursor-pointer ${
+                  className={`flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl text-xs font-bold shadow transition flex items-center justify-center space-x-1.5 cursor-pointer min-h-[44px] ${
                     isProOrAdmin
                       ? "bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 shadow-amber-500/20"
                       : "bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:bg-amber-500/25"
@@ -966,7 +966,7 @@ export default function DashboardPage() {
                       : "ทดลองโหมดอ่านบท"}
                   </span>
                   {!isProOrAdmin && (
-                    <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px]">
+                    <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px] shrink-0">
                       PRO
                     </span>
                   )}
@@ -974,8 +974,9 @@ export default function DashboardPage() {
 
                 <button
                   onClick={handleReset}
-                  className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition cursor-pointer shrink-0"
+                  className="w-11 h-11 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition cursor-pointer shrink-0 flex items-center justify-center"
                   title="เริ่มใหม่"
+                  aria-label="Reset"
                 >
                   <RotateCcw className="w-4 h-4" />
                 </button>
@@ -988,28 +989,28 @@ export default function DashboardPage() {
             <div className="flex items-center space-x-1.5 sm:space-x-2 border-b border-slate-800/80 pb-2 text-xs font-bold overflow-x-auto whitespace-nowrap scrollbar-none">
               <button
                 onClick={() => setActiveTab("script")}
-                className={`px-3 sm:px-4 py-2 rounded-xl flex items-center space-x-1.5 transition cursor-pointer shrink-0 ${
+                className={`px-3.5 sm:px-4 py-2.5 rounded-xl flex items-center space-x-1.5 transition cursor-pointer shrink-0 min-h-[44px] ${
                   activeTab === "script"
                     ? "bg-purple-600/20 text-purple-300 border border-purple-500/40"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
-                <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>บทพูดพากย์เสียง</span>
               </button>
 
               <button
                 onClick={() => setActiveTab("shotlist")}
-                className={`px-3 sm:px-4 py-2 rounded-xl flex items-center space-x-1.5 transition cursor-pointer shrink-0 ${
+                className={`px-3.5 sm:px-4 py-2.5 rounded-xl flex items-center space-x-1.5 transition cursor-pointer shrink-0 min-h-[44px] ${
                   activeTab === "shotlist"
                     ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
-                <Clapperboard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <Clapperboard className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>ตารางถ่าย B-Roll</span>
                 {!isProOrAdmin && (
-                  <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px]">
+                  <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px] shrink-0">
                     PRO
                   </span>
                 )}
@@ -1017,16 +1018,16 @@ export default function DashboardPage() {
 
               <button
                 onClick={() => setActiveTab("caption")}
-                className={`px-4 py-2 rounded-xl flex items-center space-x-1.5 transition cursor-pointer ${
+                className={`px-3.5 sm:px-4 py-2.5 rounded-xl flex items-center space-x-1.5 transition cursor-pointer shrink-0 min-h-[44px] ${
                   activeTab === "caption"
                     ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
-                <Hash className="w-4 h-4 text-amber-400" />
+                <Hash className="w-4 h-4 text-amber-400 shrink-0" />
                 <span>แคปชัน & แฮชแท็ก</span>
                 {!isProOrAdmin && (
-                  <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px]">
+                  <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px] shrink-0">
                     PRO
                   </span>
                 )}
@@ -1158,9 +1159,9 @@ export default function DashboardPage() {
                                 setTimeout(() => setCopiedHookId(null), 2000);
                               }
                             }}
-                            className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 cursor-pointer shadow"
+                            className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 cursor-pointer shadow min-h-[44px]"
                           >
-                            <Copy className="w-3.5 h-3.5" />
+                            <Copy className="w-3.5 h-3.5 shrink-0" />
                             <span>{copiedHookId === "A" ? "คัดลอก Hook A แล้ว! ✨" : "คัดลอกเฉพาะ Hook A"}</span>
                           </button>
                         </div>
@@ -1188,9 +1189,9 @@ export default function DashboardPage() {
                                 setTimeout(() => setCopiedHookId(null), 2000);
                               }
                             }}
-                            className="w-full py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 cursor-pointer shadow"
+                            className="w-full py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 cursor-pointer shadow min-h-[44px]"
                           >
-                            <Copy className="w-3.5 h-3.5" />
+                            <Copy className="w-3.5 h-3.5 shrink-0" />
                             <span>{copiedHookId === "B" ? "คัดลอก Hook B แล้ว! ✨" : "คัดลอกเฉพาะ Hook B"}</span>
                           </button>
                         </div>
@@ -1218,9 +1219,9 @@ export default function DashboardPage() {
                                 setTimeout(() => setCopiedHookId(null), 2000);
                               }
                             }}
-                            className="w-full py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black transition flex items-center justify-center space-x-1.5 cursor-pointer shadow"
+                            className="w-full py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black transition flex items-center justify-center space-x-1.5 cursor-pointer shadow min-h-[44px]"
                           >
-                            <Copy className="w-3.5 h-3.5 fill-slate-950" />
+                            <Copy className="w-3.5 h-3.5 fill-slate-950 shrink-0" />
                             <span>{copiedHookId === "C" ? "คัดลอก Hook C แล้ว! ✨" : "คัดลอกเฉพาะ Hook C"}</span>
                           </button>
                         </div>
@@ -1240,7 +1241,7 @@ export default function DashboardPage() {
                       <button
                         type="button"
                         onClick={() => openUpgradeModal("pro")}
-                        className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-black text-xs shrink-0 cursor-pointer shadow transition text-center"
+                        className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-black text-xs shrink-0 cursor-pointer shadow transition text-center min-h-[44px] flex items-center justify-center"
                       >
                         อัปเกรด Pro ⚡
                       </button>
@@ -1249,7 +1250,7 @@ export default function DashboardPage() {
 
                   {/* Main Script Text Box (Read-Only vs Editable Textarea) */}
                   {scriptMode === "original" ? (
-                    <div className="p-5 sm:p-6 rounded-2xl bg-slate-900/90 border border-slate-800 text-slate-100 text-base sm:text-lg leading-relaxed whitespace-pre-wrap font-sans selection:bg-purple-500/30">
+                    <div className="p-4 xs:p-5 sm:p-6 rounded-2xl bg-slate-900/90 border border-slate-800 text-slate-100 text-sm sm:text-lg leading-relaxed whitespace-pre-wrap break-words font-sans selection:bg-purple-500/30">
                       {generatedScript}
                     </div>
                   ) : (
@@ -1259,7 +1260,7 @@ export default function DashboardPage() {
                         onChange={(e) => setEditedScript(e.target.value)}
                         placeholder="พิมพ์หรือปรับแต่งบทพูดของคุณตรงนี้..."
                         rows={10}
-                        className="w-full p-5 sm:p-6 rounded-2xl bg-slate-900/95 border border-amber-500/40 text-amber-100 text-base sm:text-lg leading-relaxed font-sans focus:outline-none focus:ring-2 focus:ring-amber-500/30 selection:bg-amber-500/30 transition-all resize-y"
+                        className="w-full p-4 xs:p-5 sm:p-6 rounded-2xl bg-slate-900/95 border border-amber-500/40 text-amber-100 text-sm sm:text-lg leading-relaxed font-sans focus:outline-none focus:ring-2 focus:ring-amber-500/30 selection:bg-amber-500/30 transition-all resize-y break-words"
                       />
                       <p className="text-[11px] text-amber-300/80 italic">
                         💡 ข้อความที่คุณแก้ไขตรงนี้ จะถูกส่งต่อไปแสดงบนเครื่องอ่านบท (Teleprompter) ให้อัตโนมัติ
@@ -1267,7 +1268,7 @@ export default function DashboardPage() {
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between text-xs text-slate-400 pt-2">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-400 pt-2">
                     <div className="flex items-center space-x-4">
                       <span>
                         จำนวนคำ: <strong className="text-slate-200">{wordCount}</strong> คำ
@@ -1278,7 +1279,7 @@ export default function DashboardPage() {
                     </div>
                     <button
                       onClick={handleCopyScript}
-                      className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl font-semibold transition cursor-pointer ${
+                      className={`w-full sm:w-auto flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-xl font-semibold transition cursor-pointer min-h-[44px] ${
                         copied
                           ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
                           : scriptMode === "custom"
@@ -1288,12 +1289,12 @@ export default function DashboardPage() {
                     >
                       {copied ? (
                         <>
-                          <Check className="w-4 h-4 text-emerald-400" />
+                          <Check className="w-4 h-4 text-emerald-400 shrink-0" />
                           <span>คัดลอกแล้ว!</span>
                         </>
                       ) : (
                         <>
-                          <Copy className="w-4 h-4" />
+                          <Copy className="w-4 h-4 shrink-0" />
                           <span>{scriptMode === "custom" ? "คัดลอกสคริปต์ที่แก้ไข" : "คัดลอกสคริปต์ต้นฉบับ"}</span>
                         </>
                       )}

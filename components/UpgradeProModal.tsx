@@ -94,8 +94,8 @@ export default function UpgradeProModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
-      <div className="relative w-full max-w-2xl glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-7 border border-purple-500/30 shadow-2xl bg-slate-950/95 space-y-4 sm:space-y-6 text-slate-100 my-auto max-h-[92vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 xs:p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
+      <div className="relative w-full max-w-2xl glass-card rounded-2xl sm:rounded-3xl p-4.5 xs:p-6 sm:p-7 border border-purple-500/30 shadow-2xl bg-slate-950/95 space-y-4 sm:space-y-6 text-slate-100 my-auto max-h-[90dvh] overflow-y-auto">
         {/* Ambient Glows */}
         <div className="absolute -top-12 -right-12 w-56 h-56 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-12 -left-12 w-56 h-56 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
@@ -103,26 +103,27 @@ export default function UpgradeProModal({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-white bg-slate-900/80 border border-slate-800 transition z-10 cursor-pointer"
+          className="absolute top-3.5 right-3.5 w-11 h-11 rounded-xl text-slate-400 hover:text-white bg-slate-900/80 border border-slate-800 transition z-10 cursor-pointer flex items-center justify-center shrink-0"
+          aria-label="Close"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Custom High-Converting Quota Message Banner */}
         {customMessage && (
-          <div className="p-4 rounded-2xl bg-amber-500/20 border border-amber-500/50 text-amber-200 text-xs sm:text-sm font-bold flex items-start space-x-3 shadow-lg shadow-amber-500/10 animate-in fade-in">
+          <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-500/20 border border-amber-500/50 text-amber-200 text-xs sm:text-sm font-bold flex items-start space-x-3 shadow-lg shadow-amber-500/10 animate-in fade-in">
             <Zap className="w-5 h-5 text-amber-400 shrink-0 mt-0.5 fill-amber-400" />
             <span className="leading-relaxed">{customMessage}</span>
           </div>
         )}
 
         {/* Modal Header */}
-        <div className="text-center space-y-3">
+        <div className="text-center space-y-2.5 pt-1">
           <div className="inline-flex items-center space-x-1.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500/20 via-pink-500/20 to-purple-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold tracking-wide shadow-md animate-pulse">
             <Flame className="w-4 h-4 text-amber-400 fill-amber-400" />
             <span>โปรลดพิเศษ (เฉพาะช่วงนี้)</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h2 className="text-xl xs:text-2xl sm:text-3xl font-black text-white tracking-tight leading-snug">
             {isCurrentPlus ? "อัปเกรดเป็น Pro Plan" : "เลือกแพ็กเกจที่เหมาะกับคุณ"}
           </h2>
 
@@ -215,7 +216,7 @@ export default function UpgradeProModal({
                       e.stopPropagation();
                       setIsBrainComparisonOpen(true);
                     }}
-                    className="px-2 py-0.5 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/35 text-indigo-300 border border-indigo-500/40 text-[10px] font-bold flex items-center space-x-1 shrink-0 transition cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/35 text-indigo-300 border border-indigo-500/40 text-[10px] font-bold flex items-center space-x-1 shrink-0 transition cursor-pointer min-h-[36px]"
                   >
                     <span>เทียบสมอง AI</span>
                   </button>
@@ -307,7 +308,7 @@ export default function UpgradeProModal({
                       e.stopPropagation();
                       setIsBrainComparisonOpen(true);
                     }}
-                    className="px-2 py-0.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold flex items-center space-x-1 shrink-0 transition cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 text-amber-300 border border-amber-500/40 text-[10px] font-extrabold flex items-center space-x-1 shrink-0 transition cursor-pointer min-h-[36px]"
                   >
                     <Sparkles className="w-3 h-3 text-amber-400 fill-amber-400 animate-pulse" />
                     <span>ดูสเปกสมอง AI 🧠</span>
@@ -354,7 +355,7 @@ export default function UpgradeProModal({
                 <span>บัตรเครดิต / เดบิต</span>
               </span>
             </div>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-slate-400 leading-relaxed">
               ชำระเงินปลอดภัยสูงสุด 100% ผ่านระบบ Stripe Secure (บัญชีจะปรับเป็น{" "}
               <strong className="text-amber-300 font-bold">
                 {selectedPlan === "pro" ? "Pro Plan (199.-)" : "Plus Plan (99.-)"}
@@ -366,7 +367,7 @@ export default function UpgradeProModal({
           <button
             onClick={() => handleStripeCheckout(selectedPlan)}
             disabled={isProcessingStripe}
-            className={`w-full py-4 px-6 rounded-2xl text-base font-bold transition duration-200 active:scale-[0.99] flex items-center justify-center space-x-2 shadow-xl cursor-pointer disabled:opacity-50 ${
+            className={`w-full py-4 px-6 rounded-2xl text-xs xs:text-sm sm:text-base font-bold transition duration-200 active:scale-[0.99] flex items-center justify-center space-x-2 shadow-xl cursor-pointer disabled:opacity-50 min-h-[48px] ${
               selectedPlan === "pro"
                 ? "text-slate-950 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 shadow-amber-500/30"
                 : "text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-indigo-500/30"
@@ -374,18 +375,18 @@ export default function UpgradeProModal({
           >
             {isProcessingStripe ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin shrink-0" />
                 <span>กำลังเชื่อมต่อหน้าชำระเงินปลอดภัย...</span>
               </>
             ) : (
               <>
-                <CreditCard className="w-5 h-5 fill-current" />
-                <span>
+                <CreditCard className="w-5 h-5 fill-current shrink-0" />
+                <span className="text-center">
                   {isCurrentPlus && selectedPlan === "pro"
                     ? "ชำระเงินอัปเกรดเป็น Pro (199.-/เดือน)"
                     : `ชำระเงินอัปเกรด ${selectedPlan === "pro" ? "Pro Plan (199.-/เดือน)" : "Plus Plan (99.-/เดือน)"}`}
                 </span>
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="w-4 h-4 shrink-0" />
               </>
             )}
           </button>

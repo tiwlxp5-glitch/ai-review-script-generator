@@ -45,34 +45,34 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-12rem)] px-4">
-      <div className="w-full max-w-md">
+    <div className="flex items-center justify-center min-h-[calc(100vh-12rem)] px-3.5 sm:px-4 py-4 sm:py-8">
+      <div className="w-full max-w-md space-y-6">
         {/* Card Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-purple-600/10 border border-purple-500/20 text-purple-400 mb-4 shadow-lg shadow-purple-500/10">
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-purple-600/10 border border-purple-500/20 text-purple-400 mb-2 shadow-lg shadow-purple-500/10">
             <Sparkles className="w-7 h-7" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             เข้าสู่ระบบ
           </h1>
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-400">
             ยินดีต้อนรับกลับ! เข้าใช้งานเครื่องมือสร้างสคริปต์ AI
           </p>
         </div>
 
         {/* Glassmorphic Card */}
-        <div className="glass-card rounded-2xl p-6 sm:p-8 relative overflow-hidden border border-slate-800/80 shadow-2xl">
+        <div className="glass-card rounded-2xl sm:rounded-3xl p-5 xs:p-6 sm:p-8 relative overflow-hidden border border-slate-800/80 shadow-2xl">
           {/* Subtle Ambient Glow */}
           <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-purple-600/10 rounded-full blur-2xl pointer-events-none" />
 
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm flex items-start space-x-3">
+            <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs sm:text-sm flex items-start space-x-3">
               <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-              <span>{error}</span>
+              <span className="leading-relaxed">{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-4 sm:space-y-5">
             <div>
               <label
                 htmlFor="email"
@@ -89,7 +89,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="glass-input w-full pl-10 pr-4 py-2.5 text-sm rounded-xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500/80 focus:ring-2 focus:ring-purple-500/20"
+                  className="glass-input w-full pl-10 pr-4 py-3 text-xs sm:text-sm min-h-[48px] rounded-xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500/80 focus:ring-2 focus:ring-purple-500/20"
                 />
               </div>
             </div>
@@ -118,7 +118,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="glass-input w-full pl-10 pr-4 py-2.5 text-sm rounded-xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500/80 focus:ring-2 focus:ring-purple-500/20"
+                  className="glass-input w-full pl-10 pr-4 py-3 text-xs sm:text-sm min-h-[48px] rounded-xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500/80 focus:ring-2 focus:ring-purple-500/20"
                 />
               </div>
             </div>
@@ -126,16 +126,16 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3 px-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:from-purple-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-purple-500/40 shadow-lg shadow-purple-600/25 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full mt-2 py-3.5 px-4 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:from-purple-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-purple-500/40 shadow-lg shadow-purple-600/25 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[48px]"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <Loader2 className="w-4 h-4 animate-spin text-white shrink-0" />
                   <span>กำลังเข้าสู่ระบบ...</span>
                 </>
               ) : (
                 <>
-                  <LogIn className="w-4 h-4" />
+                  <LogIn className="w-4 h-4 shrink-0" />
                   <span>เข้าสู่ระบบ</span>
                 </>
               )}
@@ -144,7 +144,7 @@ export default function LoginPage() {
 
           {/* Footer inside card */}
           <div className="mt-6 pt-6 border-t border-slate-800/80 text-center space-y-4">
-            <p className="text-sm text-slate-400">
+            <p className="text-xs sm:text-sm text-slate-400">
               ยังไม่มีบัญชีผู้ใช้งาน?{" "}
               <Link
                 href="/signup"
@@ -155,7 +155,7 @@ export default function LoginPage() {
             </p>
 
             {/* Security Guarantee Banner */}
-            <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 text-xs text-slate-300 flex items-center justify-center space-x-2">
+            <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 text-[11px] sm:text-xs text-slate-300 flex items-center justify-center space-x-2 text-center">
               <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>
                 ไม่ต้องห่วงเรื่องความปลอดภัย เพราะทุกข้อมูล รวมถึงบัญชีคุณจะปลอดภัย 100%

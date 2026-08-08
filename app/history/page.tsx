@@ -269,7 +269,7 @@ export default function HistoryPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="ค้นหาด้วยชื่อสินค้า หรือกลุ่มเป้าหมาย..."
-            className="glass-input w-full pl-10 pr-4 py-2 text-sm rounded-xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500/80 focus:ring-2 focus:ring-purple-500/20"
+            className="glass-input w-full pl-10 pr-4 py-3 text-xs sm:text-sm min-h-[48px] rounded-xl text-slate-100 placeholder-slate-500 border border-slate-800 bg-slate-900/90 focus:outline-none focus:border-purple-500/80 focus:ring-2 focus:ring-purple-500/20"
           />
         </div>
       </div>
@@ -304,9 +304,9 @@ export default function HistoryPage() {
           {!searchQuery && (
             <button
               onClick={() => router.push("/dashboard")}
-              className="mt-6 inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-purple-600 hover:bg-purple-500 transition shadow-lg shadow-purple-600/20"
+              className="mt-6 inline-flex items-center space-x-2 px-5 py-3 rounded-xl text-sm font-semibold text-white bg-purple-600 hover:bg-purple-500 transition shadow-lg shadow-purple-600/20 min-h-[48px]"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-4 h-4 shrink-0" />
               <span>สร้างสคริปต์ใหม่</span>
             </button>
           )}
@@ -323,17 +323,17 @@ export default function HistoryPage() {
             return (
               <div
                 key={item.id}
-                className="glass-card rounded-2xl p-6 border border-slate-800/80 shadow-xl flex flex-col justify-between hover:border-slate-700/80 transition-all duration-200 group space-y-4"
+                className="glass-card rounded-2xl p-4.5 xs:p-6 border border-slate-800/80 shadow-xl flex flex-col justify-between hover:border-slate-700/80 transition-all duration-200 group space-y-4"
               >
                 {/* Card Header */}
                 <div className="space-y-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="space-y-1">
+                  <div className="flex items-start justify-between gap-2.5">
+                    <div className="space-y-1 min-w-0">
                       <div className="flex items-center space-x-2 text-slate-400 text-xs">
                         <ShoppingBag className="w-3.5 h-3.5 text-purple-400 shrink-0" />
                         <span className="font-medium text-slate-300">สินค้า</span>
                       </div>
-                      <h3 className="text-base font-bold text-slate-100 group-hover:text-purple-300 transition-colors line-clamp-2">
+                      <h3 className="text-base font-bold text-slate-100 group-hover:text-purple-300 transition-colors line-clamp-2 leading-snug">
                         {item.product_name}
                       </h3>
                     </div>
@@ -343,26 +343,27 @@ export default function HistoryPage() {
                       {/* Teleprompter Button */}
                       <button
                         onClick={() => setActiveTeleprompterItem(item)}
-                        className={`p-2 rounded-xl text-xs font-bold transition flex items-center space-x-1 cursor-pointer ${
+                        className={`px-3 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-1 cursor-pointer min-h-[44px] ${
                           isProOrAdmin
                             ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30"
                             : "bg-slate-900 text-slate-400 border border-slate-800 hover:text-white"
                         }`}
                         title={isProOrAdmin ? "เปิดโหมดอ่านบท" : "ทดลองโหมดอ่านบท (Demo)"}
                       >
-                        <Video className="w-4 h-4 fill-current text-amber-400" />
+                        <Video className="w-4 h-4 fill-current text-amber-400 shrink-0" />
                         <span className="hidden sm:inline">อ่านบท</span>
-                        {!isProOrAdmin && <Lock className="w-3 h-3 text-amber-400" />}
+                        {!isProOrAdmin && <Lock className="w-3 h-3 text-amber-400 shrink-0" />}
                       </button>
 
                       <button
                         onClick={() => handleCopy(item.id, item.script_content)}
-                        className={`p-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                        className={`w-11 h-11 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center justify-center shrink-0 ${
                           copiedId === item.id
                             ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
                             : "bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-800"
                         }`}
                         title="คัดลอกสคริปต์"
+                        aria-label="Copy"
                       >
                         {copiedId === item.id ? (
                           <Check className="w-4 h-4 text-emerald-400" />
@@ -374,8 +375,9 @@ export default function HistoryPage() {
                       <button
                         onClick={() => handleDelete(item.id)}
                         disabled={deletingId === item.id}
-                        className="p-2 rounded-xl text-xs font-medium bg-slate-900/80 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 hover:border-rose-500/30 transition-all disabled:opacity-50 cursor-pointer"
+                        className="w-11 h-11 rounded-xl text-xs font-medium bg-slate-900/80 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 hover:border-rose-500/30 transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center shrink-0"
                         title="ลบสคริปต์"
+                        aria-label="Delete"
                       >
                         {deletingId === item.id ? (
                           <Loader2 className="w-4 h-4 animate-spin text-rose-400" />
@@ -389,40 +391,40 @@ export default function HistoryPage() {
                   {/* Target Audience Badge */}
                   <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/60 text-xs space-y-1">
                     <div className="flex items-center space-x-1.5 text-slate-400 font-medium">
-                      <Target className="w-3.5 h-3.5 text-indigo-400" />
+                      <Target className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                       <span>กลุ่มเป้าหมาย:</span>
                     </div>
-                    <p className="text-slate-300 line-clamp-2 pl-5">
+                    <p className="text-slate-300 line-clamp-2 pl-5 leading-relaxed">
                       {item.target_audience}
                     </p>
                   </div>
 
                   {/* Feature Navigation Tabs */}
-                  <div className="flex items-center space-x-1 border-b border-slate-800/80 pb-2 text-xs font-semibold overflow-x-auto">
+                  <div className="flex items-center space-x-1 border-b border-slate-800/80 pb-2 text-xs font-semibold overflow-x-auto whitespace-nowrap scrollbar-none">
                     <button
                       onClick={() => setActiveTab(item.id, "script")}
-                      className={`px-3 py-1.5 rounded-lg flex items-center space-x-1.5 transition whitespace-nowrap cursor-pointer ${
+                      className={`px-3.5 py-2 rounded-lg flex items-center space-x-1.5 transition whitespace-nowrap cursor-pointer shrink-0 min-h-[44px] ${
                         currentTab === "script"
                           ? "bg-purple-600/20 text-purple-300 border border-purple-500/40 font-bold"
                           : "text-slate-400 hover:text-slate-200"
                       }`}
                     >
-                      <Mic className="w-3.5 h-3.5" />
+                      <Mic className="w-3.5 h-3.5 shrink-0" />
                       <span>บทพูด</span>
                     </button>
 
                     <button
                       onClick={() => setActiveTab(item.id, "shotlist")}
-                      className={`px-3 py-1.5 rounded-lg flex items-center space-x-1 transition whitespace-nowrap cursor-pointer ${
+                      className={`px-3.5 py-2 rounded-lg flex items-center space-x-1 transition whitespace-nowrap cursor-pointer shrink-0 min-h-[44px] ${
                         currentTab === "shotlist"
                           ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold"
                           : "text-slate-400 hover:text-slate-200"
                       }`}
                     >
-                      <Clapperboard className="w-3.5 h-3.5" />
+                      <Clapperboard className="w-3.5 h-3.5 shrink-0" />
                       <span>ตาราง B-Roll</span>
                       {!isProOrAdmin && (
-                        <span className="px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px]">
+                        <span className="px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px] shrink-0">
                           PRO
                         </span>
                       )}
@@ -430,16 +432,16 @@ export default function HistoryPage() {
 
                     <button
                       onClick={() => setActiveTab(item.id, "caption")}
-                      className={`px-3 py-1.5 rounded-lg flex items-center space-x-1 transition whitespace-nowrap cursor-pointer ${
+                      className={`px-3.5 py-2 rounded-lg flex items-center space-x-1 transition whitespace-nowrap cursor-pointer shrink-0 min-h-[44px] ${
                         currentTab === "caption"
                           ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold"
                           : "text-slate-400 hover:text-slate-200"
                       }`}
                     >
-                      <Hash className="w-3.5 h-3.5 text-amber-400" />
+                      <Hash className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                       <span>แคปชัน</span>
                       {!isProOrAdmin && (
-                        <span className="px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px]">
+                        <span className="px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px] shrink-0">
                           PRO
                         </span>
                       )}

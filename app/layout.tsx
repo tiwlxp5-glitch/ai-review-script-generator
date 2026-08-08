@@ -56,14 +56,14 @@ export default function RootLayout({
 
         <Navbar />
         
-        <main className="flex-1 relative z-10 w-full max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-6">
+        <main className="flex-1 relative z-10 w-full max-w-5xl mx-auto px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6">
           {children}
         </main>
 
-        <footer className="relative z-10 border-t border-slate-900 bg-slate-950/90 py-3 text-center text-[11px] text-slate-500">
-          <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4">
+        <footer className="relative z-10 border-t border-slate-900 bg-slate-950/90 py-4 sm:py-5 text-center text-xs text-slate-500">
+          <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
             <p>© {new Date().getFullYear()} AI Review Script Generator. All rights reserved.</p>
-            <p className="text-slate-400">สร้างสรรค์โดย ทิวลิปเองจร้าาา</p>
+            <p className="text-slate-400 font-medium">สร้างสรรค์โดย ทิวลิปเองจร้าาา</p>
           </div>
         </footer>
       </body>
