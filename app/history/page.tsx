@@ -50,6 +50,24 @@ interface ScriptHistoryItem {
   created_at: string;
 }
 
+const parseHooksFromScript = (scriptText: string) => {
+  if (!scriptText) return [];
+
+  const hookA = scriptText.match(/Hook\s*A[^:\n]*:\s*([^\n]+)/i) || scriptText.match(/ตัวเลือก\s*A[^:\n]*:\s*([^\n]+)/i);
+  const hookB = scriptText.match(/Hook\s*B[^:\n]*:\s*([^\n]+)/i) || scriptText.match(/ตัวเลือก\s*B[^:\n]*:\s*([^\n]+)/i);
+  const hookC = scriptText.match(/Hook\s*C[^:\n]*:\s*([^\n]+)/i) || scriptText.match(/ตัวเลือก\s*C[^:\n]*:\s*([^\n]+)/i);
+
+  if (hookA || hookB || hookC) {
+    return [
+      { id: "A", text: hookA ? hookA[1].trim() : "" },
+      { id: "B", text: hookB ? hookB[1].trim() : "" },
+      { id: "C", text: hookC ? hookC[1].trim() : "" },
+    ];
+  }
+
+  return [];
+};
+
 const generateFallbackShotList = (scriptText: string, productName: string): ShotItem[] => {
   const cleanLines = scriptText
     .split(/\n+/)
@@ -475,6 +493,71 @@ export default function HistoryPage() {
                           </button>
                         )}
                       </div>
+
+                      {/* 3 Hook Options Display for Pro Users in History */}
+                      {isProOrAdmin && parseHooksFromScript(item.script_content).length > 0 && (
+                        <div className="p-3.5 rounded-xl bg-slate-950/90 border border-amber-500/30 space-y-2.5">
+                          <div className="flex items-center space-x-2 text-xs font-bold text-amber-300">
+                            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                            <span>🎯 3 Hook Options (คำเปิด 0-3 วินาทีแรก):</span>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                            {/* Hook A */}
+                            <div className="p-3 rounded-lg bg-emerald-950/30 border border-emerald-500/30 space-y-1.5 flex flex-col justify-between">
+                              <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold self-start">
+                                👁️ Hook A: สายภาพ & Action
+                              </span>
+                              <p className="text-[11px] text-slate-100 font-semibold leading-relaxed">
+                                "{parseHooksFromScript(item.script_content)[0]?.text || "..."}"
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => handleCopy(item.id, parseHooksFromScript(item.script_content)[0]?.text || "")}
+                                className="w-full py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold transition flex items-center justify-center space-x-1 cursor-pointer"
+                              >
+                                <Copy className="w-3 h-3" />
+                                <span>คัดลอก Hook A</span>
+                              </button>
+                            </div>
+
+                            {/* Hook B */}
+                            <div className="p-3 rounded-lg bg-indigo-950/30 border border-indigo-500/30 space-y-1.5 flex flex-col justify-between">
+                              <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px] font-bold self-start">
+                                🗣️ Hook B: สายชี้จุดเจ็บ
+                              </span>
+                              <p className="text-[11px] text-slate-100 font-semibold leading-relaxed">
+                                "{parseHooksFromScript(item.script_content)[1]?.text || "..."}"
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => handleCopy(item.id, parseHooksFromScript(item.script_content)[1]?.text || "")}
+                                className="w-full py-1 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold transition flex items-center justify-center space-x-1 cursor-pointer"
+                              >
+                                <Copy className="w-3 h-3" />
+                                <span>คัดลอก Hook B</span>
+                              </button>
+                            </div>
+
+                            {/* Hook C */}
+                            <div className="p-3 rounded-lg bg-amber-950/30 border border-amber-500/30 space-y-1.5 flex flex-col justify-between">
+                              <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold self-start">
+                                ⚡ Hook C: สายช็อก & ทลายความเชื่อ
+                              </span>
+                              <p className="text-[11px] text-slate-100 font-semibold leading-relaxed">
+                                "{parseHooksFromScript(item.script_content)[2]?.text || "..."}"
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => handleCopy(item.id, parseHooksFromScript(item.script_content)[2]?.text || "")}
+                                className="w-full py-1 rounded bg-amber-500 hover:bg-amber-400 text-slate-950 text-[10px] font-bold transition flex items-center justify-center space-x-1 cursor-pointer"
+                              >
+                                <Copy className="w-3 h-3 fill-slate-950" />
+                                <span>คัดลอก Hook C</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
                       {(scriptModeMap[item.id] || "original") === "original" ? (
                         <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800/80 text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-wrap max-h-60 overflow-y-auto custom-scrollbar">

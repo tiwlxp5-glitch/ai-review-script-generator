@@ -143,6 +143,8 @@ export default function DashboardPage() {
   const [editedScript, setEditedScript] = useState<string>("");
   const [scriptMode, setScriptMode] = useState<"original" | "custom">("original");
   const [shotList, setShotList] = useState<ShotItem[]>([]);
+  const [hooksList, setHooksList] = useState<any[]>([]);
+  const [copiedHookId, setCopiedHookId] = useState<string | null>(null);
   const [caption, setCaption] = useState<string>("");
   const [hashtags, setHashtags] = useState<string>("");
   const [pinnedComment, setPinnedComment] = useState<string>("");
@@ -238,6 +240,43 @@ export default function DashboardPage() {
   const isProOrAdmin = usage?.user_type === "pro" || usage?.user_type === "admin";
   const isPlusUser = usage?.user_type === "plus" || isProOrAdmin;
 
+  const getDisplayHooks = () => {
+    if (hooksList && hooksList.length > 0) return hooksList;
+    if (!generatedScript) return [];
+
+    const hookA = generatedScript.match(/Hook\s*A[^:\n]*:\s*([^\n]+)/i) || generatedScript.match(/ตัวเลือก\s*A[^:\n]*:\s*([^\n]+)/i);
+    const hookB = generatedScript.match(/Hook\s*B[^:\n]*:\s*([^\n]+)/i) || generatedScript.match(/ตัวเลือก\s*B[^:\n]*:\s*([^\n]+)/i);
+    const hookC = generatedScript.match(/Hook\s*C[^:\n]*:\s*([^\n]+)/i) || generatedScript.match(/ตัวเลือก\s*C[^:\n]*:\s*([^\n]+)/i);
+
+    if (hookA || hookB || hookC) {
+      return [
+        {
+          id: "A",
+          type: "Visual & Action Hook",
+          badge: "👁️ Hook A: สายเน้นภาพ & Action",
+          concept: "โชว์ช็อตสินค้า/การกระทำตื่นเต้น 3 วินาทีแรก เพื่อหยุดนิ้วคนดูบนฟีด",
+          text: hookA ? hookA[1].trim() : "",
+        },
+        {
+          id: "B",
+          type: "Verbal Pain-Point Hook",
+          badge: "🗣️ Hook B: สายเน้นสะกิดแผลจี้ปัญหา",
+          concept: "ตั้งคำถามแทงใจดำ ชี้จุดเจ็บเรื่องปัญหาที่กลุ่มเป้าหมายกำลังเจออยู่",
+          text: hookB ? hookB[1].trim() : "",
+        },
+        {
+          id: "C",
+          type: "Shocking & Contrast Hook",
+          badge: "⚡ Hook C: สายเน้นช็อก & ทลายความเชื่อ",
+          concept: "เปิดด้วยเรื่องน่าทึ่ง หรือข้อผิดพลาดที่คน 90% เข้าใจผิดชวนเอ๊ะอึ้ง",
+          text: hookC ? hookC[1].trim() : "",
+        },
+      ].filter((h) => Boolean(h.text));
+    }
+
+    return [];
+  };
+
   const openUpgradeModal = (plan: "plus" | "pro" = "pro", msg?: string) => {
     setModalDefaultPlan(plan);
     setModalCustomMessage(msg);
@@ -323,6 +362,7 @@ export default function DashboardPage() {
       setEditedScript(rawScript);
       setScriptMode("original");
       setShotList(data.shot_list || []);
+      setHooksList(data.hooks || []);
       setCaption(data.caption || "");
       setHashtags(data.hashtags || "");
       setPinnedComment(data.pinned_comment || "");
@@ -1073,6 +1113,139 @@ export default function DashboardPage() {
                       </button>
                     )}
                   </div>
+
+                  {/* 3 Hook Options Section (Pro Tier Feature) */}
+                  {isProOrAdmin ? (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/95 border border-amber-500/40 space-y-4 shadow-xl">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-500/20 pb-3">
+                        <div className="flex items-center space-x-2.5">
+                          <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center justify-center font-black text-xs shrink-0 shadow-sm">
+                            PRO
+                          </div>
+                          <div>
+                            <h3 className="text-xs sm:text-sm font-extrabold text-amber-300 flex items-center space-x-1.5">
+                              <span>🎯 ทางเลือกคำเปิด 3 สไตล์ (3 Hook Options 0-3 วินาทีแรก)</span>
+                            </h3>
+                            <p className="text-[11px] text-slate-400">
+                              เปรียบเทียบจุดเด่นของแต่ละ Hook เพื่อเลือกสไตล์ประโยคเปิดคลิปที่ตรงใจที่สุด
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 3 Distinct Hook Cards */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                        {/* Hook A */}
+                        <div className="p-4 rounded-xl bg-gradient-to-b from-emerald-950/40 to-slate-950 border border-emerald-500/40 space-y-2.5 flex flex-col justify-between shadow-md">
+                          <div className="space-y-2">
+                            <div className="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-black inline-block">
+                              👁️ Hook A: สายเน้นภาพ & Action
+                            </div>
+                            <p className="text-[11px] text-emerald-200/80 font-medium leading-relaxed">
+                              💡 โชว์ช็อตสินค้า หรือการกระทำตื่นเต้น 3 วินาทีแรก เพื่อหยุดนิ้วคนดูบนฟีด
+                            </p>
+                            <div className="p-3 rounded-xl bg-slate-900/90 border border-emerald-500/30 text-xs text-slate-100 font-semibold leading-relaxed selection:bg-emerald-500/30 min-h-[60px]">
+                              {getDisplayHooks()[0]?.text || hooksList[0]?.text || "อย่าเพิ่งซื้อสินค้าตัวนี้ ถ้ายังไม่ได้ดูคลิปนี้จนจบ!"}
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const text = getDisplayHooks()[0]?.text || hooksList[0]?.text;
+                              if (text) {
+                                navigator.clipboard.writeText(text);
+                                setCopiedHookId("A");
+                                setTimeout(() => setCopiedHookId(null), 2000);
+                              }
+                            }}
+                            className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 cursor-pointer shadow"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>{copiedHookId === "A" ? "คัดลอก Hook A แล้ว! ✨" : "คัดลอกเฉพาะ Hook A"}</span>
+                          </button>
+                        </div>
+
+                        {/* Hook B */}
+                        <div className="p-4 rounded-xl bg-gradient-to-b from-indigo-950/40 to-slate-950 border border-indigo-500/40 space-y-2.5 flex flex-col justify-between shadow-md">
+                          <div className="space-y-2">
+                            <div className="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-xs font-black inline-block">
+                              🗣️ Hook B: สายเน้นสะกิดแผลจี้ปัญหา
+                            </div>
+                            <p className="text-[11px] text-indigo-200/80 font-medium leading-relaxed">
+                              💡 ตั้งคำถามแทงใจดำ ชี้จุดเจ็บเรื่องปัญหาที่กลุ่มเป้าหมายกำลังเดือดร้อนอยู่
+                            </p>
+                            <div className="p-3 rounded-xl bg-slate-900/90 border border-indigo-500/30 text-xs text-slate-100 font-semibold leading-relaxed selection:bg-indigo-500/30 min-h-[60px]">
+                              {getDisplayHooks()[1]?.text || hooksList[1]?.text || "ใครเคยเจอปัญหานี้บ้าง? ลองมาหลายวิธีก็ไม่ดีขึ้นสักที..."}
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const text = getDisplayHooks()[1]?.text || hooksList[1]?.text;
+                              if (text) {
+                                navigator.clipboard.writeText(text);
+                                setCopiedHookId("B");
+                                setTimeout(() => setCopiedHookId(null), 2000);
+                              }
+                            }}
+                            className="w-full py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 cursor-pointer shadow"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>{copiedHookId === "B" ? "คัดลอก Hook B แล้ว! ✨" : "คัดลอกเฉพาะ Hook B"}</span>
+                          </button>
+                        </div>
+
+                        {/* Hook C */}
+                        <div className="p-4 rounded-xl bg-gradient-to-b from-amber-950/40 to-slate-950 border border-amber-500/40 space-y-2.5 flex flex-col justify-between shadow-md">
+                          <div className="space-y-2">
+                            <div className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-black inline-block">
+                              ⚡ Hook C: สายเน้นช็อก & ทลายความเชื่อ
+                            </div>
+                            <p className="text-[11px] text-amber-200/80 font-medium leading-relaxed">
+                              💡 เปิดด้วยเรื่องน่าทึ่ง หรือข้อผิดพลาดที่คน 90% เข้าใจผิดชวนเอ๊ะอึ้ง
+                            </p>
+                            <div className="p-3 rounded-xl bg-slate-900/90 border border-amber-500/30 text-xs text-slate-100 font-semibold leading-relaxed selection:bg-amber-500/30 min-h-[60px]">
+                              {getDisplayHooks()[2]?.text || hooksList[2]?.text || "รู้ไหมว่าคนส่วนใหญ่ 90% กำลังเลือกใช้สินค้าผิดวิธี!"}
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const text = getDisplayHooks()[2]?.text || hooksList[2]?.text;
+                              if (text) {
+                                navigator.clipboard.writeText(text);
+                                setCopiedHookId("C");
+                                setTimeout(() => setCopiedHookId(null), 2000);
+                              }
+                            }}
+                            className="w-full py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black transition flex items-center justify-center space-x-1.5 cursor-pointer shadow"
+                          >
+                            <Copy className="w-3.5 h-3.5 fill-slate-950" />
+                            <span>{copiedHookId === "C" ? "คัดลอก Hook C แล้ว! ✨" : "คัดลอกเฉพาะ Hook C"}</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-purple-500/15 to-indigo-500/15 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                      <div className="space-y-1">
+                        <p className="font-bold text-amber-300 flex items-center space-x-1.5">
+                          <Crown className="w-4 h-4 text-amber-400 fill-amber-400 shrink-0" />
+                          <span>ปลดล็อก 3 Hook Options (0-3 วินาทีแรก) ด้วย Pro Plan!</span>
+                        </p>
+                        <p className="text-[11px] text-slate-300 leading-relaxed">
+                          เปรียบเทียบคำเปิดคลิป 3 สไตล์ (Visual Action / Pain-Point / Shocking Contrast) เลือกคำเปิดที่ดึงดูดสายตาที่สุดได้ทันที
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => openUpgradeModal("pro")}
+                        className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-black text-xs shrink-0 cursor-pointer shadow transition text-center"
+                      >
+                        อัปเกรด Pro ⚡
+                      </button>
+                    </div>
+                  )}
 
                   {/* Main Script Text Box (Read-Only vs Editable Textarea) */}
                   {scriptMode === "original" ? (
