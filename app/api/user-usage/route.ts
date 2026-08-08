@@ -55,7 +55,7 @@ export async function GET(request: Request) {
           limit: -1,
           used: 0,
           remaining: "unlimited",
-        });
+        }, { headers: { "Content-Type": "application/json" } });
       }
 
       const userPlan = (profile?.plan_type || "free").toLowerCase();
@@ -99,7 +99,7 @@ export async function GET(request: Request) {
         used: usedCount,
         remaining,
         period: planType === "free" ? "weekly" : "monthly",
-      });
+      }, { headers: { "Content-Type": "application/json" } });
     }
 
     return NextResponse.json({
@@ -109,7 +109,7 @@ export async function GET(request: Request) {
       used: 0,
       remaining: 7,
       period: "weekly",
-    });
+    }, { headers: { "Content-Type": "application/json" } });
   } catch (error: any) {
     console.error("Usage check error:", error);
     return NextResponse.json({
@@ -119,6 +119,6 @@ export async function GET(request: Request) {
       used: 0,
       remaining: 7,
       period: "weekly",
-    });
+    }, { headers: { "Content-Type": "application/json" } });
   }
 }

@@ -22,6 +22,14 @@ const TONE_PROMPTS: Record<string, string> = {
 
 export async function POST(request: Request) {
   try {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "Missing GEMINI_API_KEY" },
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
     const supabase = await createClient();
     let {
       data: { user },
@@ -47,7 +55,7 @@ export async function POST(request: Request) {
     if (authError || !user) {
       return NextResponse.json(
         { error: "กรุณาล็อกอินหรือสมัครสมาชิกก่อนใช้งานระบบสร้างสคริปต์" },
-        { status: 401 }
+        { status: 401, headers: { "Content-Type": "application/json" } }
       );
     }
 
@@ -105,24 +113,33 @@ export async function POST(request: Request) {
             user_type: planType,
             limit: userLimit,
           },
-          { status: 403 }
+          { status: 403, headers: { "Content-Type": "application/json" } }
         );
       }
     }
 
-    const body = await request.json();
+    let body: any;
+    try {
+      body = await request.json();
+    } catch (_jsonErr) {
+      return NextResponse.json(
+        { error: "Invalid JSON payload" },
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
     const {
       product_name,
       target_audience,
       product_link_or_extra,
       tone_style = "general",
       script_length = "medium",
-    } = body;
+    } = body || {};
 
     if (!product_name || !product_name.trim()) {
       return NextResponse.json(
         { error: "กรุณากรอกชื่อสินค้าที่ต้องการรีวิว" },
-        { status: 400 }
+        { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
 
@@ -275,14 +292,6 @@ Hook B (Verbal Hook): "ใครเคยเจอปัญหานี้บ้
 กฎเหล็ก: ส่งออกเฉพาะ JSON ภาษาไทยเท่านั้น`;
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "GEMINI_API_KEY is not configured" },
-        { status: 500 }
-      );
-    }
-
     const genAI = new GoogleGenerativeAI(apiKey);
     const modelsToTry = [
       "gemini-2.0-flash",
@@ -328,7 +337,7 @@ Hook B (Verbal Hook): "ใครเคยเจอปัญหานี้บ้
           : String(generationError);
       return NextResponse.json(
         { error: `ไม่สามารถสร้างสคริปต์ได้: ${errMsg}` },
-        { status: 500 }
+        { status: 500, headers: { "Content-Type": "application/json" } }
       );
     }
 
@@ -384,12 +393,12 @@ Hook B (Verbal Hook): "ใครเคยเจอปัญหานี้บ้
         limit: isAdmin ? -1 : userLimit,
         remaining: isAdmin ? "unlimited" : Math.max(0, userLimit - (usedCount + 1)),
       },
-    });
+    }, { headers: { "Content-Type": "application/json" } });
   } catch (error: any) {
     console.error("Unhandled API error:", error);
     return NextResponse.json(
       { error: error?.message || "Internal Server Error" },
-      { status: 500 }
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 }
