@@ -9,8 +9,6 @@
   }
 
   body {
-    background-color: #020617;
-    color: #f8fafc;
     font-feature-settings: "rlig" 1, "calt" 1;
     overflow-x: hidden;
   }
